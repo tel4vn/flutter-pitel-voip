@@ -756,7 +756,7 @@ class RTCSession extends EventManager {
           _is_canceled = true;
           _cancel_reason = cancel_reason;
         } else if (_status == C.STATUS_1XX_RECEIVED) {
-          _request.cancel(cancel_reason);
+          _request.cancel(cancel_reason ?? '');
         }
 
         _status = C.STATUS_CANCELED;
