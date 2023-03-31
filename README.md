@@ -1,15 +1,185 @@
-# plugin_pitel
+##### plugin_pitel
+# Integrate Voip call to your project
 
-A new flutter plugin project.
+[![N|Solid](https://documents.tel4vn.com/img/pitel-logo.png)](https://documents.tel4vn.com/)
 
-## Getting Started
+```plugin_pitel``` is package support for voip call.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+## Demo
+![Register extension](assets/images/pitel_img_1.png)
+![call](assets/images/pitel_img_2.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+- Register Extension
+- Call
+- Hangup
+- Turn on/off micro
+- Turn on/of speaker
+
+## Installation
+1. Install Packages 
+Add pubspec.yaml:
+```pubspec.yaml
+plugin_pitel:
+    git:
+      url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
+      ref: main # branch name
+```
+2. Get package
+```
+flutter pub get
+```
+
+## Usage
+##### Register extension
+Register extension from data of Tel4vn provide. Example: 101, 102,…
+
+```dart
+import 'package:plugin_pitel/services/sip_info_data.dart';
+```
+
+- Create 1 button to fill data to register extension.
+```dart
+ElevatedButton(
+        onPressed: () {
+          final sipInfo = SipInfoData.fromJson({
+            "authPass": "${Password}",
+            "registerServer": "${Domain}",
+            "outboundServer": "${Outbound Proxy}",
+            "userID": UUser,                // Example 101
+            "authID": UUser,                // Example 101
+            "accountName": "${UUser}",      // Example 101
+            "displayName": "${UUser}@${Domain}",
+            "dialPlan": null,
+            "randomPort": null,
+            "voicemail": null,
+            "wssUrl": "${URL WSS}",
+            "userName": "${username}@${Domain}",
+            "apiDomain": "${URL API}"
+          });
+
+          final pitelClient = PitelServiceImpl();
+          pitelClient.setExtensionInfo(sipInfo);
+        },
+        child: const Text("Register"),),
+```
+- Register status
+```dart
+@override
+  void registrationStateChanged(PitelRegistrationState state) {
+    switch (state.state) {
+      case PitelRegistrationStateEnum.REGISTRATION_FAILED:
+        goBack();
+        break;
+      case PitelRegistrationStateEnum.NONE:
+      case PitelRegistrationStateEnum.UNREGISTERED:
+      case PitelRegistrationStateEnum.REGISTERED:
+        setState(() {
+          receivedMsg = 'REGISTERED';
+        });
+        break;
+    }
+  }
+```
+
+##### Initialize call screen
+- Initialize state & listener function
+```dart
+    @override
+    initState() {
+        super.initState();
+        pitelCall.addListener(this);
+        _initRenderers();
+    }
+    
+    // INIT: Initialize Pitel
+    void _initRenderers() async {
+        await pitelCall.initializeLocal();
+        await pitelCall.initializeRemote();
+    }
+```
+- Dispose & Deactive function
+```dart
+  // Dispose pitelcall
+  void _disposeRenderers() {
+    pitelCall.disposeLocalRenderer();
+    pitelCall.disposeRemoteRenderer();
+  }
+  // Deactive When call end
+  @override
+  deactivate() {
+    super.deactivate();
+    _handleHangup();
+    pitelCall.removeListener(this);
+    _disposeRenderers();
+  }
+```
+- Hangup function
+```dart
+  // Handle hangup and reset timer
+  void _handleHangup() {
+    pitelCall.hangup();
+  }
+```
+- Accept call function
+```dart
+  // Handle accept call
+  void _handleAccept() {
+    pitelCall.answer();
+  }
+```
+- Listen state function
+```dart
+  // STATUS: Handle call state
+  @override
+  void callStateChanged(String callId, PitelCallState callState) {
+    setState(() {
+        // setState for callState
+      _state = callState.state;
+    });
+    switch (callState.state) {
+      case PitelCallStateEnum.HOLD:
+      case PitelCallStateEnum.UNHOLD:
+        break;
+      case PitelCallStateEnum.MUTED:
+      case PitelCallStateEnum.UNMUTED:
+        break;
+      case PitelCallStateEnum.STREAM:
+        break;
+      case PitelCallStateEnum.ENDED:
+      case PitelCallStateEnum.FAILED:
+        _backToDialPad();
+        break;
+      case PitelCallStateEnum.CONNECTING:
+      case PitelCallStateEnum.PROGRESS:
+      case PitelCallStateEnum.ACCEPTED:
+      case PitelCallStateEnum.CONFIRMED:
+      case PitelCallStateEnum.NONE:
+      case PitelCallStateEnum.CALL_INITIATION:
+      case PitelCallStateEnum.REFER:
+        break;
+    }
+  }
+```
+
+## Example
+Please checkout repo github to get example
+```
+https://github.com/tel4vn/pitel-ui-kit/blob/main/pubspec.yaml
+```
+
+## How to test
+Using tryit to test voip call connection & conversation
+Link: https://tryit.jssip.net/
+Setting: 
+1. Access to link https://tryit.jssip.net/
+2. Enter extension: example 102
+3. Click Setting icon
+4. Enter information to input field
+![tryit](assets/images/pitel_img_3.png)
+5. Save
+6. Click icon -> to connect
+
+## License
+Copyright by Tel4vn
 
