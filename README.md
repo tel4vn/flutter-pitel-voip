@@ -29,6 +29,43 @@ plugin_pitel:
 ```
 flutter pub get
 ```
+3. Configure Project
+##### Android:
+- In file ```android/app/src/main/AndroidManifest.xml```
+```xml
+ <manifest...>
+    ...
+    // Request permission
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+ </manifest>
+```
+
+##### IOS
+- Request permission in file ```Info.plist```
+```
+<key>NSCameraUsageDescription</key>
+<string>This app needs camera access to scan QR codes</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Use microphone</string>
+<key>UIBackgroundModes</key>
+<array>
+	<string>external-accessory</string>
+	<string>fetch</string>
+	<string>processing</string>
+	<string>remote-notification</string>
+	<string>voip</string>
+</array>
+```
+- Make sure platform ios ```12.0``` in ```Podfile```
+```
+platform :ios, '12.0'
+```
 
 ## Usage
 ##### Register extension
