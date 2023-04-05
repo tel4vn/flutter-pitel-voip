@@ -30,7 +30,7 @@ plugin_pitel:
 flutter pub get
 ```
 3. Configure Project
-##### Android:
+#### Android:
 - In file ```android/app/src/main/AndroidManifest.xml```
 ```xml
  <manifest...>
@@ -46,7 +46,7 @@ flutter pub get
  </manifest>
 ```
 
-##### IOS
+#### IOS
 - Request permission in file ```Info.plist```
 ```
 <key>NSCameraUsageDescription</key>
@@ -68,7 +68,7 @@ platform :ios, '12.0'
 ```
 
 ## Usage
-##### Register extension
+#### Register extension
 Register extension from data of Tel4vn provide. Example: 101, 102,…
 
 ```dart
@@ -119,7 +119,7 @@ ElevatedButton(
   }
 ```
 
-##### Initialize call screen
+#### Initialize call screen
 - Initialize state & listener function
 ```dart
     @override
