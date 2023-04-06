@@ -201,9 +201,7 @@ ElevatedButton(
 
 ## Example
 Please checkout repo github to get example
-```
-https://github.com/tel4vn/pitel-ui-kit/blob/main/pubspec.yaml
-```
+https://github.com/tel4vn/pitel-ui-kit
 
 ## How to test
 Using tryit to test voip call connection & conversation
