@@ -215,6 +215,3 @@ Setting:
 5. Save
 6. Click icon -> to connect
 
-## License
-Copyright by Tel4vn
-
