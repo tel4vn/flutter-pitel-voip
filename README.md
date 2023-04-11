@@ -26,6 +26,7 @@ plugin_pitel:
       ref: main # branch name
 ```
 Create Personal Access Token: https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
 2. Get package
 ```
 flutter pub get
