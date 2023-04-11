@@ -174,6 +174,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void _releaseCall({String? callId}) {
+    _audioMuted = false;
     if (callId == null) {
       _sipuaHelper.findCall(_callIdCurrent!)?.hangup();
       setCallCurrent(null);
@@ -210,11 +211,10 @@ class PitelCall implements SipUaHelperListener {
         if (call != null) {
           if (_audioMuted) {
             call.unmute(true, false);
-
-            Helper.setMicrophoneMute(true, _localStream!.getAudioTracks()[0]);
+            Helper.setMicrophoneMute(false, _localStream!.getAudioTracks()[0]);
           } else {
             call.mute(true, false);
-            Helper.setMicrophoneMute(false, _localStream!.getAudioTracks()[0]);
+            Helper.setMicrophoneMute(true, _localStream!.getAudioTracks()[0]);
           }
           return true;
         }
@@ -228,10 +228,10 @@ class PitelCall implements SipUaHelperListener {
       if (call != null) {
         if (_audioMuted) {
           call.unmute(true, false);
-          Helper.setMicrophoneMute(true, _localStream!.getAudioTracks()[0]);
+          Helper.setMicrophoneMute(false, _localStream!.getAudioTracks()[0]);
         } else {
           call.mute(true, false);
-          Helper.setMicrophoneMute(false, _localStream!.getAudioTracks()[0]);
+          Helper.setMicrophoneMute(true, _localStream!.getAudioTracks()[0]);
         }
         return true;
       }
