@@ -68,6 +68,24 @@ platform :ios, '12.0'
 ```
 
 ## Usage
+#### Implement SipPitelHelperListener
+In your Home screen, please implement SipPitelHelperListener to use plugin_pitel
+```dart
+class HomeScreen extends StatefulWidget {
+  final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
+  HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _MyHomeScreen();
+}
+
+class _MyHomeScreen extends State<HomeScreen>
+    implements SipPitelHelperListener {    // Implement SipPitelHelperListener in here
+    PitelClient pitelClient = PitelClient.getInstance();
+    PitelCall get pitelCall => widget._pitelCall;
+    ...
+}
+```
 #### Register extension
 Register extension from data of Tel4vn provide. Example: 101, 102,…
 
