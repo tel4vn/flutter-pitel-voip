@@ -4,15 +4,18 @@ import 'package:plugin_pitel/model/http/get_extension_info.dart';
 import 'package:plugin_pitel/model/http/get_profile.dart';
 import 'package:plugin_pitel/model/http/get_sip_info.dart';
 import 'package:plugin_pitel/model/http/login.dart';
+import 'package:plugin_pitel/model/http/push_notif_model.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_profile.dart';
 import 'package:plugin_pitel/web_service/api_web_service.dart';
 import 'package:plugin_pitel/web_service/portal_service.dart';
+import 'package:plugin_pitel/web_service/push_notif_service.dart';
 import 'package:plugin_pitel/web_service/sdk_service.dart';
 
 class _PitelAPIImplement implements PitelApi {
   final ApiWebService _sdkService = SDKService.getInstance();
   final ApiWebService _portalService = PortalService.getInstance();
+  final ApiWebService _pushNotifService = PushNotifService.getInstance();
   final PitelLog _logger = PitelLog(tag: 'PitelApi');
 
   @override
@@ -78,6 +81,58 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  //! Push notification
+  // Register Device Token
+  @override
+  Future<RegisterDeviceTokenRes> registerDeviceToken({
+    String api = '/pn/device/token',
+    required String deviceToken,
+    required String platform,
+    required String bundleId,
+    required String domain,
+    required String extension,
+  }) async {
+    final request = RegisterDeviceTokenReq(
+      deviceToken: deviceToken,
+      platform: platform,
+      bundleId: bundleId,
+      domain: domain,
+      extension: extension,
+    );
+
+    try {
+      final response = await _pushNotifService.post(api, null, request.toMap());
+      final loginResponse = RegisterDeviceTokenRes.fromMap(response);
+      return loginResponse;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  // Delete Device Token
+  @override
+  Future<RemoveDeviceTokenReq> removeDeviceToken({
+    String api = '/pn/device/token',
+    required String deviceToken,
+    required String domain,
+    required String extension,
+  }) async {
+    final request = RemoveDeviceTokenReq(
+      deviceToken: deviceToken,
+      domain: domain,
+      extension: extension,
+    );
+
+    try {
+      final response =
+          await _pushNotifService.delete(api, null, request.toMap());
+      final removeTDeviceTokenResponse = RemoveDeviceTokenReq.fromMap(response);
+      return removeTDeviceTokenResponse;
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -107,4 +162,20 @@ abstract class PitelApi {
       {String api = '/sdk/info/',
       required String pitelToken,
       required String sipUsername});
+
+  Future<RegisterDeviceTokenRes> registerDeviceToken({
+    String api = '/pn/device/token',
+    required String deviceToken,
+    required String platform,
+    required String bundleId,
+    required String domain,
+    required String extension,
+  });
+
+  Future<RemoveDeviceTokenReq> removeDeviceToken({
+    String api = '/pn/device/token',
+    required String deviceToken,
+    required String domain,
+    required String extension,
+  });
 }
