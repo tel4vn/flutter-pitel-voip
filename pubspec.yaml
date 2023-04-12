@@ -26,6 +26,7 @@ dependencies:
   flutter_callkit_incoming: ^1.0.3+3
   firebase_core: ^2.9.0
   firebase_messaging: ^14.4.0
+  device_info_plus: ^8.2.0
 
 dev_dependencies:
   flutter_test:

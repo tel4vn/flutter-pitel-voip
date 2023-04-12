@@ -12,6 +12,7 @@ import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/sip/src/sanity_check.dart';
 import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
+import 'package:plugin_pitel/voip_push/device_information.dart';
 
 import 'pitel_profile.dart';
 
@@ -263,6 +264,10 @@ class PitelClient {
     required String extension,
   }) async {
     try {
+      final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
+      if (!isRealDevice) {
+        return null;
+      }
       final response = await _pitelApi.registerDeviceToken(
         deviceToken: deviceToken,
         platform: platform,
