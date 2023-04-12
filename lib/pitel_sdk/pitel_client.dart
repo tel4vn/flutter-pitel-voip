@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:plugin_pitel/config/pitel_config.dart';
 import 'package:plugin_pitel/model/http/get_extension_info.dart';
+import 'package:plugin_pitel/model/http/push_notif_model.dart';
 import 'package:plugin_pitel/model/pitel_error.dart';
 import 'package:plugin_pitel/model/sip_server.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_api.dart';
@@ -249,6 +251,45 @@ class PitelClient {
         return true;
       }
       return false;
+    }
+  }
+
+  //! Push Notification
+  Future<RegisterDeviceTokenRes?> registerDeviceToken({
+    required String deviceToken,
+    required String platform,
+    required String bundleId,
+    required String domain,
+    required String extension,
+  }) async {
+    try {
+      final response = await _pitelApi.registerDeviceToken(
+        deviceToken: deviceToken,
+        platform: platform,
+        bundleId: bundleId,
+        domain: domain,
+        extension: extension,
+      );
+      return response;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  Future<RemoveDeviceTokenReq?> removeDeviceToken({
+    required String deviceToken,
+    required String domain,
+    required String extension,
+  }) async {
+    try {
+      final response = await _pitelApi.removeDeviceToken(
+        deviceToken: deviceToken,
+        domain: domain,
+        extension: extension,
+      );
+      return response;
+    } catch (err) {
+      return null;
     }
   }
 

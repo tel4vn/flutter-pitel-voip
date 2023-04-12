@@ -54,6 +54,30 @@ abstract class HttpService implements ApiWebService {
     }
   }
 
+  @override
+  Future<Map<String, dynamic>> delete(String api, Map<String, dynamic>? headers,
+      Map<String, dynamic> body) async {
+    try {
+      final request = await _httpClient.deleteUrl(_makeUri(api, null));
+      _addHeader(request, headers);
+      request.add(
+        utf8.encode(
+          jsonEncode(
+            body,
+          ),
+        ),
+      );
+      final response = await request.close();
+      if (response.statusCode == 200) {
+        final responseBody = await response.transform(utf8.decoder).join();
+        return json.decode(responseBody) as Map<String, dynamic>;
+      }
+      throw (response.statusCode);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   void _addHeader(HttpClientRequest request, Map<String, dynamic>? headers) {
     headers?.keys.forEach((key) {
       request.headers.set(key, headers[key]);
