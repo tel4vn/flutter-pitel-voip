@@ -180,6 +180,7 @@ class PitelCall implements SipUaHelperListener {
       setCallCurrent(null);
     } else {
       _sipuaHelper.findCall(callId)?.hangup();
+      setCallCurrent(null);
     }
   }
 
