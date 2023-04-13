@@ -89,12 +89,16 @@ class PitelClient {
     settings.webSocketSettings.allowBadCertificate = true;
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+    settings.contactUri =
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
     settings.displayName = _displayName;
     settings.userAgent = 'SIP Client';
     settings.dtmfMode = DtmfMode.RFC2833;
+    inspect(settings);
+
     pitelCall.register(settings);
     return true;
   }

@@ -265,6 +265,7 @@ class PitelSettings {
   /// `User Agent` field for sip message.
   String? userAgent;
   String? uri;
+  String? contactUri;
   String? authorizationUser;
   String? password;
   String? ha1;
