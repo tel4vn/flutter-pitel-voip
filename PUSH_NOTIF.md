@@ -39,6 +39,7 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
 - Access link [https://console.firebase.google.com/u/0/project/_/notification](https://console.firebase.google.com/u/0/project/_/notification)
 - Create your packageId for android app
 ![push_img_4](assets/push_img/push_img_4.png)
+- Download & copy file google_service.json -> replace file google_service.json in path: ```android/app/google_service.json```
 
 - Go to Project Setting → Cloud Messaging → Enable Cloud Messaging API (Legacy)
 ![push_img_3](assets/push_img/push_img_3.png)
