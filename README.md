@@ -68,7 +68,8 @@ flutter pub get
 ```
 platform :ios, '12.0'
 ```
-4. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS)
+4. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
+
 Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
 
 ## Usage
