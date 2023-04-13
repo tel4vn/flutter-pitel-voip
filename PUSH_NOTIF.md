@@ -1,4 +1,6 @@
 # Pitel Voip Push notification
+> **Warning**
+> IOS only working on real device, not on simulator (Callkit framework not working on simulator)
 # Setup & Certificate
 #### IOS
 If you are making VoIP application than you definitely want to update your application in the background & terminate state as well as wake your application when any VoIP call is being received.
