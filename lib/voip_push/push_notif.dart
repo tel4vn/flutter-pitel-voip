@@ -7,12 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 
 import 'android_connection_service.dart';
-import 'firebase_options.dart';
 
 class PushNotifAndroid {
-  static initFirebase() async {
+  static initFirebase(FirebaseOptions? options) async {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+      options: options,
     );
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
