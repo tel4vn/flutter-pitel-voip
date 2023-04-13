@@ -25,7 +25,7 @@ plugin_pitel:
       url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
       ref: main # branch name
 ```
-Create Personal Access Token: https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 2. Get package
 ```
@@ -68,6 +68,8 @@ flutter pub get
 ```
 platform :ios, '12.0'
 ```
+4. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS)
+Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
 
 ## Usage
 #### Implement SipPitelHelperListener
@@ -220,8 +222,7 @@ ElevatedButton(
 ```
 
 ## Example
-Please checkout repo github to get example
-https://github.com/tel4vn/pitel-ui-kit
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit)
 
 ## How to test
 Using tryit to test voip call connection & conversation
