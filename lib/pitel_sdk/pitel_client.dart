@@ -113,14 +113,19 @@ class PitelClient {
       _username = usernameTest;
       _password = passwordTest;
       _sipServer = SipServer(
-          id: 0,
-          domain: domainTest,
-          port: portTest,
-          outboundProxy: '',
-          wss: wssTest,
-          transport: 0,
-          createdAt: '',
-          project: '');
+        id: 0,
+        domain: domainTest,
+        port: portTest,
+        outboundProxy: '',
+        wss: wssTest,
+        transport: 0,
+        createdAt: '',
+        project: '',
+        //! TO DO
+        pnProvider: 'tel4vn',
+        pnParam: 'tel4vn',
+        pnPrid: 'tel4vn',
+      );
     }
     _logger.info('sipAccount ${extensionResponse.username} enabled');
   }
@@ -223,14 +228,19 @@ class PitelClient {
           _username = usernameTest;
           _password = passwordTest;
           _sipServer = SipServer(
-              id: 0,
-              domain: domainTest,
-              port: portTest,
-              outboundProxy: '',
-              wss: wssTest,
-              transport: 0,
-              createdAt: '',
-              project: '');
+            id: 0,
+            domain: domainTest,
+            port: portTest,
+            outboundProxy: '',
+            wss: wssTest,
+            transport: 0,
+            createdAt: '',
+            project: '',
+            //! TO DO
+            pnProvider: 'tel4vn',
+            pnParam: 'tel4vn',
+            pnPrid: 'tel4vn',
+          );
         }
         //_sipServer?.wss = "wss://sbc03.tel4vn.com:7444";
         _logger.info('sipAccount ${sipResponse.username} enabled');
@@ -245,14 +255,19 @@ class PitelClient {
         _username = usernameTest;
         _password = passwordTest;
         _sipServer = SipServer(
-            id: 0,
-            domain: domainTest,
-            port: portTest,
-            outboundProxy: '',
-            wss: wssTest,
-            transport: 0,
-            createdAt: '',
-            project: '');
+          id: 0,
+          domain: domainTest,
+          port: portTest,
+          outboundProxy: '',
+          wss: wssTest,
+          transport: 0,
+          createdAt: '',
+          project: '',
+          //! TO DO
+          pnProvider: 'tel4vn',
+          pnParam: 'tel4vn',
+          pnPrid: 'tel4vn',
+        );
         return true;
       }
       return false;
