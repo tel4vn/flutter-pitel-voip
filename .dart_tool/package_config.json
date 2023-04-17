@@ -308,54 +308,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "shared_preferences",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences-2.0.15",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
-      "name": "shared_preferences_android",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_android-2.0.13",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
-      "name": "shared_preferences_ios",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_ios-2.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
-      "name": "shared_preferences_linux",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "shared_preferences_macos",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_macos-2.0.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "shared_preferences_platform_interface",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_platform_interface-2.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "shared_preferences_web",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_web-2.0.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "shared_preferences_windows",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "sky_engine",
       "rootUri": "file:///Users/anhquangdev/development/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -446,7 +398,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-04-13T01:48:35.053686Z",
+  "generated": "2023-04-17T05:00:32.987714Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }

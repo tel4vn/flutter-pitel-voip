@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences:
   rxdart: ^0.27.3
 
   crypto: ^3.0.0
