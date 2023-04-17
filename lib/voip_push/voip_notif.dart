@@ -1,6 +1,6 @@
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// final voipPushProvider = Provider((ref) => VoipNotif);
+import 'dart:async';
 
 class VoipNotifService {
   static Future<void> listenerEvent({
@@ -10,6 +10,11 @@ class VoipNotifService {
   }) async {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
+        // inspect(event);
+        // var _timer = Timer(Duration(seconds: 3), () {
+        //   print('done');
+        //   await FlutterCallkitIncoming.endAllCalls();
+        // });
         switch (event!.event) {
           case Event.ACTION_CALL_INCOMING:
             // TODO: received an incoming call

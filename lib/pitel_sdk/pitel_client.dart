@@ -90,7 +90,7 @@ class PitelClient {
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=TEL4VNPUSHNOTIFICATION;pn-provider=apns;pn-param=DEF123GHIJ.com.tel4vn.yourtel4vnapp.voip';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
