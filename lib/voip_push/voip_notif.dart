@@ -8,6 +8,7 @@ class VoipNotifService {
     Function? onCallAccept,
     Function? onCallDecline,
     Function? swipeInLockscreen,
+    Function? onCallEnd,
   }) async {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
@@ -30,7 +31,9 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_ENDED:
-            // TODO: ended an incoming/outgoing call
+            if (onCallEnd != null) {
+              onCallEnd();
+            }
             break;
           case Event.ACTION_CALL_TIMEOUT:
             // TODO: missed an incoming call

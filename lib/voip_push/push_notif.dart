@@ -24,7 +24,17 @@ class PushNotifAndroid {
       provisional: false,
       sound: true,
     );
+
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
+        uuid: message.messageId ?? '',
+        nameCaller: message.data['nameCaller'] ?? '',
+        avatar: message.data['avatar'] ?? '',
+        phoneNumber: message.data['phoneNumber'] ?? '',
+        appName: message.data['appName'] ?? '',
+      ));
+    });
   }
 
   static Future<String> getDeviceToken() async {
@@ -44,7 +54,6 @@ class PushNotifAndroid {
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    inspect(message);
     AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
       uuid: message.messageId ?? '',
       nameCaller: message.data['nameCaller'] ?? '',
