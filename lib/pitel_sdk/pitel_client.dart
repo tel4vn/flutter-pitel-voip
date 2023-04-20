@@ -281,6 +281,7 @@ class PitelClient {
     required String bundleId,
     required String domain,
     required String extension,
+    required String appMode,
   }) async {
     try {
       final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
@@ -293,6 +294,7 @@ class PitelClient {
         bundleId: bundleId,
         domain: domain,
         extension: extension,
+        appMode: appMode,
       );
       return response;
     } catch (err) {

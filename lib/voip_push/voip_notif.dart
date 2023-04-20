@@ -7,14 +7,10 @@ class VoipNotifService {
     Function? callback,
     Function? onCallAccept,
     Function? onCallDecline,
+    Function? swipeInLockscreen,
   }) async {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
-        // inspect(event);
-        // var _timer = Timer(Duration(seconds: 3), () {
-        //   print('done');
-        //   await FlutterCallkitIncoming.endAllCalls();
-        // });
         switch (event!.event) {
           case Event.ACTION_CALL_INCOMING:
             // TODO: received an incoming call
@@ -55,7 +51,9 @@ class VoipNotifService {
             // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_AUDIO_SESSION:
-            // TODO: only iOS
+            if (swipeInLockscreen != null) {
+              swipeInLockscreen();
+            }
             break;
           case Event.ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP:
             // TODO: only iOS

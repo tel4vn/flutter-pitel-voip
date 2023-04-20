@@ -4,6 +4,7 @@ class RegisterDeviceTokenReq {
   String domain;
   String extension;
   String platform;
+  String appMode;
 
   RegisterDeviceTokenReq({
     required this.deviceToken,
@@ -11,6 +12,7 @@ class RegisterDeviceTokenReq {
     required this.domain,
     required this.extension,
     required this.platform,
+    required this.appMode,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class RegisterDeviceTokenReq {
       "app_id": bundleId,
       "domain": domain,
       "extension": extension,
+      "app_mode": appMode,
     };
   }
 
@@ -30,6 +33,7 @@ class RegisterDeviceTokenReq {
       bundleId: map['app_id'] as String,
       domain: map['domain'] as String,
       extension: map['extension'] as String,
+      appMode: map['app_mode'] as String,
     );
   }
 }
