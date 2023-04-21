@@ -90,7 +90,7 @@ class PitelClient {
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=TEL4VNPUSHNOTIFICATION;pn-provider=apns;pn-param=DEF123GHIJ.com.tel4vn.yourtel4vnapp.voip';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
@@ -113,14 +113,19 @@ class PitelClient {
       _username = usernameTest;
       _password = passwordTest;
       _sipServer = SipServer(
-          id: 0,
-          domain: domainTest,
-          port: portTest,
-          outboundProxy: '',
-          wss: wssTest,
-          transport: 0,
-          createdAt: '',
-          project: '');
+        id: 0,
+        domain: domainTest,
+        port: portTest,
+        outboundProxy: '',
+        wss: wssTest,
+        transport: 0,
+        createdAt: '',
+        project: '',
+        //! TO DO
+        pnProvider: 'tel4vn',
+        pnParam: 'tel4vn',
+        pnPrid: 'tel4vn',
+      );
     }
     _logger.info('sipAccount ${extensionResponse.username} enabled');
   }
@@ -223,14 +228,19 @@ class PitelClient {
           _username = usernameTest;
           _password = passwordTest;
           _sipServer = SipServer(
-              id: 0,
-              domain: domainTest,
-              port: portTest,
-              outboundProxy: '',
-              wss: wssTest,
-              transport: 0,
-              createdAt: '',
-              project: '');
+            id: 0,
+            domain: domainTest,
+            port: portTest,
+            outboundProxy: '',
+            wss: wssTest,
+            transport: 0,
+            createdAt: '',
+            project: '',
+            //! TO DO
+            pnProvider: 'tel4vn',
+            pnParam: 'tel4vn',
+            pnPrid: 'tel4vn',
+          );
         }
         //_sipServer?.wss = "wss://sbc03.tel4vn.com:7444";
         _logger.info('sipAccount ${sipResponse.username} enabled');
@@ -245,14 +255,19 @@ class PitelClient {
         _username = usernameTest;
         _password = passwordTest;
         _sipServer = SipServer(
-            id: 0,
-            domain: domainTest,
-            port: portTest,
-            outboundProxy: '',
-            wss: wssTest,
-            transport: 0,
-            createdAt: '',
-            project: '');
+          id: 0,
+          domain: domainTest,
+          port: portTest,
+          outboundProxy: '',
+          wss: wssTest,
+          transport: 0,
+          createdAt: '',
+          project: '',
+          //! TO DO
+          pnProvider: 'tel4vn',
+          pnParam: 'tel4vn',
+          pnPrid: 'tel4vn',
+        );
         return true;
       }
       return false;
@@ -266,6 +281,7 @@ class PitelClient {
     required String bundleId,
     required String domain,
     required String extension,
+    required String appMode,
   }) async {
     try {
       final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
@@ -278,6 +294,7 @@ class PitelClient {
         bundleId: bundleId,
         domain: domain,
         extension: extension,
+        appMode: appMode,
       );
       return response;
     } catch (err) {

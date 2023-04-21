@@ -88,11 +88,12 @@ class PitelUAHelper extends EventManager {
   }
 
   void start(PitelSettings uaSettings) async {
-    if (_ua != null) {
-      logger.warn(
-          'UA instance already exist!, stopping UA and creating a one...');
-      _ua!.stop();
-    }
+    //! WARNING
+    // if (_ua != null) {
+    //   logger.warn(
+    //       'UA instance already exist!, stopping UA and creating a one...');
+    //   _ua!.stop();
+    // }
 
     _uaSettings = uaSettings;
 

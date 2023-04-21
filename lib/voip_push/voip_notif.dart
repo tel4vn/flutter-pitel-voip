@@ -1,12 +1,14 @@
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-// final voipPushProvider = Provider((ref) => VoipNotif);
+import 'dart:async';
 
 class VoipNotifService {
   static Future<void> listenerEvent({
     Function? callback,
     Function? onCallAccept,
     Function? onCallDecline,
+    Function? swipeInLockscreen,
+    Function? onCallEnd,
   }) async {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
@@ -29,7 +31,9 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_ENDED:
-            // TODO: ended an incoming/outgoing call
+            if (onCallEnd != null) {
+              onCallEnd();
+            }
             break;
           case Event.ACTION_CALL_TIMEOUT:
             // TODO: missed an incoming call
@@ -50,7 +54,9 @@ class VoipNotifService {
             // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_AUDIO_SESSION:
-            // TODO: only iOS
+            if (swipeInLockscreen != null) {
+              swipeInLockscreen();
+            }
             break;
           case Event.ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP:
             // TODO: only iOS
