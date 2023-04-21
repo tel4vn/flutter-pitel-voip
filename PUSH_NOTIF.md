@@ -35,6 +35,8 @@ Download the certificate and install it into the Keychain Access app(download .c
 
 #### Android
 Using FCM (Firebase Cloud Message) to handle push notification wake up app when app run on Background or Terminate
+> **Warning**
+> Popup request permission only working with targetSdkVersion >= 33
 
 - Access link [https://console.firebase.google.com/u/0/project/_/notification](https://console.firebase.google.com/u/0/project/_/notification)
 - Create your packageId for android app
@@ -107,6 +109,7 @@ void _registerDeviceToken() async {
       bundleId: 'com.pitel.uikit.demo',     // BundleId/packageId
       domain: 'mobile.tel4vn.com',
       extension: '101',
+      appMode: kReleaseMode ? 'production' : 'dev', // check APNs certificate of Apple run production or dev mode
     );
   }
 ```
@@ -126,18 +129,21 @@ void _registerDeviceToken() async {
         pitelCall.unregister();    // Disconnect SIP call when user logout
   }
 ```
-- Listen events from Push notification for wake up app
+- Listen events from Push notification for wake up app (top level function. Example app.dart)
 ```dart
+final pitelService = PitelServiceImpl();
+final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
+  
 VoipNotifService.listenerEvent(
       callback: (event) {},
       onCallAccept: () {
-				// Hanlde success when user press Accept button
-				// Navigate call screen, after call to extension for receive call
-        context.pushNamed(AppRoute.callScreen.name);
+	// Hanlde success when user press Accept button
+	// Re-register to handle incoming call.
+	pitelService.setExtensionInfo(sipInfoData);
       },
       onCallDecline: () {
-				// Hanlde decline when user press Decline button
-			},
+	pitelCall.hangup();	// Hanlde decline when user press Decline button
+      },
     );
 ```
 
