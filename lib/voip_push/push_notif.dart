@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:firebase_core/firebase_core.dart';
@@ -33,6 +32,7 @@ class PushNotifAndroid {
         avatar: message.data['avatar'] ?? '',
         phoneNumber: message.data['phoneNumber'] ?? '',
         appName: message.data['appName'] ?? '',
+        backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
       ));
     });
   }
@@ -60,6 +60,7 @@ class PushNotifAndroid {
       avatar: message.data['avatar'] ?? '',
       phoneNumber: message.data['phoneNumber'] ?? '',
       appName: message.data['appName'] ?? '',
+      backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
     ));
   }
 }
