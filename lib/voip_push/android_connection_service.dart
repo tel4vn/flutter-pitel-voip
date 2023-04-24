@@ -7,6 +7,7 @@ class CallkitParamsModel {
   final String avatar;
   final String phoneNumber;
   final String appName;
+  final String? backgroundColor;
 
   CallkitParamsModel({
     required this.uuid,
@@ -14,6 +15,7 @@ class CallkitParamsModel {
     required this.avatar,
     required this.phoneNumber,
     required this.appName,
+    this.backgroundColor,
   });
 }
 
@@ -32,13 +34,13 @@ class AndroidConnectionService {
       textDecline: 'Decline',
       textMissedCall: 'Missed call',
       textCallback: 'Call back',
-      android: const AndroidParams(
+      android: AndroidParams(
         isCustomNotification: true,
         isShowLogo: false,
         isShowCallback: true,
         isShowMissedCallNotification: true,
         ringtonePath: 'system_ringtone_default',
-        backgroundColor: '#0955fa',
+        backgroundColor: callKitParams.backgroundColor ?? '#0955fa',
         backgroundUrl: 'assets/test.png',
         actionColor: '#4CAF50',
       ),
