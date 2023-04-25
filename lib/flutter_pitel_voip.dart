@@ -11,6 +11,7 @@ export './pitel_sdk/pitel_client.dart';
 // Pitel service
 export './services/pitel_service.dart';
 export './services/sip_info_data.dart';
+export './services/pitel_service_interface.dart';
 
 // Component
 export './component/app_life_cycle/app_life_cycle.dart';
@@ -20,3 +21,5 @@ export './component/pitel_rtc_video_view.dart';
 
 //SIP
 export './sip/src/sip_ua_helper.dart';
+export './sip/sip_ua.dart';
+export './sip/src/utils.dart';
