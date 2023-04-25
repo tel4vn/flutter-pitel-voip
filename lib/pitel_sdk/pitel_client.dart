@@ -95,7 +95,8 @@ class PitelClient {
     settings.authorizationUser = _username;
     settings.password = _password;
     settings.displayName = _displayName;
-    settings.userAgent = 'SIP Client';
+    settings.userAgent = 'Pitel Connect';
+    settings.register_expires = 10;
     settings.dtmfMode = DtmfMode.RFC2833;
     inspect(settings);
 

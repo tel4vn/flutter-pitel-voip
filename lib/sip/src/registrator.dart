@@ -220,7 +220,8 @@ class Registrator {
             // If there are no listeners for registrationExpiring, reregistration.
             // If there are listeners, var the listening do the register call.
             if (!_ua!.hasListeners(EventRegistrationExpiring())) {
-              register();
+              //! WARNING: do not re-register when session expired time
+              // register();
             } else {
               _ua!.emit(EventRegistrationExpiring());
             }
