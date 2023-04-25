@@ -46,6 +46,12 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
 - Go to Project Setting → Cloud Messaging → Enable Cloud Messaging API (Legacy)
 ![push_img_3](assets/push_img/push_img_3.png)
 
+> **Note**
+> After complete all step Setup. Please send information to dev of Tel4vn, about:
+> - Bunlde/package Id: example com.company.app
+> - File certificate .p12 for IOS.
+> - Server key for Android
+
 # Installation (your project)
 - Install Packages
 
