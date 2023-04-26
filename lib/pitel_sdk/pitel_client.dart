@@ -96,7 +96,7 @@ class PitelClient {
     settings.password = _password;
     settings.displayName = _displayName;
     settings.userAgent = 'Pitel Connect';
-    settings.register_expires = 10;
+    settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
     inspect(settings);
 
