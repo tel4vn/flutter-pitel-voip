@@ -194,7 +194,10 @@ class PitelCall implements SipUaHelperListener {
       if (_localRenderer != null) {
         _localRenderer?.srcObject = stream;
       }
-      event.stream?.getAudioTracks().first.enableSpeakerphone(false);
+      // event.stream?.getAudioTracks().first.enableSpeakerphone(false);
+      event.stream
+          ?.getAudioTracks()
+          .forEach((element) => element.enableSpeakerphone(false));
       _localStream = stream;
     }
     if (event.originator == 'remote') {
@@ -241,7 +244,10 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void enableSpeakerphone(bool enable) {
-    localStream?.getAudioTracks()[0].enableSpeakerphone(enable);
+    // localStream?.getAudioTracks()[0].enableSpeakerphone(enable);
+    localStream
+        ?.getAudioTracks()
+        .forEach((element) => element.enableSpeakerphone(enable));
   }
 
   bool toggleCamera({String? callId}) {
