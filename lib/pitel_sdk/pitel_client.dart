@@ -50,15 +50,15 @@ class PitelClient {
     if (_sipServer != null) {
       final settings = PitelSettings();
       Map<String, String> _wsExtraHeaders = {
-        'Origin': 'https://${_sipServer?.domain}:${_sipServer?.port}',
-        'Host': '${_sipServer?.domain}:${_sipServer?.port}',
+        'Origin': 'https://${_sipServer?.domain}',
+        'Host': '${_sipServer?.domain}',
         'X-PushToken': "${Platform.isIOS ? 'ios;' : 'android;'}$fcmToken",
       };
       settings.webSocketUrl = _sipServer?.wss ?? "";
       //settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
       settings.webSocketSettings.allowBadCertificate = true;
       //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
-      settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+      settings.uri = 'sip:$_username@${_sipServer?.domain}';
       settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
       settings.authorizationUser = _username;
       settings.password = _password;
@@ -80,17 +80,17 @@ class PitelClient {
     final settings = PitelSettings();
 
     Map<String, String> _wsExtraHeaders = {
-      'Origin': 'https://${_sipServer?.domain}:${_sipServer?.port}',
-      'Host': '${_sipServer?.domain}:${_sipServer?.port}',
+      'Origin': 'https://${_sipServer?.domain}',
+      'Host': '${_sipServer?.domain}',
     };
 
     settings.webSocketUrl = _sipServer?.wss ?? "";
     //settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.webSocketSettings.allowBadCertificate = true;
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
-    settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+    settings.uri = 'sip:$_username@${_sipServer?.domain}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=TEL4VNPUSHNOTIFICATION;pn-provider=apns;pn-param=DEF123GHIJ.com.tel4vn.yourtel4vnapp.voip';
+        'sip:$_username@${_sipServer?.domain};pn-prid=TEL4VNPUSHNOTIFICATION;pn-provider=apns;pn-param=DEF123GHIJ.com.tel4vn.yourtel4vnapp.voip';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
@@ -132,8 +132,7 @@ class PitelClient {
   }
 
   Future<Either<bool, Error>> call(String dest, [bool voiceonly = true]) async {
-    final String destSip =
-        'sip:$dest@${_sipServer?.domain}:${_sipServer?.port}';
+    final String destSip = 'sip:$dest@${_sipServer?.domain}';
     if (destSip != _mySipUri) {
       try {
         final isCallSuccess = await pitelCall.call(dest, voiceonly);
@@ -320,6 +319,5 @@ class PitelClient {
     }
   }
 
-  String? get _mySipUri =>
-      'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
+  String? get _mySipUri => 'sip:$_username@${_sipServer?.domain}';
 }
