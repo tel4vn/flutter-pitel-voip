@@ -12,6 +12,7 @@ export './pitel_sdk/pitel_client.dart';
 export './services/pitel_service.dart';
 export './services/sip_info_data.dart';
 export './services/pitel_service_interface.dart';
+export './services/models/pn_push_params.dart';
 
 // Component
 export './component/app_life_cycle/app_life_cycle.dart';

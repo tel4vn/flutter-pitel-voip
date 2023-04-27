@@ -7,9 +7,6 @@ class SipServer {
   int transport;
   String createdAt;
   String project;
-  String pnProvider;
-  String pnParam;
-  String pnPrid;
 
   SipServer({
     required this.id,
@@ -20,9 +17,6 @@ class SipServer {
     required this.transport,
     required this.createdAt,
     required this.project,
-    required this.pnProvider,
-    required this.pnParam,
-    required this.pnPrid,
   });
 
   Map<String, dynamic> toMap() {
@@ -35,9 +29,6 @@ class SipServer {
       'transport': transport,
       'created_at': createdAt,
       'project': project,
-      'pnProvider': pnProvider,
-      'pnParam': pnParam,
-      'pnPrid': pnPrid,
     };
   }
 
@@ -59,9 +50,6 @@ class SipServer {
       project: map['project'] is int
           ? (map['project'] as int).toString()
           : map['project'] as String,
-      pnProvider: map['pn_provider'] as String,
-      pnParam: map['pn_param'] as String,
-      pnPrid: map['pn_prid'] as String,
     );
   }
 

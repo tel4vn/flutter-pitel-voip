@@ -10,6 +10,7 @@ import 'package:plugin_pitel/model/sip_server.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_api.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
+import 'package:plugin_pitel/services/models/pn_push_params.dart';
 import 'package:plugin_pitel/sip/src/sanity_check.dart';
 import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
 import 'package:plugin_pitel/voip_push/device_information.dart';
@@ -76,7 +77,7 @@ class PitelClient {
     }
   }
 
-  bool registerSipWithoutFCM() {
+  bool registerSipWithoutFCM(PnPushParams pnPushParams) {
     final settings = PitelSettings();
 
     Map<String, String> _wsExtraHeaders = {
@@ -90,7 +91,7 @@ class PitelClient {
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=TEL4VNPUSHNOTIFICATION;pn-provider=apns;pn-param=DEF123GHIJ.com.tel4vn.yourtel4vnapp.voip';
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam}';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
@@ -122,10 +123,6 @@ class PitelClient {
         transport: 0,
         createdAt: '',
         project: '',
-        //! TO DO
-        pnProvider: 'tel4vn',
-        pnParam: 'tel4vn',
-        pnPrid: 'tel4vn',
       );
     }
     _logger.info('sipAccount ${extensionResponse.username} enabled');
@@ -237,10 +234,6 @@ class PitelClient {
             transport: 0,
             createdAt: '',
             project: '',
-            //! TO DO
-            pnProvider: 'tel4vn',
-            pnParam: 'tel4vn',
-            pnPrid: 'tel4vn',
           );
         }
         //_sipServer?.wss = "wss://sbc03.tel4vn.com:7444";
@@ -264,10 +257,6 @@ class PitelClient {
           transport: 0,
           createdAt: '',
           project: '',
-          //! TO DO
-          pnProvider: 'tel4vn',
-          pnParam: 'tel4vn',
-          pnPrid: 'tel4vn',
         );
         return true;
       }
