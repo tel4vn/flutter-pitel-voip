@@ -12,7 +12,9 @@ dependencies:
   rxdart: ^0.27.3
 
   crypto: ^3.0.0
-  flutter_webrtc: ^0.9.1
+  flutter_webrtc: ^0.9.4
+  # flutter_webrtc: ^0.9.18
+  # flutter_webrtc: ^0.9.24
   intl: ^0.17.0
   logger: ^1.0.0
   parser_error: ^0.2.0
@@ -32,8 +34,8 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^1.0.0
 
-dependency_overrides:
-  flutter_webrtc: ^0.9.18
+# dependency_overrides:
+#   flutter_webrtc: ^0.9.18
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
