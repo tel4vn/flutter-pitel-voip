@@ -89,9 +89,6 @@ class SipInfoData {
       transport: 0,
       createdAt: '',
       project: '',
-      pnProvider: 'tel4vn',
-      pnParam: 'tel4vn',
-      pnPrid: 'tel4vn',
     );
 
     final getExtResponse = GetExtensionResponse(
