@@ -12,8 +12,8 @@ dependencies:
   rxdart: ^0.27.3
 
   crypto: ^3.0.0
-  flutter_webrtc: ^0.9.4
-  # flutter_webrtc: ^0.9.18
+  # flutter_webrtc: ^0.9.4
+  flutter_webrtc: 0.9.18
   # flutter_webrtc: ^0.9.24
   intl: ^0.17.0
   logger: ^1.0.0
