@@ -54,7 +54,7 @@ class _AppLifecycleTrackerState extends State<AppLifecycleTracker>
         s = AppState.detached;
         break;
     }
-    widget.didChangeAppState(state as AppState);
+    widget.didChangeAppState(s);
   }
 
   @override
