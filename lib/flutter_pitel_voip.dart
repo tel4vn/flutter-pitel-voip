@@ -24,3 +24,6 @@ export './component/pitel_rtc_video_view.dart';
 export './sip/src/sip_ua_helper.dart';
 export './sip/sip_ua.dart';
 export './sip/src/utils.dart';
+
+// Screen
+export './screens/call_screen/call_screen.dart';
