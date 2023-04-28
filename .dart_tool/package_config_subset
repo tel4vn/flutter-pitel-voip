@@ -28,8 +28,8 @@ file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/crypto-3.0.2/
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/crypto-3.0.2/lib/
 dart_webrtc
 2.13
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.12/
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.12/lib/
+file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.11/
+file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.11/lib/
 dartz
 2.12
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dartz-0.10.1/
@@ -88,8 +88,8 @@ file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_lints-1.0.4/
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_lints-1.0.4/lib/
 flutter_webrtc
 2.12
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.18/
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.18/lib/
+file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.17/
+file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.17/lib/
 intl
 2.12
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/intl-0.17.0/
@@ -162,10 +162,6 @@ platform
 2.12
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/platform-3.1.0/
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/platform-3.1.0/lib/
-platform_detect
-2.12
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/platform_detect-2.0.7/
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/platform_detect-2.0.7/lib/
 plugin_platform_interface
 2.17
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.4/
@@ -174,10 +170,6 @@ process
 2.14
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/process-4.2.4/
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/process-4.2.4/lib/
-pub_semver
-2.17
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/pub_semver-2.1.3/
-file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/pub_semver-2.1.3/lib/
 random_string
 2.12
 file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/random_string-2.3.1/
