@@ -193,6 +193,7 @@ ElevatedButton(
   }
 ```
 - onCallReceived: this function will active when have incoming call.
+```dart
   @override
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
@@ -207,7 +208,9 @@ ElevatedButton(
       context.pushNamed(AppRoute.callScreen.name);
     }
   }
+```
 - Listen state function
+
 When call begin, this callStateChanged function will return state of call.
 | PitelCallStateEnum      | Description                                         |
 | ----------------------  | ----------------------                              |
