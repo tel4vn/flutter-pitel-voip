@@ -123,7 +123,7 @@ ElevatedButton(
         },
         child: const Text("Register"),),
 ```
-- Register status
+- Register status: return state of extension when extension register, unregister,..
 ```dart
 @override
   void registrationStateChanged(PitelRegistrationState state) {
@@ -176,19 +176,50 @@ ElevatedButton(
 ```
 - Hangup function
 ```dart
-  // Handle hangup and reset timer
-  void _handleHangup() {
-    pitelCall.hangup();
-  }
+  // Handle hangup
+  pitelCall.hangup();
 ```
 - Accept call function
 ```dart
   // Handle accept call
-  void _handleAccept() {
-    pitelCall.answer();
+  pitelCall.answer();
+```
+- onCallInitiated: start outgoing call, this function will set current call id & navigate to call screen
+```dart
+  @override
+  void onCallInitiated(String callId) {
+    pitelCall.setCallCurrent(callId);
+    context.pushNamed(AppRoute.callScreen.name);
   }
 ```
+- onCallReceived: this function will active when have incoming call.
+  @override
+  void onCallReceived(String callId) async {
+    pitelCall.setCallCurrent(callId);
+    if (Platform.isIOS) {
+      pitelCall.answer();
+    }
+    if (Platform.isAndroid) {
+      context.pushNamed(AppRoute.callScreen.name);
+    }
+    //! Handle lock screen in IOS
+    if (!lockScreen) {
+      context.pushNamed(AppRoute.callScreen.name);
+    }
+  }
 - Listen state function
+When call begin, this callStateChanged function will return state of call.
+| PitelCallStateEnum      | Description                                         |
+| ----------------------  | ----------------------                              |
+| NONE                    | Call has not been made.                             |
+| PROGRESS                | Initiate call.                                      |
+| CONNECTING              | Connecting Extension to call.                       |
+| STREAM                  | Conversation is in progress.                        |
+| MUTED/UNMUTED           | Get state when micro is off/on.                     |
+| ACCEPTED & CONFIRMED    | When Extension is called accept & join conversation.|
+| FAILED                  | When the call is interrupted due to a problem.      |
+| ACCEPTED & CONFIRMED    | When Extension is called hang up.                   |
+
 ```dart
   // STATUS: Handle call state
   @override
