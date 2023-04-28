@@ -221,7 +221,7 @@ When call begin, this callStateChanged function will return state of call.
 | MUTED/UNMUTED           | Get state when micro is off/on.                     |
 | ACCEPTED & CONFIRMED    | When Extension is called accept & join conversation.|
 | FAILED                  | When the call is interrupted due to a problem.      |
-| ACCEPTED & CONFIRMED    | When Extension is called hang up.                   |
+| ENDED    		  | When Extension is called hang up.                   |
 
 ```dart
   // STATUS: Handle call state
