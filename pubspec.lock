@@ -61,10 +61,10 @@ packages:
     dependency: transitive
     description:
       name: dart_webrtc
-      sha256: "5d53ae883f314016b822ec498e54dd437c84a71ae2162a243aeb0162deb85158"
+      sha256: e3d2bef2e561f062aacc3894dcac7e346d5435fcade9eefd6a800af1a7802cb0
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.12"
+    version: "1.0.11"
   dartz:
     dependency: "direct main"
     description:
@@ -196,10 +196,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_webrtc
-      sha256: d1d3f44e65b360eef4e6a89cbdd6c05525a3217796cb087b535ced1afcd4b124
+      sha256: "005b7b03c62398a00870bf639f8b913b3adb9fc7556ef33408684f3ebe7e3b0d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.18"
+    version: "0.9.17"
   intl:
     dependency: "direct main"
     description:
@@ -352,14 +352,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  platform_detect:
-    dependency: transitive
-    description:
-      name: platform_detect
-      sha256: "14afcb6ffcd93745e39a288db53d1d6522ea25d71f7993c13a367a86c437b54d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.7"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -376,14 +368,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
-  pub_semver:
-    dependency: transitive
-    description:
-      name: pub_semver
-      sha256: "307de764d305289ff24ad257ad5c5793ce56d04947599ad68b3baa124105fc17"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.3"
   random_string:
     dependency: "direct main"
     description:
