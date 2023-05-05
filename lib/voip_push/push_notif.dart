@@ -48,6 +48,7 @@ class PushNotifAndroid {
         }
       }
     });
+    NotificationService().initNotification();
   }
 
   static Future<String> getDeviceToken() async {

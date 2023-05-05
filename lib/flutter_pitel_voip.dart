@@ -3,6 +3,7 @@ library flutter_pitel_voip;
 // Export push notif
 export './voip_push/voip_notif.dart';
 export './voip_push/push_notif.dart';
+export './voip_push/local_notif.dart';
 
 // Pitel sdk
 export './pitel_sdk/pitel_call.dart';
