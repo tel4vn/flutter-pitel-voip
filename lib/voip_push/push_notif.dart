@@ -1,9 +1,13 @@
+import 'dart:developer';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_connection_service.dart';
 
@@ -25,7 +29,10 @@ class PushNotifAndroid {
     );
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.data['call_status'] == "REGISTER") {
+        await registerWhenReceiveNotif();
+      }
       if (Platform.isAndroid) {
         AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
           uuid: message.messageId ?? '',
@@ -60,6 +67,10 @@ class PushNotifAndroid {
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
+    if (message.data['call_status'] == "REGISTER") {
+      await registerWhenReceiveNotif();
+    }
+
     if (Platform.isAndroid) {
       AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
         uuid: message.messageId ?? '',
@@ -73,6 +84,25 @@ class PushNotifAndroid {
       if (message.data['call_status'] == "CANCEL") {
         FlutterCallkitIncoming.endAllCalls();
       }
+    }
+  }
+
+  static Future<void> registerWhenReceiveNotif() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? sipInfoData = prefs.getString("SIP_INFO_DATA");
+    final String? pnPushParams = prefs.getString("PN_PUSH_PARAMS");
+
+    final SipInfoData? sipInfoDataDecode = sipInfoData != null
+        ? SipInfoData.fromJson(jsonDecode(sipInfoData))
+        : null;
+    final PnPushParams? pnPushParamsDecode = pnPushParams != null
+        ? PnPushParams.fromJson(jsonDecode(pnPushParams))
+        : null;
+
+    if (sipInfoDataDecode != null && pnPushParamsDecode != null) {
+      final pitelClient = PitelClient.getInstance();
+      pitelClient.setExtensionInfo(sipInfoDataDecode.toGetExtensionResponse());
+      pitelClient.registerSipWithoutFCM(pnPushParamsDecode);
     }
   }
 }

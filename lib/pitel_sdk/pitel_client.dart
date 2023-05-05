@@ -101,6 +101,7 @@ class PitelClient {
     settings.dtmfMode = DtmfMode.RFC2833;
     inspect(settings);
 
+    print("-----------------------REGISTER-----------------");
     pitelCall.register(settings);
     return true;
   }
