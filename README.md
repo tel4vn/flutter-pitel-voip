@@ -22,10 +22,17 @@ Add pubspec.yaml:
 ```pubspec.yaml
 plugin_pitel:
     git:
-      url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
+      url: https://github.com/tel4vn/flutter-pitel-voip.git
       ref: 1.0.2 # package version
 ```
-[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+If you ```flutter pub get``` error. Please 
+[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and add personal access token with format 
+```pubspec.yaml
+plugin_pitel:
+    git:
+      url: https://{Personal access token}@github.com/tel4vn/flutter-pitel-voip.git
+      ref: 1.0.2 # package version
+```
 
 2. Get package
 ```
