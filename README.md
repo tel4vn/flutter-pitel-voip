@@ -7,7 +7,7 @@
 
 ## Demo
 ![Register extension](assets/images/pitel_img_1.png)
-![call](assets/images/pitel_img_2.png)
+![call](assets/images/pitel_img_call.png)
 
 ## Features
 - Register Extension
