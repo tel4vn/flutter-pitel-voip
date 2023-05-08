@@ -30,9 +30,10 @@ class PushNotifAndroid {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (message.data['call_status'] == "REGISTER") {
-        await registerWhenReceiveNotif();
-      }
+      //! WARNING: solution 2
+      // if (message.data['call_status'] == "REGISTER") {
+      //   await registerWhenReceiveNotif();
+      // }
       if (Platform.isAndroid) {
         AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
           uuid: message.messageId ?? '',
@@ -67,9 +68,10 @@ class PushNotifAndroid {
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    if (message.data['call_status'] == "REGISTER") {
-      await registerWhenReceiveNotif();
-    }
+    //! WARNING: solution 2
+    // if (message.data['call_status'] == "REGISTER") {
+    //   await registerWhenReceiveNotif();
+    // }
 
     if (Platform.isAndroid) {
       AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
