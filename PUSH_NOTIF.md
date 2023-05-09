@@ -1,6 +1,43 @@
 # Pitel Voip Push notification
 > **Warning**
 > IOS only working on real device, not on simulator (Callkit framework not working on simulator)
+
+## Pitel Connect Flow 
+When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
+![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
+
+## Image callkit
+<table>
+  <tr>
+    <td>iOS(Alert)</td>
+    <td>iOS(Lockscreen)</td>
+    <td>iOS(full screen)</td>
+  </tr>
+  <tr>
+    <td>
+      <img src="assets/images/call_kit_1.png" width="220">
+    </td>
+    <td>
+      <img src="assets/images/call_kit_2.png" width="220">
+    </td>
+    <td>
+      <img src="assets/images/call_kit_3.png" width="220">
+    </td>
+  </tr>
+  <tr>	  
+    <td>Android(Alert) - Audio</td>
+    <td>Android(Lockscreen | Fullscreen) - Audio</td>
+  </tr>
+  <tr>
+    <td>
+      <img src="assets/images/call_kit_android_1.png" width="220">
+    </td>
+    <td>
+      <img src="assets/images/call_kit_android_2.png" width="220">
+    </td>
+  </tr>
+ </table>
+ 
 # Setup & Certificate
 #### IOS
 If you are making VoIP application than you definitely want to update your application in the background & terminate state as well as wake your application when any VoIP call is being received.
@@ -26,27 +63,7 @@ Download the certificate and install it into the Keychain Access app(download .c
 - **Export the .p12 file and send it to Tel4vn (or using test)**
 ![push_img_7](assets/push_img/push_img_7.png)
 
-## Pitel Connect Flow 
-When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
-![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
-
 # Setup Pushkit & Callkit
-## Image callkit
-| ![callkit 1](assets/images/call_kit_1.png) | 
-|:--:| 
-| *IOS (Alert)* |
-| ![callkit 2](assets/images/call_kit_2.png) | 
-|:--:| 
-| *IOS (Lockscreen)* |
-| ![callkit 3](assets/images/call_kit_3.png) | 
-|:--:| 
-| *IOS (Full screen)* |
-| ![callkit 4](assets/images/call_kit_android_1.png) | 
-|:--:| 
-| *Android (Alert)* |
-| ![callkit 5](assets/images/call_kit_android_2.png) | 
-|:--:| 
-| *Android (Full screen)* |
 #### IOS
 - Open Xcode Project → Capabilities
 - In Tab Signing & Capabilities. Enable Push notifications & Background Modes
