@@ -7,7 +7,11 @@
 
 ## Demo
 ![Register extension](assets/images/pitel_img_1.png)
-![call](assets/images/pitel_img_call.png)
+![call](assets/images/pitel_img_2.png)
+
+## Pitel Connect Flow 
+When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
+![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
 
 ## Features
 - Register Extension
@@ -22,19 +26,16 @@ Add pubspec.yaml:
 ```pubspec.yaml
 plugin_pitel:
     git:
-      url: https://github.com/tel4vn/flutter-pitel-voip.git
-      ref: 1.0.2 # package version
+      url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
+      ref: main # branch name
 ```
+[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 2. Get package
 ```
 flutter pub get
 ```
-3. Import
-```
-import 'package:plugin_pitel/flutter_pitel_voip.dart';
-```
-4. Configure Project
+3. Configure Project
 #### Android:
 - In file ```android/app/src/main/AndroidManifest.xml```
 ```xml
@@ -71,35 +72,13 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 ```
 platform :ios, '12.0'
 ```
-5. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
+4. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
 
 Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
 
 ## Usage
-#### How to use call screen.
-[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/call_screen/call_screen.dart)
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:plugin_pitel/flutter_pitel_voip.dart';
-
-class CallPage extends StatelessWidget {
-  const CallPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CallScreen(
-      goBack: () {
-        // Call your go back function in here
-      },
-      bgColor: Colors.cyan,
-    );
-  }
-}
-
-```
-#### Implement SipPitelHelperListener in your Home screen,
-In your Home screen, please implement SipPitelHelperListener to use plugin_pitel.[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/home/home_screen.dart)
+#### Implement SipPitelHelperListener
+In your Home screen, please implement SipPitelHelperListener to use plugin_pitel
 ```dart
 class HomeScreen extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -118,7 +97,11 @@ class _MyHomeScreen extends State<HomeScreen>
 ```
 #### Register extension
 Register extension from data of Tel4vn provide. Example: 101, 102,…
-Example: 
+
+```dart
+import 'package:plugin_pitel/services/sip_info_data.dart';
+```
+
 - Create 1 button to fill data to register extension.
 ```dart
 ElevatedButton(
@@ -257,4 +240,3 @@ Setting:
 ![tryit](assets/images/pitel_img_3.png)
 5. Save
 6. Click icon -> to connect
-
