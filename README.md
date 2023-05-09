@@ -26,16 +26,18 @@ Add pubspec.yaml:
 ```pubspec.yaml
 plugin_pitel:
     git:
-      url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
-      ref: main # branch name
+      url: https://github.com/tel4vn/flutter-pitel-voip.git
+      ref: 1.0.2 # branch name
 ```
-[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-
 2. Get package
 ```
 flutter pub get
 ```
-3. Configure Project
+3. Import
+```
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
+```
+4. Configure Project
 #### Android:
 - In file ```android/app/src/main/AndroidManifest.xml```
 ```xml
@@ -72,13 +74,31 @@ flutter pub get
 ```
 platform :ios, '12.0'
 ```
-4. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
+5. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
 
 Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
 
 ## Usage
-#### Implement SipPitelHelperListener
-In your Home screen, please implement SipPitelHelperListener to use plugin_pitel
+#### How to use call screen.
+[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/call_screen/call_screen.dart)
+```dart
+import 'package:flutter/material.dart';
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
+class CallPage extends StatelessWidget {
+  const CallPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return CallScreen(
+      goBack: () {
+        // Call your go back function in here
+      },
+      bgColor: Colors.cyan,
+    );
+  }
+}
+```
+#### Implement SipPitelHelperListener in your Home screen,
+In your Home screen, please implement SipPitelHelperListener to use plugin_pitel.[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/home/home_screen.dart)
 ```dart
 class HomeScreen extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -97,11 +117,6 @@ class _MyHomeScreen extends State<HomeScreen>
 ```
 #### Register extension
 Register extension from data of Tel4vn provide. Example: 101, 102,…
-
-```dart
-import 'package:plugin_pitel/services/sip_info_data.dart';
-```
-
 - Create 1 button to fill data to register extension.
 ```dart
 ElevatedButton(
