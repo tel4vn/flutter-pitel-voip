@@ -78,4 +78,9 @@ class PushVoipNotif {
         : await VoipPushIOS.getVoipDeviceToken();
     return deviceToken;
   }
+
+  static Future<String> getFCMToken() async {
+    final fcmToken = await PushNotifAndroid.getDeviceToken();
+    return fcmToken;
+  }
 }
