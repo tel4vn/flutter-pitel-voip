@@ -7,7 +7,7 @@
 
 ## Demo
 ![Register extension](assets/images/pitel_img_1.png)
-![call](assets/images/pitel_img_2.png)
+![call](assets/images/pitel_img_call.png)
 
 ## Pitel Connect Flow 
 When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 

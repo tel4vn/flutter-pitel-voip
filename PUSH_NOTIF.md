@@ -31,17 +31,21 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 ![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
 
 # Setup Pushkit & Callkit
-
 ## Image callkit
 | ![callkit 1](assets/images/call_kit_1.png) | 
+|:--:| 
 | *IOS (Alert)* |
 | ![callkit 2](assets/images/call_kit_2.png) | 
+|:--:| 
 | *IOS (Lockscreen)* |
 | ![callkit 3](assets/images/call_kit_3.png) | 
+|:--:| 
 | *IOS (Full screen)* |
 | ![callkit 4](assets/images/call_kit_android_1.png) | 
+|:--:| 
 | *Android (Alert)* |
 | ![callkit 5](assets/images/call_kit_android_2.png) | 
+|:--:| 
 | *Android (Full screen)* |
 #### IOS
 - Open Xcode Project → Capabilities
