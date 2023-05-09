@@ -26,7 +26,31 @@ Download the certificate and install it into the Keychain Access app(download .c
 - **Export the .p12 file and send it to Tel4vn (or using test)**
 ![push_img_7](assets/push_img/push_img_7.png)
 
+## Pitel Connect Flow 
+When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
+![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
+
 # Setup Pushkit & Callkit
+## Pitel Connect Flow 
+When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
+![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
+
+## Image callkit
+| ![callkit 1](assets/images/call_kit_1.png) | 
+|:--:| 
+| *IOS (Alert)* |
+| ![callkit 2](assets/images/call_kit_2.png) | 
+|:--:| 
+| *IOS (Lockscreen)* |
+| ![callkit 3](assets/images/call_kit_3.png) | 
+|:--:| 
+| *IOS (Full screen)* |
+| ![callkit 4](assets/images/call_kit_android_1.png) | 
+|:--:| 
+| *Android (Alert)* |
+| ![callkit 5](assets/images/call_kit_android_2.png) | 
+|:--:| 
+| *Android (Full screen)* |
 #### IOS
 - Open Xcode Project → Capabilities
 - In Tab Signing & Capabilities. Enable Push notifications & Background Modes
