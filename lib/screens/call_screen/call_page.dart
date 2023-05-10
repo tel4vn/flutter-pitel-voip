@@ -74,9 +74,9 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   void handleCall() {
     if (Platform.isAndroid) {
+      Wakelock.enable();
       if (direction != 'OUTGOING') {
         pitelCall.answer();
-        Wakelock.enable();
       }
     }
   }
