@@ -5,6 +5,7 @@ import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:plugin_pitel/component/button/action_button.dart';
 import 'package:plugin_pitel/component/button/icon_text_button.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
+import 'package:wakelock/wakelock.dart';
 
 import 'widgets/voice_header.dart';
 
@@ -75,6 +76,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     if (Platform.isAndroid) {
       if (direction != 'OUTGOING') {
         pitelCall.answer();
+        Wakelock.enable();
       }
     }
   }
@@ -111,6 +113,9 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   void _handleHangup() {
     pitelCall.hangup(callId: _callId);
+    if (Platform.isAndroid) {
+      Wakelock.disable();
+    }
   }
 
   void _handleAccept() {
