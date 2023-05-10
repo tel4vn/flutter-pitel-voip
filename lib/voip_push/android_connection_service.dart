@@ -37,7 +37,7 @@ class AndroidConnectionService {
       android: AndroidParams(
         isCustomNotification: true,
         isShowLogo: false,
-        isShowCallback: true,
+        isShowCallback: false,
         isShowMissedCallNotification: true,
         ringtonePath: 'system_ringtone_default',
         backgroundColor: callKitParams.backgroundColor ?? '#0955fa',
