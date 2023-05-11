@@ -26,6 +26,12 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     SipInfoData sipInfoData,
     PnPushParams pnPushParams,
   ) async {
+    //! WARNING: solution 2
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final sipInfoEncode = jsonEncode(sipInfoData);
+    // final pnPushParamsEncode = jsonEncode(pnPushParams);
+    // await prefs.setString("SIP_INFO_DATA", sipInfoEncode);
+    // await prefs.setString("PN_PUSH_PARAMS", pnPushParamsEncode);
     this.sipInfoData = sipInfoData;
     pitelClient.setExtensionInfo(sipInfoData.toGetExtensionResponse());
     pitelClient.registerSipWithoutFCM(pnPushParams);

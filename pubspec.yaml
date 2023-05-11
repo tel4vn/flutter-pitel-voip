@@ -27,6 +27,7 @@ dependencies:
   firebase_messaging: ^14.4.0
   device_info_plus: ^8.2.0
   wakelock: ^0.6.2
+  shared_preferences: ^2.1.0
 
 dev_dependencies:
   flutter_test:
