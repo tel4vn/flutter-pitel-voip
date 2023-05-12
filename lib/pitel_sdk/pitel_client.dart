@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -91,7 +90,7 @@ class PitelClient {
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam}';
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken}';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
@@ -99,7 +98,6 @@ class PitelClient {
     settings.userAgent = 'Pitel Connect';
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
-    inspect(settings);
 
     pitelCall.register(settings);
     return true;
@@ -272,6 +270,7 @@ class PitelClient {
     required String domain,
     required String extension,
     required String appMode,
+    required String fcmToken,
   }) async {
     try {
       final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
@@ -285,6 +284,7 @@ class PitelClient {
         domain: domain,
         extension: extension,
         appMode: appMode,
+        fcmToken: fcmToken,
       );
       return response;
     } catch (err) {

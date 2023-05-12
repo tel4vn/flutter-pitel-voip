@@ -28,6 +28,7 @@ dependencies:
   device_info_plus: ^8.2.0
   wakelock: ^0.6.2
   shared_preferences: ^2.1.0
+  eraser: ^2.0.1
 
 dev_dependencies:
   flutter_test:

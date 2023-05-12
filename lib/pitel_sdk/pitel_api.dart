@@ -93,6 +93,7 @@ class _PitelAPIImplement implements PitelApi {
     required String domain,
     required String extension,
     required String appMode,
+    required String fcmToken,
   }) async {
     final request = RegisterDeviceTokenReq(
       deviceToken: deviceToken,
@@ -101,6 +102,7 @@ class _PitelAPIImplement implements PitelApi {
       domain: domain,
       extension: extension,
       appMode: appMode,
+      fcmToken: fcmToken,
     );
 
     try {
@@ -173,6 +175,7 @@ abstract class PitelApi {
     required String domain,
     required String extension,
     required String appMode,
+    required String fcmToken,
   });
 
   Future<RemoveDeviceTokenReq> removeDeviceToken({
