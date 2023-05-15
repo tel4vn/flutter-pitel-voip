@@ -120,7 +120,16 @@ Register extension from data of Tel4vn provide. Example: 101, 102,…
 - Create 1 button to fill data to register extension.
 ```dart
 ElevatedButton(
-        onPressed: () {
+        onPressed: () asyns {
+          final fcmToken = await PushVoipNotif.getFCMToken();
+          final pnPushParams = PnPushParams(
+            pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
+            pnParam: Platform.isAndroid
+                ? '${bundleId}' // Example com.company.app
+                : '${apple_team_id}.${bundleId}.voip', // Example com.company.app
+            pnPrid: '${deviceToken}',
+            fcmToken: fcmToken,
+          );
           final sipInfo = SipInfoData.fromJson({
             "authPass": "${Password}",
             "registerServer": "${Domain}",
@@ -138,7 +147,7 @@ ElevatedButton(
           });
 
           final pitelClient = PitelServiceImpl();
-          pitelClient.setExtensionInfo(sipInfo);
+          pitelClient.setExtensionInfo(sipInfo, pnPushParams);
         },
         child: const Text("Register"),),
 ```
@@ -196,18 +205,52 @@ ElevatedButton(
 - Hangup function
 ```dart
   // Handle hangup and reset timer
-  void _handleHangup() {
-    pitelCall.hangup();
-  }
+  pitelCall.hangup();
 ```
 - Accept call function
 ```dart
   // Handle accept call
-  void _handleAccept() {
-    pitelCall.answer();
+  pitelCall.answer();
+```
+- onCallInitiated: start outgoing call, this function will set current call id & navigate to call screen
+```dart
+  @override
+  void onCallInitiated(String callId) {
+    pitelCall.setCallCurrent(callId);
+    context.pushNamed(AppRoute.callScreen.name);
+  }
+```
+- onCallReceived: this function will active when have incoming call.
+```dart
+  @override
+  void onCallReceived(String callId) async {
+    pitelCall.setCallCurrent(callId);
+    if (Platform.isIOS) {
+      pitelCall.answer();
+    }
+    if (Platform.isAndroid) {
+      context.pushNamed(AppRoute.callScreen.name);
+    }
+    //! Handle lock screen in IOS
+    if (!lockScreen && Platform.isIOS) {
+      context.pushNamed(AppRoute.callScreen.name);
+    }
   }
 ```
 - Listen state function
+
+When call begin, this callStateChanged function will return state of call.
+| PitelCallStateEnum      | Description                                         |
+| ----------------------  | ----------------------                              |
+| NONE                    | Call has not been made.                             |
+| PROGRESS                | Initiate call.                                      |
+| CONNECTING              | Connecting Extension to call.                       |
+| STREAM                  | Conversation is in progress.                        |
+| MUTED/UNMUTED           | Get state when micro is off/on.                     |
+| ACCEPTED & CONFIRMED    | When Extension is called accept & join conversation.|
+| FAILED                  | When the call is interrupted due to a problem.      |
+| ENDED    		            | When Extension is called hang up.                   |
+
 ```dart
   // STATUS: Handle call state
   @override
