@@ -26,6 +26,8 @@ dependencies:
   firebase_core: ^2.9.0
   firebase_messaging: ^14.4.0
   device_info_plus: ^8.2.0
+  eraser: ^2.0.1
+  shared_preferences: ^2.1.1
 
 dev_dependencies:
   flutter_test:

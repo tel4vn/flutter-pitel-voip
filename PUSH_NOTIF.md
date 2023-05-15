@@ -32,6 +32,17 @@ Download the certificate and install it into the Keychain Access app(download .c
 - In Tab Signing & Capabilities. Enable Push notifications & Background Modes
 
 ![push_img_5](assets/push_img/push_img_5.png)
+- Create APNs key and upload in firebase project. In your apple developer account.
+![apns_key](assets/push_img/apns_key.png)
+- Upload APNs key to your firebase
+    - Create new your IOS App in Firebase project.
+    ![ios_app](assets/push_img/ios_app.png)
+    - Download file .p8 to upload to firebase
+    ![download_apns_key](assets/push_img/download_apns_key.png)
+    - Select IOS app -> upload Apns key
+    ![upload_key_firebase](assets/push_img/upload_key_firebase.png)
+    - Fill information in upload Apns key popup
+    ![upload_key_firebase_popup](assets/push_img/upload_key_firebase_popup.png)
 
 #### Android
 Using FCM (Firebase Cloud Message) to handle push notification wake up app when app run on Background or Terminate
@@ -105,9 +116,17 @@ void _getDeviceToken() async {
     print(deviceToken);
   }
 ```
+- Get fcm token VoIP. 
+```dart
+void _getFcmToken() async {
+    final fcmToken = await PushVoipNotif.getFcmToken();
+    print(fcmToken);
+  }
+```
 - Register device token after user login success
 ```dart
 void _registerDeviceToken() async {
+    final fcmToken = await PushVoipNotif.getFCMToken();
     final response = await pitelClient.registerDeviceToken(
       deviceToken:
           '56357b057da09ba1c8a069c06a0f0232f7a1d80bf743f757c290a20b42dce55c',
@@ -116,6 +135,7 @@ void _registerDeviceToken() async {
       domain: 'mobile.tel4vn.com',
       extension: '101',
       appMode: kReleaseMode ? 'production' : 'dev', // check APNs certificate of Apple run production or dev mode
+      fcmToken: fcmToken,
     );
   }
 ```
@@ -140,17 +160,21 @@ void _registerDeviceToken() async {
 final pitelService = PitelServiceImpl();
 final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
   
-VoipNotifService.listenerEvent(
+@override
+  void initState() {
+    super.initState();
+    VoipNotifService.listenerEvent(
       callback: (event) {},
       onCallAccept: () {
-	// Hanlde success when user press Accept button
-	// Re-register to handle incoming call.
-	pitelService.setExtensionInfo(sipInfoData);
+        //! Re-register when user accept call
+        handleRegister();
       },
-      onCallDecline: () {
-	pitelCall.hangup();	// Hanlde decline when user press Decline button
+      onCallDecline: () {},
+      onCallEnd: () {
+        pitelCall.hangup();
       },
     );
+  }
 ```
 
 ## How to test

@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:eraser/eraser.dart';
 
 import 'android_connection_service.dart';
 
@@ -26,14 +27,7 @@ class PushNotifAndroid {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
-        uuid: message.messageId ?? '',
-        nameCaller: message.data['nameCaller'] ?? '',
-        avatar: message.data['avatar'] ?? '',
-        phoneNumber: message.data['phoneNumber'] ?? '',
-        appName: message.data['appName'] ?? '',
-        backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
-      ));
+      handleNotification(message);
     });
   }
 
@@ -54,14 +48,36 @@ class PushNotifAndroid {
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
-      uuid: message.messageId ?? '',
-      nameCaller: message.data['nameCaller'] ?? '',
-      avatar: message.data['avatar'] ?? '',
-      phoneNumber: message.data['phoneNumber'] ?? '',
-      appName: message.data['appName'] ?? '',
-      backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
-    ));
+    handleNotification(message);
+  }
+
+  static Future<void> handleNotification(RemoteMessage message) async {
+    switch (message.data['callType']) {
+      case "CANCEL_ALL":
+        FlutterCallkitIncoming.endAllCalls();
+        Eraser.clearAllAppNotifications();
+        break;
+      case "CALL":
+        AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
+          uuid: message.messageId ?? '',
+          nameCaller: message.data['nameCaller'] ?? '',
+          avatar: message.data['avatar'] ?? '',
+          phoneNumber: message.data['phoneNumber'] ?? '',
+          appName: message.data['appName'] ?? '',
+          backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
+        ));
+        break;
+      default:
+        AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
+          uuid: message.messageId ?? '',
+          nameCaller: message.data['nameCaller'] ?? '',
+          avatar: message.data['avatar'] ?? '',
+          phoneNumber: message.data['phoneNumber'] ?? '',
+          appName: message.data['appName'] ?? '',
+          backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
+        ));
+        break;
+    }
   }
 }
 
@@ -77,5 +93,10 @@ class PushVoipNotif {
         ? await PushNotifAndroid.getDeviceToken()
         : await VoipPushIOS.getVoipDeviceToken();
     return deviceToken;
+  }
+
+  static Future<String> getFCMToken() async {
+    final fcmToken = await PushNotifAndroid.getDeviceToken();
+    return fcmToken;
   }
 }

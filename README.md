@@ -22,10 +22,9 @@ Add pubspec.yaml:
 ```pubspec.yaml
 plugin_pitel:
     git:
-      url: https://{{Personal Access Token}}@github.com/tel4vn/flutter-pitel-voip.git
-      ref: main # branch name
+      url: https://github.com/tel4vn/flutter-pitel-voip.git
+      ref: 1.0.1 # branch name
 ```
-[Create Personal Access Token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 2. Get package
 ```
@@ -101,7 +100,16 @@ import 'package:plugin_pitel/services/sip_info_data.dart';
 - Create 1 button to fill data to register extension.
 ```dart
 ElevatedButton(
-        onPressed: () {
+        onPressed: () asyns {
+          final fcmToken = await PushVoipNotif.getFCMToken();
+          final pnPushParams = PnPushParams(
+            pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
+            pnParam: Platform.isAndroid
+                ? '${bundleId}' // Example com.company.app
+                : '${apple_team_id}.${bundleId}.voip', // Example com.company.app
+            pnPrid: '${deviceToken}',
+            fcmToken: fcmToken,
+          );
           final sipInfo = SipInfoData.fromJson({
             "authPass": "${Password}",
             "registerServer": "${Domain}",
@@ -119,7 +127,7 @@ ElevatedButton(
           });
 
           final pitelClient = PitelServiceImpl();
-          pitelClient.setExtensionInfo(sipInfo);
+          pitelClient.setExtensionInfo(sipInfoData, pnPushParams);
         },
         child: const Text("Register"),),
 ```
@@ -204,7 +212,7 @@ ElevatedButton(
       context.pushNamed(AppRoute.callScreen.name);
     }
     //! Handle lock screen in IOS
-    if (!lockScreen) {
+    if (!lockScreen && Platform.isIOS) {
       context.pushNamed(AppRoute.callScreen.name);
     }
   }
