@@ -68,32 +68,31 @@ class PushNotifAndroid {
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
+    inspect(message);
     switch (message.data['callType']) {
       case "CANCEL_ALL":
+      case "CANCEL_GROUP":
         FlutterCallkitIncoming.endAllCalls();
         Eraser.clearAllAppNotifications();
         break;
       case "CALL":
-        AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
-          uuid: message.messageId ?? '',
-          nameCaller: message.data['nameCaller'] ?? '',
-          avatar: message.data['avatar'] ?? '',
-          phoneNumber: message.data['phoneNumber'] ?? '',
-          appName: message.data['appName'] ?? '',
-          backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
-        ));
+        handleShowCallKit(message);
         break;
       default:
-        AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
-          uuid: message.messageId ?? '',
-          nameCaller: message.data['nameCaller'] ?? '',
-          avatar: message.data['avatar'] ?? '',
-          phoneNumber: message.data['phoneNumber'] ?? '',
-          appName: message.data['appName'] ?? '',
-          backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
-        ));
+        handleShowCallKit(message);
         break;
     }
+  }
+
+  static void handleShowCallKit(RemoteMessage message) {
+    AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
+      uuid: message.messageId ?? '',
+      nameCaller: message.data['nameCaller'] ?? '',
+      avatar: message.data['avatar'] ?? '',
+      phoneNumber: message.data['phoneNumber'] ?? '',
+      appName: message.data['appName'] ?? '',
+      backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
+    ));
   }
 
   static Future<void> registerWhenReceiveNotif() async {
