@@ -33,11 +33,6 @@ class PushNotifAndroid {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      //! WARNING: solution 2
-      // if (message.data['call_status'] == "REGISTER") {
-      //   await registerWhenReceiveNotif();
-      //   return;
-      // }
       handleNotification(message);
     });
   }
@@ -60,16 +55,14 @@ class PushNotifAndroid {
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     handleNotification(message);
-    //! WARNING: solution 2
-    // if (message.data['call_status'] == "REGISTER") {
-    //   await registerWhenReceiveNotif();
-    //   return;
-    // }
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
     inspect(message);
     switch (message.data['callType']) {
+      case "RE_REGISTER":
+        await registerWhenReceiveNotif();
+        break;
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
         FlutterCallkitIncoming.endAllCalls();
