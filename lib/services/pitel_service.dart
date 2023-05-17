@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:plugin_pitel/component/pitel_call_state.dart';
 import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
@@ -30,11 +32,11 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     PnPushParams pnPushParams,
   ) async {
     //! WARNING: solution 2
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final sipInfoEncode = jsonEncode(sipInfoData);
-    // final pnPushParamsEncode = jsonEncode(pnPushParams);
-    // await prefs.setString("SIP_INFO_DATA", sipInfoEncode);
-    // await prefs.setString("PN_PUSH_PARAMS", pnPushParamsEncode);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final sipInfoEncode = jsonEncode(sipInfoData);
+    final pnPushParamsEncode = jsonEncode(pnPushParams);
+    await prefs.setString("SIP_INFO_DATA", sipInfoEncode);
+    await prefs.setString("PN_PUSH_PARAMS", pnPushParamsEncode);
     this.sipInfoData = sipInfoData;
     pitelClient.setExtensionInfo(sipInfoData.toGetExtensionResponse());
     pitelClient.registerSipWithoutFCM(pnPushParams);
