@@ -14,25 +14,26 @@ class CallPageWidget extends StatefulWidget {
     Key? key,
     this.receivedBackground = false,
     required this.goBack,
+    required this.callState,
   }) : super(key: key);
 
   final VoidCallback goBack;
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final bool receivedBackground;
+  final PitelCallStateEnum callState;
 
   @override
   State<CallPageWidget> createState() => _MyCallPageWidget();
 }
 
 class _MyCallPageWidget extends State<CallPageWidget>
-    with WidgetsBindingObserver
     implements SipPitelHelperListener {
   PitelCall get pitelCall => widget._pitelCall;
 
   bool _speakerOn = false;
-  PitelCallStateEnum _state = PitelCallStateEnum.NONE;
   bool calling = false;
   bool _isBacked = false;
+  PitelCallStateEnum _state = PitelCallStateEnum.NONE;
 
   bool get voiceonly => pitelCall.isVoiceOnly();
 
@@ -44,31 +45,11 @@ class _MyCallPageWidget extends State<CallPageWidget>
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
     pitelCall.addListener(this);
+    _state = widget.callState;
     handleCall();
     if (voiceonly) {
       _initRenderers();
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      if (!pitelCall.isConnected || !pitelCall.isHaveCall) {
-        widget.goBack();
-      }
-      if (pitelCall.direction == null && _state == PitelCallStateEnum.NONE) {
-        widget.goBack();
-      }
     }
   }
 
@@ -116,10 +97,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
     if (Platform.isAndroid) {
       Wakelock.disable();
     }
-  }
-
-  void _handleAccept() {
-    pitelCall.answer();
   }
 
   void _toggleSpeaker() {
@@ -175,16 +152,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
       case PitelCallStateEnum.PROGRESS:
         if (direction == 'OUTGOING') {
           basicActions = [hangupBtn];
-        } else {
-          basicActions = [
-            ActionButton(
-              title: "Accept",
-              fillColor: Colors.green,
-              icon: Icons.phone,
-              onPressed: () => _handleAccept(),
-            ),
-            hangupBtn
-          ];
         }
         break;
       case PitelCallStateEnum.STREAM:
@@ -200,13 +167,10 @@ class _MyCallPageWidget extends State<CallPageWidget>
         advanceActions = _renderAdvanceAction();
         basicActions = [hangupBtn];
         break;
-      // case PitelCallStateEnum.FAILED:
-      //   break;
       case PitelCallStateEnum.ENDED:
         basicActions = [hangupBtnInactive];
         break;
       default:
-        debugPrint('Other state => $_state');
         break;
     }
 
