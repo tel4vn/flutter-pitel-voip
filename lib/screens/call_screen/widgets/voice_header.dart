@@ -8,16 +8,18 @@ class VoiceHeader extends StatelessWidget {
     required this.height,
     required this.remoteIdentity,
     required this.direction,
+    required this.txtDirection,
   }) : super(key: key);
 
   final bool voiceonly;
   final double height;
   final String? remoteIdentity;
   final String? direction;
+  final String? txtDirection;
 
   @override
   Widget build(BuildContext context) {
-    var directionDisplay = '$direction...';
+    var directionDisplay = '${txtDirection ?? direction}...';
 
     return Positioned(
       top: voiceonly ? 60 : 6,

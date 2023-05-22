@@ -15,12 +15,24 @@ class CallPageWidget extends StatefulWidget {
     this.receivedBackground = false,
     required this.goBack,
     required this.callState,
+    required this.txtMute,
+    required this.txtUnMute,
+    required this.txtSpeaker,
+    required this.txtOutgoing,
+    required this.txtIncoming,
+    this.textStyle,
   }) : super(key: key);
 
   final VoidCallback goBack;
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final bool receivedBackground;
   final PitelCallStateEnum callState;
+  final String txtMute;
+  final String txtUnMute;
+  final String txtSpeaker;
+  final String txtOutgoing;
+  final String txtIncoming;
+  final TextStyle? textStyle;
 
   @override
   State<CallPageWidget> createState() => _MyCallPageWidget();
@@ -113,14 +125,16 @@ class _MyCallPageWidget extends State<CallPageWidget>
   List<Widget> _renderAdvanceAction() {
     return <Widget>[
       IconTextButton(
-        textDisplay: pitelCall.audioMuted ? 'Unmute' : 'Mute',
+        textDisplay: pitelCall.audioMuted ? widget.txtUnMute : widget.txtMute,
+        textStyle: widget.textStyle,
         icon: pitelCall.audioMuted ? Icons.mic_off : Icons.mic,
         onPressed: () {
           pitelCall.mute(callId: _callId);
         },
       ),
       IconTextButton(
-        textDisplay: 'Speaker',
+        textDisplay: widget.txtSpeaker,
+        textStyle: widget.textStyle,
         icon: _speakerOn ? Icons.volume_up : Icons.volume_off,
         onPressed: () => _toggleSpeaker(),
       ),
@@ -244,12 +258,18 @@ class _MyCallPageWidget extends State<CallPageWidget>
               height: height,
               remoteIdentity: remoteIdentity ?? 'Something went wrong',
               direction: direction ?? 'Please go back',
+              txtDirection: direction == 'OUTGOING'
+                  ? widget.txtOutgoing
+                  : widget.txtIncoming,
             )
           : VoiceHeader(
               voiceonly: voiceonly,
               height: height,
               remoteIdentity: "Waiting",
               direction: 'Incoming',
+              txtDirection: direction == 'OUTGOING'
+                  ? widget.txtOutgoing
+                  : widget.txtIncoming,
             ),
     ]);
 

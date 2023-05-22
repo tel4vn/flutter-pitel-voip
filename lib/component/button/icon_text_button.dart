@@ -4,12 +4,14 @@ class IconTextButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
   final String textDisplay;
+  final TextStyle? textStyle;
 
   const IconTextButton({
     Key? key,
     required this.icon,
     required this.onPressed,
     required this.textDisplay,
+    this.textStyle,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,10 @@ class IconTextButton extends StatelessWidget {
           icon: Icon(icon),
           onPressed: onPressed,
         ),
-        Text(textDisplay)
+        Text(
+          textDisplay,
+          style: textStyle,
+        )
       ],
     );
   }
