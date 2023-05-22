@@ -1,19 +1,23 @@
 ##### plugin_pitel
+
 # Integrate Voip call to your project
 
 [![N|Solid](https://documents.tel4vn.com/img/pitel-logo.png)](https://documents.tel4vn.com/)
 
-```plugin_pitel``` is package support for voip call.
+`plugin_pitel` is package support for voip call.
 
 ## Demo
+
 ![Register extension](assets/images/pitel_img_1.png)
 ![call](assets/images/pitel_img_call.png)
 
-## Pitel Connect Flow 
-When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call. 
+## Pitel Connect Flow
+
+When user make call from Pitel Connect app, Pitel Server pushes a notification for all user login (who receives the call). When user "Accept" call, extension will re-register to receive call.
 ![Pitel Connect Flow](assets/images/pitel_connect_flow.png)
 
 ## Features
+
 - Register Extension
 - Call
 - Hangup
@@ -21,25 +25,35 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 - Turn on/of speaker
 
 ## Installation
-1. Install Packages 
-Add pubspec.yaml:
+
+1. Install Packages
+   Add pubspec.yaml:
+
 ```pubspec.yaml
 plugin_pitel:
     git:
       url: https://github.com/tel4vn/flutter-pitel-voip.git
       ref: 1.0.2 # branch name
 ```
+
 2. Get package
+
 ```
 flutter pub get
 ```
+
 3. Import
+
 ```
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
 ```
+
 4. Configure Project
+
 #### Android:
-- In file ```android/app/src/main/AndroidManifest.xml```
+
+- In file `android/app/src/main/AndroidManifest.xml`
+
 ```xml
  <manifest...>
     ...
@@ -55,7 +69,9 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 ```
 
 #### IOS
-- Request permission in file ```Info.plist```
+
+- Request permission in file `Info.plist`
+
 ```
 <key>NSCameraUsageDescription</key>
 <string>This app needs camera access to scan QR codes</string>
@@ -70,54 +86,102 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 	<string>voip</string>
 </array>
 ```
-- Make sure platform ios ```12.0``` in ```Podfile```
+
+- Make sure platform ios `12.0` in `Podfile`
+
 ```
 platform :ios, '12.0'
 ```
-5. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
 
-Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
+5. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
+   > **Note**
+   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
+
+## Example
+
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit)
 
 ## Usage
-#### How to use call screen.
-[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/call_screen/call_screen.dart)
+
+- In file `app.dart`, listen incoming call
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
+
+> Note: handleRegisterCall, handleRegister in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
+
 ```dart
-import 'package:flutter/material.dart';
-import 'package:plugin_pitel/flutter_pitel_voip.dart';
-class CallPage extends StatelessWidget {
-  const CallPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return CallScreen(
-      goBack: () {
-        // Call your go back function in here
+void initState() {
+    super.initState();
+    VoipNotifService.listenerEvent(
+      callback: (event) {},
+      onCallAccept: () {
+        //! Re-register when user accept call, please check example above
+        handleRegisterCall();
       },
-      bgColor: Colors.cyan,
+      onCallDecline: () {},
+      onCallEnd: () {
+        pitelCall.hangup();
+      },
     );
   }
-}
 ```
-#### Implement SipPitelHelperListener in your Home screen,
-In your Home screen, please implement SipPitelHelperListener to use plugin_pitel.[Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/home/home_screen.dart)
+
+Wrap MaterialApp with PitelVoip widget
+
 ```dart
-class HomeScreen extends StatefulWidget {
-  final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
-  HomeScreen({Key? key}) : super(key: key);
+Widget build(BuildContext context) {
+    return PitelVoip(                           // Wrap with PitelVoip
+      handleRegister: handleRegister,           // Handle register
+      child: MaterialApp.router(
+        ...
+      ),
+    );
+  }
+```
 
-  @override
-  State<HomeScreen> createState() => _MyHomeScreen();
-}
+#### Properties
 
+| Prop          | Description               | Default |
+| ------------- | ------------------------- | ------- |
+| onCallAccept  | Accepted an incoming call | () {}   |
+| onCallDecline | Decline an incoming call  | () {}   |
+| onCallEnd     | End an incoming call      | () {}   |
+
+- In file `home_screen.dart`.
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart).
+  Add WidgetsBindingObserver to handle AppLifecycleState change
+
+```dart
+...
 class _MyHomeScreen extends State<HomeScreen>
-    implements SipPitelHelperListener {    // Implement SipPitelHelperListener in here
-    PitelClient pitelClient = PitelClient.getInstance();
-    PitelCall get pitelCall => widget._pitelCall;
+    with WidgetsBindingObserver {           // add WidgetsBindingObserver
+
+    @override
+    initState() {
+        super.initState();
+        WidgetsBinding.instance.addObserver(this);      // Add this line
+    }
+    @override
+    void dispose() {
+        WidgetsBinding.instance.removeObserver(this);   // Add this line
+        super.dispose();
+    }
+    ...
+    @override
+    void didChangeAppLifecycleState(AppLifecycleState state) async {   // Add this function
+        super.didChangeAppLifecycleState(state);
+        if (state == AppLifecycleState.inactive) {
+          final isLock = await isLockScreen();
+          setState(() {
+            lockScreen = isLock ?? false;
+          });
+        }
+    }
     ...
 }
 ```
-#### Register extension
-Register extension from data of Tel4vn provide. Example: 101, 102,…
-- Create 1 button to fill data to register extension.
+
+Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 button to fill data to register extension.
+
 ```dart
 ElevatedButton(
         onPressed: () asyns {
@@ -151,150 +215,48 @@ ElevatedButton(
         },
         child: const Text("Register"),),
 ```
-- Register status
-```dart
-@override
-  void registrationStateChanged(PitelRegistrationState state) {
-    switch (state.state) {
-      case PitelRegistrationStateEnum.REGISTRATION_FAILED:
-        goBack();
-        break;
-      case PitelRegistrationStateEnum.NONE:
-      case PitelRegistrationStateEnum.UNREGISTERED:
-      case PitelRegistrationStateEnum.REGISTERED:
-        setState(() {
-          receivedMsg = 'REGISTERED';
-        });
-        break;
-    }
-  }
-```
 
-#### Initialize call screen
-- Initialize state & listener function
-```dart
-    @override
-    initState() {
-        super.initState();
-        pitelCall.addListener(this);
-        _initRenderers();
-    }
-    
-    // INIT: Initialize Pitel
-    void _initRenderers() async {
-        await pitelCall.initializeLocal();
-        await pitelCall.initializeRemote();
-    }
-```
-- Dispose & Deactive function
-```dart
-  // Dispose pitelcall
-  void _disposeRenderers() {
-    pitelCall.disposeLocalRenderer();
-    pitelCall.disposeRemoteRenderer();
-  }
-  // Deactive When call end
-  @override
-  deactivate() {
-    super.deactivate();
-    _handleHangup();
-    pitelCall.removeListener(this);
-    _disposeRenderers();
-  }
-```
-- Hangup function
-```dart
-  // Handle hangup and reset timer
-  pitelCall.hangup();
-```
-- Accept call function
-```dart
-  // Handle accept call
-  pitelCall.answer();
-```
-- onCallInitiated: start outgoing call, this function will set current call id & navigate to call screen
-```dart
-  @override
-  void onCallInitiated(String callId) {
-    pitelCall.setCallCurrent(callId);
-    context.pushNamed(AppRoute.callScreen.name);
-  }
-```
-- onCallReceived: this function will active when have incoming call.
-```dart
-  @override
-  void onCallReceived(String callId) async {
-    pitelCall.setCallCurrent(callId);
-    if (Platform.isIOS) {
-      pitelCall.answer();
-    }
-    if (Platform.isAndroid) {
-      context.pushNamed(AppRoute.callScreen.name);
-    }
-    //! Handle lock screen in IOS
-    if (!lockScreen && Platform.isIOS) {
-      context.pushNamed(AppRoute.callScreen.name);
-    }
-  }
-```
-- Listen state function
-
-When call begin, this callStateChanged function will return state of call.
-| PitelCallStateEnum      | Description                                         |
-| ----------------------  | ----------------------                              |
-| NONE                    | Call has not been made.                             |
-| PROGRESS                | Initiate call.                                      |
-| CONNECTING              | Connecting Extension to call.                       |
-| STREAM                  | Conversation is in progress.                        |
-| MUTED/UNMUTED           | Get state when micro is off/on.                     |
-| ACCEPTED & CONFIRMED    | When Extension is called accept & join conversation.|
-| FAILED                  | When the call is interrupted due to a problem.      |
-| ENDED    		            | When Extension is called hang up.                   |
+- In file `call_screen.dart`
+  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/call_screen/call_screen.dart)
 
 ```dart
-  // STATUS: Handle call state
+import 'package:flutter/material.dart';
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
+class CallPage extends StatelessWidget {
+  const CallPage({super.key});
   @override
-  void callStateChanged(String callId, PitelCallState callState) {
-    setState(() {
-        // setState for callState
-      _state = callState.state;
-    });
-    switch (callState.state) {
-      case PitelCallStateEnum.HOLD:
-      case PitelCallStateEnum.UNHOLD:
-        break;
-      case PitelCallStateEnum.MUTED:
-      case PitelCallStateEnum.UNMUTED:
-        break;
-      case PitelCallStateEnum.STREAM:
-        break;
-      case PitelCallStateEnum.ENDED:
-      case PitelCallStateEnum.FAILED:
-        _backToDialPad();
-        break;
-      case PitelCallStateEnum.CONNECTING:
-      case PitelCallStateEnum.PROGRESS:
-      case PitelCallStateEnum.ACCEPTED:
-      case PitelCallStateEnum.CONFIRMED:
-      case PitelCallStateEnum.NONE:
-      case PitelCallStateEnum.CALL_INITIATION:
-      case PitelCallStateEnum.REFER:
-        break;
-    }
+  Widget build(BuildContext context) {
+    return CallScreen(
+      goBack: () {
+        // Call your go back function in here
+      },
+      bgColor: Colors.cyan,
+    );
   }
+}
 ```
 
-## Example
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit)
+#### Properties
+
+| Prop        | Description                          | Type      |
+| ----------- | ------------------------------------ | --------- |
+| txtMute     | Text display of micro mute           | String    |
+| txtUnMute   | Text display of micro unmute         | String    |
+| txtSpeaker  | Text display speaker                 | String    |
+| txtOutgoing | Text display direction outgoing call | String    |
+| txtIncoming | Text display direction incoming call | String    |
+| textStyle   | Custom text style                    | TextStyle |
 
 ## How to test
+
 Using tryit to test voip call connection & conversation
 Link: https://tryit.jssip.net/
-Setting: 
+Setting:
+
 1. Access to link https://tryit.jssip.net/
 2. Enter extension: example 102
 3. Click Setting icon
 4. Enter information to input field
-![tryit](assets/images/pitel_img_3.png)
+   ![tryit](assets/images/pitel_img_3.png)
 5. Save
 6. Click icon -> to connect
