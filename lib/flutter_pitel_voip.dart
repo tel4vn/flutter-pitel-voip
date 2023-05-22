@@ -28,3 +28,4 @@ export './sip/src/utils.dart';
 // Screen
 export './screens/call_screen/call_screen.dart';
 export './screens/pitel_voip_call/pitel_voip_call.dart';
+export './screens/pitel_voip/pitel_voip.dart';
