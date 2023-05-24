@@ -79,7 +79,6 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 <string>Use microphone</string>
 <key>UIBackgroundModes</key>
 <array>
-	<string>external-accessory</string>
 	<string>fetch</string>
 	<string>processing</string>
 	<string>remote-notification</string>
@@ -103,34 +102,16 @@ Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-
 
 ## Usage
 
-- In file `app.dart`, listen incoming call
+- In file `app.dart`, Wrap MaterialApp with PitelVoip widget
   Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
 
 > Note: handleRegisterCall, handleRegister in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
 
 ```dart
-void initState() {
-    super.initState();
-    VoipNotifService.listenerEvent(
-      callback: (event) {},
-      onCallAccept: () {
-        //! Re-register when user accept call, please check example above
-        handleRegisterCall();
-      },
-      onCallDecline: () {},
-      onCallEnd: () {
-        pitelCall.hangup();
-      },
-    );
-  }
-```
-
-Wrap MaterialApp with PitelVoip widget
-
-```dart
 Widget build(BuildContext context) {
     return PitelVoip(                           // Wrap with PitelVoip
       handleRegister: handleRegister,           // Handle register
+      handleRegisterCall: handleRegisterCall,   // Handle register call
       child: MaterialApp.router(
         ...
       ),
@@ -138,47 +119,41 @@ Widget build(BuildContext context) {
   }
 ```
 
-#### Properties
-
-| Prop          | Description               | Default |
-| ------------- | ------------------------- | ------- |
-| onCallAccept  | Accepted an incoming call | () {}   |
-| onCallDecline | Decline an incoming call  | () {}   |
-| onCallEnd     | End an incoming call      | () {}   |
-
 - In file `home_screen.dart`.
   Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart).
   Add WidgetsBindingObserver to handle AppLifecycleState change
 
 ```dart
 ...
-class _MyHomeScreen extends State<HomeScreen>
-    with WidgetsBindingObserver {           // add WidgetsBindingObserver
-
-    @override
-    initState() {
-        super.initState();
-        WidgetsBinding.instance.addObserver(this);      // Add this line
-    }
-    @override
-    void dispose() {
-        WidgetsBinding.instance.removeObserver(this);   // Add this line
-        super.dispose();
-    }
-    ...
-    @override
-    void didChangeAppLifecycleState(AppLifecycleState state) async {   // Add this function
-        super.didChangeAppLifecycleState(state);
-        if (state == AppLifecycleState.inactive) {
-          final isLock = await isLockScreen();
-          setState(() {
-            lockScreen = isLock ?? false;
-          });
-        }
-    }
-    ...
-}
+Widget build(BuildContext context) {
+    return PitelVoipCall(                       // Wrap with PitelVoipCall
+        goBack: () {
+            // go back function
+        },
+        goToCall: () {
+            // go to call screen
+        },
+        onCallState: (callState) {
+            // Set callState to your global state management. Example: bloc, getX, riverpod,..
+            // Example riverpod
+            // ref.read(callStateController.notifier).state = callState;
+        },
+        onRegisterState: (String registerState) {
+            // get Register Status in here
+        },
+      child: ...,
+    );
+  }
 ```
+
+#### Properties
+
+| Prop        | Description                   | Type                      | Default  |
+| ----------- | ----------------------------- | ------------------------- | -------- |
+| goBack      | goback navigation             | () {}                     | Required |
+| goToCall    | navigation, go to call screen | () {}                     | Required |
+| onCallState | get extension register status | (String registerState) {} | Required |
+| child       | child widget                  | Widget                    | Required |
 
 Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 button to fill data to register extension.
 
@@ -238,14 +213,16 @@ class CallPage extends StatelessWidget {
 
 #### Properties
 
-| Prop        | Description                          | Type      |
-| ----------- | ------------------------------------ | --------- |
-| txtMute     | Text display of micro mute           | String    |
-| txtUnMute   | Text display of micro unmute         | String    |
-| txtSpeaker  | Text display speaker                 | String    |
-| txtOutgoing | Text display direction outgoing call | String    |
-| txtIncoming | Text display direction incoming call | String    |
-| textStyle   | Custom text style                    | TextStyle |
+| Prop        | Description                          | Type      | Default  |
+| ----------- | ------------------------------------ | --------- | -------- |
+| goBack      | go back navigation                   | () {}     | Required |
+| bgColor     | background color                     | Color     | Required |
+| txtMute     | Text display of micro mute           | String    | Optional |
+| txtUnMute   | Text display of micro unmute         | String    | Optional |
+| txtSpeaker  | Text display speaker                 | String    | Optional |
+| txtOutgoing | Text display direction outgoing call | String    | Optional |
+| txtIncoming | Text display direction incoming call | String    | Optional |
+| textStyle   | Custom text style                    | TextStyle | Optional |
 
 ## How to test
 
