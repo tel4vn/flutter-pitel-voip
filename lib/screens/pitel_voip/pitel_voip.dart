@@ -54,6 +54,11 @@ class _PitelVoipState extends State<PitelVoip> {
         if (Platform.isAndroid && state == AppState.resumed) {
           widget.handleRegister();
         }
+        if (Platform.isAndroid && state == AppState.resumed) {
+          if (!pitelCall.isConnected) {
+            widget.handleRegister();
+          }
+        }
       },
       child: widget.child,
     );
