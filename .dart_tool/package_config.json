@@ -135,9 +135,9 @@
     },
     {
       "name": "flutter_callkit_incoming",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_callkit_incoming-1.0.3+3",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_callkit_incoming-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "flutter_lints",
@@ -482,7 +482,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-05-17T10:57:59.245751Z",
+  "generated": "2023-05-25T09:28:26.414701Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }

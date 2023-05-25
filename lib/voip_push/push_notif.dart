@@ -66,7 +66,7 @@ class PushNotifAndroid {
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
         FlutterCallkitIncoming.endAllCalls();
-        Eraser.clearAllAppNotifications();
+        // Eraser.clearAllAppNotifications();
         break;
       case "CALL":
         handleShowCallKit(message);

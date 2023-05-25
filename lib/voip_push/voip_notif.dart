@@ -13,53 +13,55 @@ class VoipNotifService {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
         switch (event!.event) {
-          case Event.ACTION_CALL_INCOMING:
-            // TODO: received an incoming call
-            break;
-          case Event.ACTION_CALL_START:
-            // TODO: started an outgoing call
-            // TODO: show screen calling in Flutter
-            break;
-          case Event.ACTION_CALL_ACCEPT:
+          case Event.actionCallAccept:
             if (onCallAccept != null) {
               onCallAccept();
             }
             break;
-          case Event.ACTION_CALL_DECLINE:
+          case Event.actionCallDecline:
             if (onCallDecline != null) {
               onCallDecline();
             }
             break;
-          case Event.ACTION_CALL_ENDED:
+          case Event.actionCallEnded:
             if (onCallEnd != null) {
               onCallEnd();
             }
             break;
-          case Event.ACTION_CALL_TIMEOUT:
-            // TODO: missed an incoming call
-            break;
-          case Event.ACTION_CALL_CALLBACK:
-            // TODO: only Android - click action `Call back` from missed call notification
-            break;
-          case Event.ACTION_CALL_TOGGLE_HOLD:
-            // TODO: only iOS
-            break;
-          case Event.ACTION_CALL_TOGGLE_MUTE:
-            // TODO: only iOS
-            break;
-          case Event.ACTION_CALL_TOGGLE_DMTF:
-            // TODO: only iOS
-            break;
-          case Event.ACTION_CALL_TOGGLE_GROUP:
-            // TODO: only iOS
-            break;
-          case Event.ACTION_CALL_TOGGLE_AUDIO_SESSION:
+          case Event.actionCallToggleAudioSession:
             if (swipeInLockscreen != null) {
               swipeInLockscreen();
             }
             break;
-          case Event.ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP:
-            // TODO: only iOS
+          case Event.actionCallTimeout:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallCallback:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallToggleHold:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallToggleMute:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallToggleDmtf:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallToggleGroup:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallCustom:
+            // TODO: Handle this case.
+            break;
+          case Event.actionDidUpdateDevicePushTokenVoip:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallIncoming:
+            // TODO: Handle this case.
+            break;
+          case Event.actionCallStart:
+            // TODO: Handle this case.
             break;
         }
         if (callback != null) {
