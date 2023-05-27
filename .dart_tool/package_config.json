@@ -45,7 +45,7 @@
     },
     {
       "name": "dart_webrtc",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.12",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.15",
       "packageUri": "lib/",
       "languageVersion": "2.13"
     },
@@ -159,7 +159,7 @@
     },
     {
       "name": "flutter_webrtc",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.18",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.22",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -459,7 +459,7 @@
     },
     {
       "name": "webrtc_interface",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/webrtc_interface-1.0.10",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/webrtc_interface-1.0.11",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -482,7 +482,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-05-17T10:57:59.245751Z",
+  "generated": "2023-05-27T10:52:19.613581Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }
