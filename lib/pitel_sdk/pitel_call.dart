@@ -5,6 +5,7 @@ import 'package:plugin_pitel/component/pitel_ua_helper.dart';
 import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/sip/sip_ua.dart';
+import 'dart:developer';
 
 class PitelCall implements SipUaHelperListener {
   final PitelLog _logger = PitelLog(tag: 'PitelCall');
@@ -118,10 +119,14 @@ class PitelCall implements SipUaHelperListener {
             }
             break;
           case 'INCOMING':
+            inspect(_sipPitelHelperListener);
+            print('================callId=======${call.id}=========');
+
             for (var element in _sipPitelHelperListener) {
               if (isBusy) {
                 _releaseCall(callId: call.id);
               } else {
+                print('=============element==$element=================');
                 element.onCallReceived(call.id!);
               }
             }
@@ -176,10 +181,10 @@ class PitelCall implements SipUaHelperListener {
   void _releaseCall({String? callId}) {
     _audioMuted = false;
     if (callId == null) {
-      _sipuaHelper.findCall(_callIdCurrent!)?.hangup();
+      _sipuaHelper.findCall(_callIdCurrent!)!.hangup({'status_code': 603});
       setCallCurrent(null);
     } else {
-      _sipuaHelper.findCall(callId)?.hangup();
+      _sipuaHelper.findCall(callId)!.hangup({'status_code': 603});
       setCallCurrent(null);
     }
   }

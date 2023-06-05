@@ -20,12 +20,12 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
   }
 
   @override
-  bool registerSipWithoutFCM(PnPushParams pnPushParams) {
+  Future<PitelSettings> registerSipWithoutFCM(PnPushParams pnPushParams) {
     return pitelClient.registerSipWithoutFCM(pnPushParams);
   }
 
   @override
-  Future<void> setExtensionInfo(
+  Future<PitelSettings> setExtensionInfo(
     SipInfoData sipInfoData,
     PnPushParams pnPushParams,
   ) async {
@@ -37,7 +37,8 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     await prefs.setString("PN_PUSH_PARAMS", pnPushParamsEncode);
     this.sipInfoData = sipInfoData;
     pitelClient.setExtensionInfo(sipInfoData.toGetExtensionResponse());
-    pitelClient.registerSipWithoutFCM(pnPushParams);
+    final pitelSetting = await pitelClient.registerSipWithoutFCM(pnPushParams);
+    return pitelSetting;
   }
 
   @override

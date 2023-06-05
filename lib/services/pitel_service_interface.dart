@@ -1,3 +1,5 @@
+import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
+
 import 'models/pn_push_params.dart';
 import 'sip_info_data.dart';
 
@@ -6,7 +8,7 @@ abstract class PitelService {
     SipInfoData sipInfoData,
     PnPushParams pnPushParams,
   );
-  bool registerSipWithoutFCM(
+  Future<PitelSettings> registerSipWithoutFCM(
     PnPushParams pnPushParams,
   );
 }

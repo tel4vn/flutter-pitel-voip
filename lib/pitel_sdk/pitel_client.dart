@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -13,6 +15,7 @@ import 'package:plugin_pitel/services/models/pn_push_params.dart';
 import 'package:plugin_pitel/sip/src/sanity_check.dart';
 import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
 import 'package:plugin_pitel/voip_push/device_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pitel_profile.dart';
 
@@ -76,7 +79,7 @@ class PitelClient {
     }
   }
 
-  bool registerSipWithoutFCM(PnPushParams pnPushParams) {
+  Future<PitelSettings> registerSipWithoutFCM(PnPushParams pnPushParams) async {
     final settings = PitelSettings();
 
     Map<String, String> _wsExtraHeaders = {
@@ -99,8 +102,14 @@ class PitelClient {
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
 
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final pitelSetting = jsonEncode(settings);
+    // await prefs.setString("PITEL_SETTING", pitelSetting);
+
+    inspect(settings);
+
     pitelCall.register(settings);
-    return true;
+    return settings;
   }
 
   void setExtensionInfo(GetExtensionResponse extensionResponse) {
