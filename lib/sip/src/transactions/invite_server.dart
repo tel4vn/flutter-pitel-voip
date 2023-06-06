@@ -48,6 +48,7 @@ class InviteServerTransaction extends TransactionBase {
 
   void timer_I() {
     stateChanged(TransactionState.TERMINATED);
+    ua!.destroyTransaction(this);
   }
 
   // RFC 6026 7.1.
