@@ -4,7 +4,7 @@ import 'models/pn_push_params.dart';
 import 'sip_info_data.dart';
 
 abstract class PitelService {
-  Future<void> setExtensionInfo(
+  Future<PitelSettings> setExtensionInfo(
     SipInfoData sipInfoData,
     PnPushParams pnPushParams,
   );

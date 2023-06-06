@@ -284,7 +284,6 @@ class PitelUA extends EventManager {
 
     if (_status == C.STATUS_USER_CLOSED) {
       logger.debug('UA already closed');
-
       return;
     }
 
