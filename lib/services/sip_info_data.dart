@@ -5,6 +5,7 @@ class SipInfoData {
   final String authPass;
   final String registerServer;
   final String outboundServer;
+  final int? port;
   final int userID;
   final int authID;
   final String accountName;
@@ -20,6 +21,7 @@ class SipInfoData {
       {required this.authPass,
       required this.registerServer,
       required this.outboundServer,
+      this.port,
       required this.userID,
       required this.authID,
       required this.accountName,
@@ -51,6 +53,7 @@ class SipInfoData {
         authID: data['authID'],
         registerServer: data['registerServer'],
         outboundServer: data['outboundServer'],
+        port: data['port'],
         accountName: data['accountName'],
         displayName: data['displayName'],
         dialPlan: data['dialPlan'],
@@ -66,6 +69,7 @@ class SipInfoData {
       'authPass': authPass,
       'registerServer': registerServer,
       'outboundServer': outboundServer,
+      'port': port,
       'userID': userID,
       'authID': authID,
       'accountName': accountName,
@@ -83,7 +87,7 @@ class SipInfoData {
     final sipServer = SipServer(
       id: 1,
       domain: registerServer,
-      port: 50061,
+      port: port ?? 0,
       outboundProxy: outboundServer,
       wss: wssUrl,
       transport: 0,
