@@ -801,7 +801,7 @@ class PitelUA extends EventManager {
   }
 
 // Transport connected event.
-  void onTransportConnect(Transport transport) {
+  void onTransportConnect(Transport transport) async {
     logger.debug('Transport connected');
     if (_status == C.STATUS_USER_CLOSED) {
       return;
@@ -812,6 +812,7 @@ class PitelUA extends EventManager {
     emit(EventSocketConnected(socket: transport.socket));
 
     if (_dynConfiguration!.register!) {
+      await Future.delayed(Duration(milliseconds: 200));
       _registrator.register();
     }
   }
