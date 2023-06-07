@@ -96,6 +96,24 @@ platform :ios, '12.0'
    > **Note**
    > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
 
+## Troubleshooting
+
+[Android only]: If you give a error flutter_webrtc when run app in android. Please update code in file
+
+```
+$HOME/.pub-cache/hosted/pub.dartlang.org/flutter_webrtc-{version}/android/build.gradle
+```
+
+```xml
+dependencies {
+  // Remove
+  // implementation 'com.github.webrtc-sdk:android:104.5112.03'
+
+  // Replace
+  implementation 'io.github.webrtc-sdk:android:104.5112.09'
+}
+```
+
 ## Example
 
 Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit)
@@ -105,7 +123,7 @@ Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
   Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
 
-> Note: handleRegisterCall, handleRegister in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
+> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
 
 ```dart
 Widget build(BuildContext context) {
@@ -134,7 +152,7 @@ Widget build(BuildContext context) {
             // go to call screen
         },
         onCallState: (callState) {
-            // Set callState to your global state management. Example: bloc, getX, riverpod,..
+            // IMPORTANT: Set callState to your global state management. Example: bloc, getX, riverpod,..
             // Example riverpod
             // ref.read(callStateController.notifier).state = callState;
         },
@@ -173,6 +191,7 @@ ElevatedButton(
             "authPass": "${Password}",
             "registerServer": "${Domain}",
             "outboundServer": "${Outbound Proxy}",
+            "port": PORT,
             "userID": UUser,                // Example 101
             "authID": UUser,                // Example 101
             "accountName": "${UUser}",      // Example 101
@@ -186,7 +205,10 @@ ElevatedButton(
           });
 
           final pitelClient = PitelServiceImpl();
-          pitelClient.setExtensionInfo(sipInfo, pnPushParams);
+          final pitelSetting = await pitelClient.setExtensionInfo(sipInfo, pnPushParams);
+          // IMPORTANT: Set pitelSetting to your global state management. Example: bloc, getX, riverpod,..
+          // Example riverpod
+          // ref.read(pitelSettingProvider.notifier).state = pitelSettingRes;
         },
         child: const Text("Register"),),
 ```
