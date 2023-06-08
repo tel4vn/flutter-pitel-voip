@@ -221,7 +221,7 @@ class Registrator {
             // If there are listeners, var the listening do the register call.
             if (!_ua!.hasListeners(EventRegistrationExpiring())) {
               //! WARNING: do not re-register when session expired time
-              register();
+              // register();
             } else {
               _ua!.emit(EventRegistrationExpiring());
             }
@@ -254,7 +254,7 @@ class Registrator {
               _expires = MIN_REGISTER_EXPIRES;
 
             // Attempt the registration again immediately.
-            register();
+            // register();
           } else {
             // This response MUST contain a Min-Expires header field.
             logger.debug(

@@ -102,12 +102,6 @@ class PitelClient {
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
 
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final pitelSetting = jsonEncode(settings);
-    // await prefs.setString("PITEL_SETTING", pitelSetting);
-
-    inspect(settings);
-
     pitelCall.register(settings);
     return settings;
   }
