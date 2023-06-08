@@ -73,8 +73,6 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 - Request permission in file `Info.plist`
 
 ```
-<key>NSCameraUsageDescription</key>
-<string>This app needs camera access to scan QR codes</string>
 <key>NSMicrophoneUsageDescription</key>
 <string>Use microphone</string>
 <key>UIBackgroundModes</key>
