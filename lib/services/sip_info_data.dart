@@ -87,7 +87,7 @@ class SipInfoData {
     final sipServer = SipServer(
       id: 1,
       domain: registerServer,
-      port: port ?? 0,
+      port: port ?? 5060,
       outboundProxy: outboundServer,
       wss: wssUrl,
       transport: 0,
