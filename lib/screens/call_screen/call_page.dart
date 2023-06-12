@@ -39,7 +39,6 @@ class CallPageWidget extends StatefulWidget {
 }
 
 class _MyCallPageWidget extends State<CallPageWidget>
-    with WidgetsBindingObserver
     implements SipPitelHelperListener {
   PitelCall get pitelCall => widget._pitelCall;
 
@@ -58,32 +57,11 @@ class _MyCallPageWidget extends State<CallPageWidget>
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     pitelCall.addListener(this);
     _state = widget.callState;
     handleCall();
     if (voiceonly) {
       _initRenderers();
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.resumed) {
-      if (!pitelCall.isConnected || !pitelCall.isHaveCall) {
-        widget.goBack();
-      }
-      if (pitelCall.direction == null && _state == PitelCallStateEnum.NONE) {
-        widget.goBack();
-      }
     }
   }
 
@@ -122,7 +100,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
         FlutterCallkitIncoming.endAllCalls();
       }
       _isBacked = true;
-      widget.goBack();
     }
   }
 
@@ -326,10 +303,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
         // _handelStreams(callState);
         break;
       case PitelCallStateEnum.ENDED:
-        _backToDialPad();
         break;
       case PitelCallStateEnum.FAILED:
-        _backToDialPad();
         break;
       case PitelCallStateEnum.CONNECTING:
       case PitelCallStateEnum.PROGRESS:

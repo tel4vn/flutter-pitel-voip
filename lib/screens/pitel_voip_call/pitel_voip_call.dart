@@ -26,25 +26,16 @@ class PitelVoipCall extends StatefulWidget {
 }
 
 class _MyPitelVoipCall extends State<PitelVoipCall>
-    with WidgetsBindingObserver
     implements SipPitelHelperListener {
   PitelCall get pitelCall => widget._pitelCall;
   PitelClient pitelClient = PitelClient.getInstance();
   String state = '';
-  bool lockScreen = false;
 
   @override
   initState() {
     super.initState();
     state = pitelCall.getRegisterState();
-    WidgetsBinding.instance.addObserver(this);
     _bindEventListeners();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 
   @override
@@ -61,25 +52,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     pitelCall.removeListener(this);
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.resumed:
-        setState(() {
-          lockScreen = false;
-        });
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        setState(() {
-          lockScreen = true;
-        });
-        break;
-    }
-  }
-
   // HANDLE: handle message if register status change
   @override
   void onNewMessage(PitelSIPMessageRequest msg) {}
@@ -89,9 +61,10 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     widget.onCallState(state.state);
     if (state.state == PitelCallStateEnum.ENDED) {
       FlutterCallkitIncoming.endAllCalls();
-      if (Platform.isIOS && lockScreen) {
-        widget.goBack();
-      }
+      widget.goBack();
+    }
+    if (state.state == PitelCallStateEnum.FAILED) {
+      widget.goBack();
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
