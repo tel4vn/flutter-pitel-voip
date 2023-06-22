@@ -114,7 +114,7 @@ dependencies {
 
 ## Example
 
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit)
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/feature/v1.0.2)
 
 ## Usage
 

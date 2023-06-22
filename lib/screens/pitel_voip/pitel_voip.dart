@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter/material.dart';
 import 'package:plugin_pitel/component/app_life_cycle/app_life_cycle.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
@@ -23,8 +23,10 @@ class PitelVoip extends StatefulWidget {
 }
 
 class _PitelVoipState extends State<PitelVoip> {
+  PitelClient pitelClient = PitelClient.getInstance();
+
   final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
-  bool haveCall = false;
+  bool isCall = false;
 
   @override
   void initState() {
@@ -32,9 +34,6 @@ class _PitelVoipState extends State<PitelVoip> {
     VoipNotifService.listenerEvent(
       callback: (event) {},
       onCallAccept: () {
-        setState(() {
-          haveCall = true;
-        });
         widget.handleRegisterCall();
       },
       onCallDecline: () {},
@@ -42,17 +41,36 @@ class _PitelVoipState extends State<PitelVoip> {
         pitelCall.hangup();
       },
     );
+    initRegister();
+  }
+
+  void initRegister() async {
+    isCall = true;
+    final List<dynamic> res = await FlutterCallkitIncoming.activeCalls();
+    if (Platform.isAndroid) {
+      widget.handleRegister();
+    }
+    if (res.isEmpty && Platform.isIOS) {
+      widget.handleRegister();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return AppLifecycleTracker(
-      didChangeAppState: (state) {
-        if (Platform.isIOS && state == AppState.resumed && !haveCall) {
-          widget.handleRegister();
-        }
-        if (Platform.isAndroid && state == AppState.resumed) {
-          widget.handleRegister();
+      didChangeAppState: (state) async {
+        if (Platform.isIOS) {
+          final List<dynamic> res = await FlutterCallkitIncoming.activeCalls();
+          if (state == AppState.resumed && res.isEmpty) {
+            if (!isCall) {
+              widget.handleRegister();
+            }
+          }
+          if (state == AppState.inactive || state == AppState.paused) {
+            setState(() {
+              isCall = false;
+            });
+          }
         }
         if (Platform.isAndroid && state == AppState.resumed) {
           if (!pitelCall.isConnected) {

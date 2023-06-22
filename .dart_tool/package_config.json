@@ -45,7 +45,7 @@
     },
     {
       "name": "dart_webrtc",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.15",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/dart_webrtc-1.0.11",
       "packageUri": "lib/",
       "languageVersion": "2.13"
     },
@@ -159,7 +159,7 @@
     },
     {
       "name": "flutter_webrtc",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.22",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.17",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -272,12 +272,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "platform_detect",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/platform_detect-2.0.7",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "plugin_platform_interface",
       "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.4",
       "packageUri": "lib/",
@@ -288,12 +282,6 @@
       "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/process-4.2.4",
       "packageUri": "lib/",
       "languageVersion": "2.14"
-    },
-    {
-      "name": "pub_semver",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/pub_semver-2.1.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
     },
     {
       "name": "random_string",
@@ -459,7 +447,7 @@
     },
     {
       "name": "webrtc_interface",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/webrtc_interface-1.0.11",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/webrtc_interface-1.0.10",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -482,7 +470,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-06-12T10:51:48.917846Z",
+  "generated": "2023-06-22T10:20:41.486325Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }

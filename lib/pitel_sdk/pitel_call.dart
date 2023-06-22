@@ -176,10 +176,10 @@ class PitelCall implements SipUaHelperListener {
   void _releaseCall({String? callId}) {
     _audioMuted = false;
     if (callId == null) {
-      _sipuaHelper.findCall(_callIdCurrent!)!.hangup({'status_code': 603});
+      _sipuaHelper.findCall(_callIdCurrent!)?.hangup({'status_code': 603});
       setCallCurrent(null);
     } else {
-      _sipuaHelper.findCall(callId)!.hangup({'status_code': 603});
+      _sipuaHelper.findCall(callId)?.hangup({'status_code': 603});
       setCallCurrent(null);
     }
   }
