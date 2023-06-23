@@ -212,7 +212,7 @@ ElevatedButton(
 ```
 
 - In file `call_screen.dart`
-  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/features/call_screen/call_screen.dart)
+  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/call_screen/call_page.dart)
 
 ```dart
 import 'package:flutter/material.dart';
