@@ -119,9 +119,9 @@ Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-
 ## Usage
 
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/app.dart)
 
-> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart)
+> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/app.dart)
 
 ```dart
 Widget build(BuildContext context) {
@@ -221,7 +221,12 @@ class CallPage extends StatelessWidget {
   const CallPage({super.key});
   @override
   Widget build(BuildContext context) {
+    // IMPORTANT: Get callState from your global state management. Example: bloc, getX, riverpod,..
+    // Example riverpod
+    // final callState = ref.watch(callStateController);
+
     return CallScreen(
+      callState: callState, // callState from state management you set before
       goBack: () {
         // Call your go back function in here
       },
