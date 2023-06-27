@@ -13,7 +13,6 @@ class CallPageWidget extends StatefulWidget {
   CallPageWidget({
     Key? key,
     this.receivedBackground = false,
-    required this.goBack,
     required this.callState,
     required this.txtMute,
     required this.txtUnMute,
@@ -23,7 +22,6 @@ class CallPageWidget extends StatefulWidget {
     this.textStyle,
   }) : super(key: key);
 
-  final VoidCallback goBack;
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final bool receivedBackground;
   final PitelCallStateEnum callState;

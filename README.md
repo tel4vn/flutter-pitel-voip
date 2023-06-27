@@ -164,12 +164,13 @@ Widget build(BuildContext context) {
 
 #### Properties
 
-| Prop        | Description                   | Type                      | Default  |
-| ----------- | ----------------------------- | ------------------------- | -------- |
-| goBack      | goback navigation             | () {}                     | Required |
-| goToCall    | navigation, go to call screen | () {}                     | Required |
-| onCallState | get extension register status | (String registerState) {} | Required |
-| child       | child widget                  | Widget                    | Required |
+| Prop            | Description                   | Type                      | Default  |
+| --------------- | ----------------------------- | ------------------------- | -------- |
+| goBack          | goback navigation             | () {}                     | Required |
+| goToCall        | navigation, go to call screen | () {}                     | Required |
+| onCallState     | set call status               | (callState) {}            | Required |
+| onRegisterState | get extension register status | (String registerState) {} | Required |
+| child           | child widget                  | Widget                    | Required |
 
 Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 button to fill data to register extension.
 

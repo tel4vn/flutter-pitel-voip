@@ -4,7 +4,6 @@ import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
 import 'call_page.dart';
 
 class CallScreen extends StatelessWidget {
-  final VoidCallback goBack;
   final Color bgColor;
   final PitelCallStateEnum callState;
   final String? txtMute;
@@ -16,7 +15,6 @@ class CallScreen extends StatelessWidget {
 
   const CallScreen({
     Key? key,
-    required this.goBack,
     required this.bgColor,
     required this.callState,
     this.txtMute,
@@ -33,7 +31,6 @@ class CallScreen extends StatelessWidget {
       body: Container(
         color: bgColor,
         child: CallPageWidget(
-          goBack: goBack,
           callState: callState,
           txtMute: txtMute ?? 'Mute',
           txtUnMute: txtUnMute ?? 'Unmute',
