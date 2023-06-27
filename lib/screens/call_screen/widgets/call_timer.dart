@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class CallTimer extends StatefulWidget {
-  const CallTimer({Key? key}) : super(key: key);
+  final TextStyle? timerTextStyle;
+
+  const CallTimer({Key? key, this.timerTextStyle}) : super(key: key);
 
   @override
   State<CallTimer> createState() => _CallTimerState();
@@ -49,7 +51,8 @@ class _CallTimerState extends State<CallTimer> {
         padding: const EdgeInsets.all(6),
         child: Text(
           _timeLabel,
-          style: const TextStyle(fontSize: 14, color: Colors.black54),
+          style: widget.timerTextStyle ??
+              const TextStyle(fontSize: 14, color: Colors.black54),
         ),
       ),
     );

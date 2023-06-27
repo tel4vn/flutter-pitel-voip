@@ -9,6 +9,9 @@ class VoiceHeader extends StatelessWidget {
     required this.remoteIdentity,
     required this.direction,
     required this.txtDirection,
+    this.titleTextStyle,
+    this.timerTextStyle,
+    this.directionTextStyle,
   }) : super(key: key);
 
   final bool voiceonly;
@@ -16,6 +19,9 @@ class VoiceHeader extends StatelessWidget {
   final String? remoteIdentity;
   final String? direction;
   final String? txtDirection;
+  final TextStyle? titleTextStyle;
+  final TextStyle? timerTextStyle;
+  final TextStyle? directionTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +38,25 @@ class VoiceHeader extends StatelessWidget {
         children: <Widget>[
           Text(
             directionDisplay,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+            style: directionTextStyle ??
+                const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black),
           ),
           Container(
             padding: const EdgeInsets.all(6),
             margin: EdgeInsets.only(top: height * 0.1),
             child: Text(
               '$remoteIdentity',
-              style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black),
+              style: titleTextStyle ??
+                  const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
             ),
           ),
-          const CallTimer(),
+          CallTimer(timerTextStyle: timerTextStyle),
         ],
       )),
     );

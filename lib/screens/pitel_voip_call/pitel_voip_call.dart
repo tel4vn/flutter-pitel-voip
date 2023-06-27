@@ -108,7 +108,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
     switch (state.state) {
       case PitelRegistrationStateEnum.REGISTRATION_FAILED:
-        widget.goBack();
         break;
       case PitelRegistrationStateEnum.NONE:
       case PitelRegistrationStateEnum.UNREGISTERED:

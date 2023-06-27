@@ -19,7 +19,11 @@ class CallPageWidget extends StatefulWidget {
     required this.txtSpeaker,
     required this.txtOutgoing,
     required this.txtIncoming,
+    required this.userName,
     this.textStyle,
+    this.titleTextStyle,
+    this.timerTextStyle,
+    this.directionTextStyle,
   }) : super(key: key);
 
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -30,7 +34,11 @@ class CallPageWidget extends StatefulWidget {
   final String txtSpeaker;
   final String txtOutgoing;
   final String txtIncoming;
+  final String userName;
   final TextStyle? textStyle;
+  final TextStyle? titleTextStyle;
+  final TextStyle? timerTextStyle;
+  final TextStyle? directionTextStyle;
 
   @override
   State<CallPageWidget> createState() => _MyCallPageWidget();
@@ -253,11 +261,16 @@ class _MyCallPageWidget extends State<CallPageWidget>
           ? VoiceHeader(
               voiceonly: voiceonly,
               height: height,
-              remoteIdentity: remoteIdentity ?? 'Something went wrong',
+              remoteIdentity: widget.userName.isNotEmpty
+                  ? widget.userName
+                  : remoteIdentity ?? 'Something went wrong',
               direction: direction ?? 'Please go back',
               txtDirection: direction == 'OUTGOING'
                   ? widget.txtOutgoing
                   : widget.txtIncoming,
+              titleTextStyle: widget.titleTextStyle,
+              timerTextStyle: widget.timerTextStyle,
+              directionTextStyle: widget.directionTextStyle,
             )
           : VoiceHeader(
               voiceonly: voiceonly,
@@ -267,6 +280,9 @@ class _MyCallPageWidget extends State<CallPageWidget>
               txtDirection: direction == 'OUTGOING'
                   ? widget.txtOutgoing
                   : widget.txtIncoming,
+              titleTextStyle: widget.titleTextStyle,
+              timerTextStyle: widget.timerTextStyle,
+              directionTextStyle: widget.directionTextStyle,
             ),
     ]);
 

@@ -239,16 +239,20 @@ class CallPage extends StatelessWidget {
 
 #### Properties
 
-| Prop        | Description                          | Type      | Default  |
-| ----------- | ------------------------------------ | --------- | -------- |
-| goBack      | go back navigation                   | () {}     | Required |
-| bgColor     | background color                     | Color     | Required |
-| txtMute     | Text display of micro mute           | String    | Optional |
-| txtUnMute   | Text display of micro unmute         | String    | Optional |
-| txtSpeaker  | Text display speaker                 | String    | Optional |
-| txtOutgoing | Text display direction outgoing call | String    | Optional |
-| txtIncoming | Text display direction incoming call | String    | Optional |
-| textStyle   | Custom text style                    | TextStyle | Optional |
+| Prop               | Description                          | Type      | Default  |
+| ------------------ | ------------------------------------ | --------- | -------- |
+| goBack             | go back navigation                   | () {}     | Required |
+| bgColor            | background color                     | Color     | Required |
+| txtMute            | Text display of micro mute           | String    | Optional |
+| txtUnMute          | Text display of micro unmute         | String    | Optional |
+| txtSpeaker         | Text display speaker                 | String    | Optional |
+| txtOutgoing        | Text display direction outgoing call | String    | Optional |
+| txtIncoming        | Text display direction incoming call | String    | Optional |
+| textStyle          | Style for mic/speaker text           | TextStyle | Optional |
+| titleTextStyle     | Style for display phone number text  | TextStyle | Optional |
+| timerTextStyle     | Style for timer text                 | TextStyle | Optional |
+| directionTextStyle | Style for direction text             | TextStyle | Optional |
+| userName           | Custom title text                    | String    | Optional |
 
 ## How to test
 
