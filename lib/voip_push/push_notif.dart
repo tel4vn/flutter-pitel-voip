@@ -26,14 +26,7 @@ class PushNotifAndroid {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
-        uuid: message.messageId ?? '',
-        nameCaller: message.data['nameCaller'] ?? '',
-        avatar: message.data['avatar'] ?? '',
-        phoneNumber: message.data['phoneNumber'] ?? '',
-        appName: message.data['appName'] ?? '',
-        backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
-      ));
+      handleNotification(message);
     });
   }
 
@@ -51,9 +44,13 @@ class PushNotifAndroid {
     return deviceToken;
   }
 
-  @pragma('vm:entry-point')
-  static Future<void> firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+  static Future<void> handleNotification(RemoteMessage message) async {
+    if (message.data['callType'] == "CALL") {
+      handleShowCallKit(message);
+    }
+  }
+
+  static void handleShowCallKit(RemoteMessage message) {
     AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
       uuid: message.messageId ?? '',
       nameCaller: message.data['nameCaller'] ?? '',
@@ -62,6 +59,12 @@ class PushNotifAndroid {
       appName: message.data['appName'] ?? '',
       backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
     ));
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    handleNotification(message);
   }
 }
 
