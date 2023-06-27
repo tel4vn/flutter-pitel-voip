@@ -8,17 +8,21 @@ class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final VoidCallback goBack;
   final VoidCallback goToCall;
+  final VoidCallback setAcceptCall;
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
+  final bool acceptCall;
 
   PitelVoipCall({
     Key? key,
     required this.goBack,
     required this.goToCall,
+    required this.setAcceptCall,
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
+    required this.acceptCall,
   }) : super(key: key);
 
   @override
@@ -62,9 +66,11 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     if (state.state == PitelCallStateEnum.ENDED) {
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
+      widget.setAcceptCall();
     }
     if (state.state == PitelCallStateEnum.FAILED) {
       widget.goBack();
+      widget.setAcceptCall();
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
@@ -76,11 +82,15 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
   @override
   void onCallReceived(String callId) {
-    pitelCall.setCallCurrent(callId);
-    if (Platform.isIOS) {
-      pitelCall.answer();
+    print(
+        '================widget.acceptCall===${widget.acceptCall}=============');
+    if (Platform.isIOS && widget.acceptCall) {
+      pitelCall.answer(callId: callId);
+      widget.goToCall();
     }
-    widget.goToCall();
+    if (Platform.isAndroid) {
+      widget.goToCall();
+    }
   }
 
   @override
