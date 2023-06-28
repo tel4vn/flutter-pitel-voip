@@ -8,21 +8,17 @@ class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final VoidCallback goBack;
   final VoidCallback goToCall;
-  final VoidCallback setAcceptCall;
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
-  final bool acceptCall;
 
   PitelVoipCall({
     Key? key,
     required this.goBack,
     required this.goToCall,
-    required this.setAcceptCall,
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
-    required this.acceptCall,
   }) : super(key: key);
 
   @override
@@ -61,16 +57,18 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onNewMessage(PitelSIPMessageRequest msg) {}
 
   @override
-  void callStateChanged(String callId, PitelCallState state) {
+  void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (state.state == PitelCallStateEnum.ENDED) {
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
-      widget.setAcceptCall();
+      prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.FAILED) {
       widget.goBack();
-      widget.setAcceptCall();
+      prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
@@ -81,15 +79,23 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void transportStateChanged(PitelTransportState state) {}
 
   @override
-  void onCallReceived(String callId) {
+  void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
-    if (Platform.isIOS && widget.acceptCall) {
+    //! Back up
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? acceptCall = prefs.getBool("ACCEPT_CALL");
+    if (Platform.isIOS && acceptCall != null && acceptCall) {
       pitelCall.answer(callId: callId);
       widget.goToCall();
     }
     if (Platform.isAndroid) {
       widget.goToCall();
     }
+    //! Back up
+    // if (Platform.isIOS) {
+    //   pitelCall.answer();
+    // }
+    // widget.goToCall();
   }
 
   @override

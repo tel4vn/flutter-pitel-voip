@@ -14,6 +14,7 @@ class CallPageWidget extends StatefulWidget {
     Key? key,
     this.receivedBackground = false,
     required this.callState,
+    required this.onCallState,
     required this.txtMute,
     required this.txtUnMute,
     required this.txtSpeaker,
@@ -29,6 +30,7 @@ class CallPageWidget extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final bool receivedBackground;
   final PitelCallStateEnum callState;
+  final Function(PitelCallStateEnum) onCallState;
   final String txtMute;
   final String txtUnMute;
   final String txtSpeaker;
@@ -113,6 +115,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     if (Platform.isAndroid) {
       Wakelock.disable();
     }
+    pitelCall.hangup(callId: _callId);
   }
 
   void _toggleSpeaker() {
@@ -305,6 +308,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     setState(() {
       _state = callState.state;
     });
+    widget.onCallState(callState.state);
     switch (callState.state) {
       case PitelCallStateEnum.HOLD:
       case PitelCallStateEnum.UNHOLD:

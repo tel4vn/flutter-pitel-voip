@@ -364,7 +364,7 @@ class PitelCall implements SipUaHelperListener {
         _releaseCall(callId: _callIdCurrent);
         return true;
       } else {
-        _releaseCall(callId: null);
+        // _releaseCall(callId: null); //! WARNING: check releaseCall
         // _logger.error('You have to set callIdCurrent or pass param callId');
         return true;
       }

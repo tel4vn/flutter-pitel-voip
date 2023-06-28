@@ -6,6 +6,7 @@ import 'call_page.dart';
 class CallScreen extends StatelessWidget {
   final Color bgColor;
   final PitelCallStateEnum callState;
+  final Function(PitelCallStateEnum) onCallState;
   final String? txtMute;
   final String? txtUnMute;
   final String? txtSpeaker;
@@ -21,6 +22,7 @@ class CallScreen extends StatelessWidget {
     Key? key,
     required this.bgColor,
     required this.callState,
+    required this.onCallState,
     this.txtMute,
     this.txtUnMute,
     this.txtSpeaker,
@@ -50,6 +52,7 @@ class CallScreen extends StatelessWidget {
           titleTextStyle: titleTextStyle ?? const TextStyle(),
           timerTextStyle: timerTextStyle ?? const TextStyle(),
           directionTextStyle: directionTextStyle ?? const TextStyle(),
+          onCallState: onCallState,
         ),
       ),
     );
