@@ -33,7 +33,7 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 plugin_pitel:
     git:
       url: https://github.com/tel4vn/flutter-pitel-voip.git
-      ref: 1.0.2 # branch name
+      ref: 1.0.3 # branch name
 ```
 
 2. Get package
@@ -90,9 +90,9 @@ import 'package:plugin_pitel/flutter_pitel_voip.dart';
 platform :ios, '12.0'
 ```
 
-5. Pushkit - Received VoIP and Wake app from Terminated State (only for IOS).
+5. Pushkit/ Push notification - Received VoIP and Wake app from Terminated State.
    > **Note**
-   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit for IOS
+   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
 
 ## Troubleshooting
 
@@ -114,14 +114,14 @@ dependencies {
 
 ## Example
 
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/feature/v1.0.2)
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.3)
 
 ## Usage
 
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/app.dart)
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/app.dart)
 
-> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/app.dart)
+> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/app.dart)
 
 ```dart
 Widget build(BuildContext context) {
@@ -136,7 +136,7 @@ Widget build(BuildContext context) {
 ```
 
 - In file `home_screen.dart`.
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/home/home_screen.dart).
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/features/home/home_screen.dart).
   Add WidgetsBindingObserver to handle AppLifecycleState change
 
 ```dart
@@ -213,7 +213,7 @@ ElevatedButton(
 ```
 
 - In file `call_screen.dart`
-  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/feature/v1.0.2/lib/features/call_screen/call_page.dart)
+  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/features/call_screen/call_page.dart)
 
 ```dart
 import 'package:flutter/material.dart';

@@ -87,6 +87,13 @@ Follow the instructions to [create a certificate signing request](https://devel
   - Fill information in upload Apns key popup
     ![upload_key_firebase_popup](assets/push_img/upload_key_firebase_popup.png)
 
+##### Installing your Firebase configuration file
+
+- Next you must add the file to the project using Xcode (adding manually via the filesystem won't link the file to the project). Using Xcode, open the project's ios/{projectName}.xcworkspace file. Right click Runner from the left-hand side project navigation within Xcode and select "Add files", as seen below:
+  ![ios_google_service_1](assets/push_img/ios_google_service_1.png)
+- Select the GoogleService-Info.plist file you downloaded, and ensure the "Copy items if needed" checkbox is enabled:
+  ![ios_google_service_2](assets/push_img/ios_google_service_2.png)
+
 #### Android
 
 Using FCM (Firebase Cloud Message) to handle push notification wake up app when app run on Background or Terminate
@@ -149,7 +156,7 @@ dependencies:
 
 Replace your file ios/Runner/AppDelegate.swift with
 
-[https://github.com/tel4vn/pitel-ui-kit/blob/dev/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/dev/ios/Runner/AppDelegate.swift)
+[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/ios/Runner/AppDelegate.swift)
 
 ## **Usage**
 
@@ -158,6 +165,19 @@ Replace your file ios/Runner/AppDelegate.swift with
 ```dart
 import "package:plugin_pitel/flutter_pitel_voip.dart";
 ```
+
+- Initialize firebase
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PushNotifAndroid.initFirebase(DefaultFirebaseOptions.currentPlatform); // add here
+
+  runApp(MyApp());
+}
+```
+
+- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/firebase_options.dart).
 
 - Get device push token VoIP.
 
@@ -207,29 +227,6 @@ void _registerDeviceToken() async {
   }
 ```
 
-- Listen events from Push notification for wake up app (top level function. Example app.dart)
-
-```dart
-final pitelService = PitelServiceImpl();
-final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
-
-@override
-  void initState() {
-    super.initState();
-    VoipNotifService.listenerEvent(
-      callback: (event) {},
-      onCallAccept: () {
-        //! Re-register when user accept call
-        handleRegisterCall();
-      },
-      onCallDecline: () {},
-      onCallEnd: () {
-        pitelCall.hangup();
-      },
-    );
-  }
-```
-
 ## How to test
 
 - Download & install app from link https://github.com/onmyway133/PushNotifications/releases
@@ -266,7 +263,8 @@ curl --location 'https://fcm.googleapis.com/fcm/send' \
         "nameCaller": "Anh Quang",
         "avatar": "Anh Quang",
         "phoneNumber": "0341111111",
-        "appName": "Pitel Connnect"
+        "appName": "Pitel Connnect",
+        "callType": "CALL"
     },
     "content_available": true,
     "priority": "high"
