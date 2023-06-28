@@ -82,8 +82,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
   @override
   void onCallReceived(String callId) {
-    print(
-        '================widget.acceptCall===${widget.acceptCall}=============');
+    pitelCall.setCallCurrent(callId);
     if (Platform.isIOS && widget.acceptCall) {
       pitelCall.answer(callId: callId);
       widget.goToCall();

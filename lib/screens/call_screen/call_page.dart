@@ -110,7 +110,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
   }
 
   void _handleHangup() {
-    pitelCall.hangup(callId: _callId);
     if (Platform.isAndroid) {
       Wakelock.disable();
     }
