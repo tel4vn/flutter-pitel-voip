@@ -58,7 +58,6 @@ class PushNotifAndroid {
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
-    inspect(message);
     switch (message.data['callType']) {
       case "RE_REGISTER":
         await registerWhenReceiveNotif();
