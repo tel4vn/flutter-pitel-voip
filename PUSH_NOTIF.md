@@ -110,7 +110,7 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
   ![push_img_3](assets/push_img/push_img_3.png)
 
 > **Note**
-> After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdkdev.tel4vn.com/login)
+> After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdk.tel4vn.com/)
 
 # Installation (your project)
 

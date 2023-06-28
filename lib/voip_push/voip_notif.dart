@@ -1,12 +1,15 @@
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'dart:async';
+import 'dart:developer';
 
 class VoipNotifService {
   static Future<void> listenerEvent({
     Function? callback,
     Function? onCallAccept,
-    Function? onCallDecline,
+    Function(CallEvent event)? onCallDecline,
+    Function(CallEvent event)? onIncomingCall,
+    Function(CallEvent event)? onCallTimeOut,
     Function? swipeInLockscreen,
     Function? onCallEnd,
   }) async {
@@ -14,7 +17,9 @@ class VoipNotifService {
       FlutterCallkitIncoming.onEvent.listen((event) async {
         switch (event!.event) {
           case Event.ACTION_CALL_INCOMING:
-            // TODO: received an incoming call
+            if (onIncomingCall != null) {
+              onIncomingCall(event);
+            }
             break;
           case Event.ACTION_CALL_START:
             // TODO: started an outgoing call
@@ -27,7 +32,7 @@ class VoipNotifService {
             break;
           case Event.ACTION_CALL_DECLINE:
             if (onCallDecline != null) {
-              onCallDecline();
+              onCallDecline(event);
             }
             break;
           case Event.ACTION_CALL_ENDED:
@@ -36,7 +41,9 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_TIMEOUT:
-            // TODO: missed an incoming call
+            if (onCallTimeOut != null) {
+              onCallTimeOut(event);
+            }
             break;
           case Event.ACTION_CALL_CALLBACK:
             // TODO: only Android - click action `Call back` from missed call notification
