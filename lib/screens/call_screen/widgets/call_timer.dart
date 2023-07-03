@@ -5,31 +5,35 @@ import 'package:flutter/material.dart';
 class CallTimer extends StatefulWidget {
   final TextStyle? timerTextStyle;
   final bool isStartTimer;
+  final String txtTimer;
 
-  const CallTimer({Key? key, this.timerTextStyle, required this.isStartTimer})
-      : super(key: key);
+  const CallTimer({
+    Key? key,
+    this.timerTextStyle,
+    required this.isStartTimer,
+    required this.txtTimer,
+  }) : super(key: key);
 
   @override
   State<CallTimer> createState() => _CallTimerState();
 }
 
 class _CallTimerState extends State<CallTimer> {
-  late Timer _timer;
+  Timer? _timer;
   String _timeLabel = '00:00';
 
   @override
   void initState() {
-    _startTimer();
     super.initState();
   }
 
-  // @override
-  // void didUpdateWidget(oldWidget) {
-  //   if (widget.isStartTimer) {
-  //     _startTimer();
-  //   }
-  //   super.didUpdateWidget(oldWidget);
-  // }
+  @override
+  void didUpdateWidget(oldWidget) {
+    if (widget.isStartTimer) {
+      _startTimer();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
@@ -41,15 +45,17 @@ class _CallTimerState extends State<CallTimer> {
               .join(':');
         });
       } else {
-        _timer.cancel();
+        _timer?.cancel();
       }
     });
   }
 
   @override
   void dispose() {
-    if (_timer.isActive) {
-      _timer.cancel();
+    if (_timer != null) {
+      if (_timer!.isActive) {
+        _timer?.cancel();
+      }
     }
     super.dispose();
   }
