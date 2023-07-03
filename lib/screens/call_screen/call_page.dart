@@ -20,6 +20,7 @@ class CallPageWidget extends StatefulWidget {
     required this.txtOutgoing,
     required this.txtIncoming,
     required this.userName,
+    required this.txtTimer,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
@@ -35,6 +36,7 @@ class CallPageWidget extends StatefulWidget {
   final String txtOutgoing;
   final String txtIncoming;
   final String userName;
+  final String txtTimer;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
@@ -52,6 +54,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
   bool calling = false;
   bool _isBacked = false;
   PitelCallStateEnum _state = PitelCallStateEnum.NONE;
+  bool isStartTimer = false;
 
   bool get voiceonly => pitelCall.isVoiceOnly();
 
@@ -271,6 +274,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
               titleTextStyle: widget.titleTextStyle,
               timerTextStyle: widget.timerTextStyle,
               directionTextStyle: widget.directionTextStyle,
+              isStartTimer: isStartTimer,
+              txtTimer: widget.txtTimer,
             )
           : VoiceHeader(
               voiceonly: voiceonly,
@@ -283,6 +288,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
               titleTextStyle: widget.titleTextStyle,
               timerTextStyle: widget.timerTextStyle,
               directionTextStyle: widget.directionTextStyle,
+              isStartTimer: isStartTimer,
+              txtTimer: widget.txtTimer,
             ),
     ]);
 
@@ -322,10 +329,15 @@ class _MyCallPageWidget extends State<CallPageWidget>
         break;
       case PitelCallStateEnum.CONNECTING:
       case PitelCallStateEnum.PROGRESS:
-      case PitelCallStateEnum.ACCEPTED:
       case PitelCallStateEnum.CONFIRMED:
         setState(() {
           _callId = callId;
+        });
+        break;
+      case PitelCallStateEnum.ACCEPTED:
+        setState(() {
+          _callId = callId;
+          isStartTimer = true;
         });
         break;
       case PitelCallStateEnum.NONE:

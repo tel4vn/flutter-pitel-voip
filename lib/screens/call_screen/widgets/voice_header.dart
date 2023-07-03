@@ -5,20 +5,24 @@ class VoiceHeader extends StatelessWidget {
   const VoiceHeader({
     Key? key,
     required this.voiceonly,
+    required this.isStartTimer,
     required this.height,
     required this.remoteIdentity,
     required this.direction,
     required this.txtDirection,
+    required this.txtTimer,
     this.titleTextStyle,
     this.timerTextStyle,
     this.directionTextStyle,
   }) : super(key: key);
 
   final bool voiceonly;
+  final bool isStartTimer;
   final double height;
   final String? remoteIdentity;
   final String? direction;
   final String? txtDirection;
+  final String txtTimer;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
@@ -56,7 +60,11 @@ class VoiceHeader extends StatelessWidget {
                       color: Colors.black),
             ),
           ),
-          CallTimer(timerTextStyle: timerTextStyle),
+          CallTimer(
+            timerTextStyle: timerTextStyle,
+            isStartTimer: isStartTimer,
+            txtTimer: txtTimer,
+          ),
         ],
       )),
     );
