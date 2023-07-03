@@ -54,6 +54,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
   bool calling = false;
   bool _isBacked = false;
   PitelCallStateEnum _state = PitelCallStateEnum.NONE;
+  bool isStartTimer = false;
 
   bool get voiceonly => pitelCall.isVoiceOnly();
 
@@ -273,7 +274,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
               titleTextStyle: widget.titleTextStyle,
               timerTextStyle: widget.timerTextStyle,
               directionTextStyle: widget.directionTextStyle,
-            )
+              isStartTimer: isStartTimer)
           : VoiceHeader(
               voiceonly: voiceonly,
               height: height,
@@ -285,7 +286,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
               titleTextStyle: widget.titleTextStyle,
               timerTextStyle: widget.timerTextStyle,
               directionTextStyle: widget.directionTextStyle,
-            ),
+              isStartTimer: isStartTimer),
     ]);
 
     return Stack(
@@ -325,10 +326,15 @@ class _MyCallPageWidget extends State<CallPageWidget>
         break;
       case PitelCallStateEnum.CONNECTING:
       case PitelCallStateEnum.PROGRESS:
-      case PitelCallStateEnum.ACCEPTED:
       case PitelCallStateEnum.CONFIRMED:
         setState(() {
           _callId = callId;
+        });
+        break;
+      case PitelCallStateEnum.ACCEPTED:
+        setState(() {
+          _callId = callId;
+          isStartTimer = true;
         });
         break;
       case PitelCallStateEnum.NONE:
