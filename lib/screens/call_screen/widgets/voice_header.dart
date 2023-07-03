@@ -14,6 +14,7 @@ class VoiceHeader extends StatelessWidget {
     this.timerTextStyle,
     this.directionTextStyle,
     required this.txtTimer,
+    required this.txtWaiting,
   }) : super(key: key);
 
   final bool voiceonly;
@@ -26,6 +27,7 @@ class VoiceHeader extends StatelessWidget {
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
   final String txtTimer;
+  final String txtWaiting;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,7 @@ class VoiceHeader extends StatelessWidget {
             timerTextStyle: timerTextStyle,
             isStartTimer: isStartTimer,
             txtTimer: txtTimer,
+            txtWaiting: txtWaiting,
           ),
         ],
       )),
