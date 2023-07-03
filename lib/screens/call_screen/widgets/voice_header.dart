@@ -11,6 +11,7 @@ class VoiceHeader extends StatelessWidget {
     required this.direction,
     required this.txtDirection,
     required this.txtTimer,
+    required this.txtWaiting,
     this.titleTextStyle,
     this.timerTextStyle,
     this.directionTextStyle,
@@ -23,6 +24,7 @@ class VoiceHeader extends StatelessWidget {
   final String? direction;
   final String? txtDirection;
   final String txtTimer;
+  final String txtWaiting;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
@@ -64,6 +66,7 @@ class VoiceHeader extends StatelessWidget {
             timerTextStyle: timerTextStyle,
             isStartTimer: isStartTimer,
             txtTimer: txtTimer,
+            txtWaiting: txtWaiting,
           ),
         ],
       )),

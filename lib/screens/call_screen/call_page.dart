@@ -21,6 +21,7 @@ class CallPageWidget extends StatefulWidget {
     required this.txtIncoming,
     required this.userName,
     required this.txtTimer,
+    required this.txtWaiting,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
@@ -37,6 +38,7 @@ class CallPageWidget extends StatefulWidget {
   final String txtIncoming;
   final String userName;
   final String txtTimer;
+  final String txtWaiting;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
@@ -276,6 +278,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
               directionTextStyle: widget.directionTextStyle,
               isStartTimer: isStartTimer,
               txtTimer: widget.txtTimer,
+              txtWaiting: widget.txtWaiting,
             )
           : VoiceHeader(
               voiceonly: voiceonly,
@@ -290,6 +293,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
               directionTextStyle: widget.directionTextStyle,
               isStartTimer: isStartTimer,
               txtTimer: widget.txtTimer,
+              txtWaiting: widget.txtWaiting,
             ),
     ]);
 

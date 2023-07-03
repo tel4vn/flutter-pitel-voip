@@ -6,12 +6,14 @@ class CallTimer extends StatefulWidget {
   final TextStyle? timerTextStyle;
   final bool isStartTimer;
   final String txtTimer;
+  final String txtWaiting;
 
   const CallTimer({
     Key? key,
     this.timerTextStyle,
     required this.isStartTimer,
     required this.txtTimer,
+    required this.txtWaiting,
   }) : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class _CallTimerState extends State<CallTimer> {
 
   @override
   void initState() {
+    _timeLabel = widget.txtWaiting;
     super.initState();
   }
 

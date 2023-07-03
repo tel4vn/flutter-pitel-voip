@@ -13,6 +13,7 @@ class CallScreen extends StatelessWidget {
   final String? txtIncoming;
   final String? txtTimer;
   final String? userName;
+  final String? txtWaiting;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
@@ -33,6 +34,7 @@ class CallScreen extends StatelessWidget {
     this.timerTextStyle,
     this.directionTextStyle,
     this.txtTimer,
+    this.txtWaiting,
   }) : super(key: key);
 
   @override
@@ -53,6 +55,7 @@ class CallScreen extends StatelessWidget {
           titleTextStyle: titleTextStyle ?? const TextStyle(),
           timerTextStyle: timerTextStyle ?? const TextStyle(),
           directionTextStyle: directionTextStyle ?? const TextStyle(),
+          txtWaiting: txtWaiting ?? '00:00',
         ),
       ),
     );

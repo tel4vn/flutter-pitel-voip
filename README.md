@@ -249,6 +249,7 @@ class CallPage extends StatelessWidget {
 | txtOutgoing        | Text display direction outgoing call | String    | Optional |
 | txtIncoming        | Text display direction incoming call | String    | Optional |
 | txtTimer           | Text display timer                   | String    | Optional |
+| txtWaiting         | Text waiting call                    | String    | Optional |
 | textStyle          | Style for mic/speaker text           | TextStyle | Optional |
 | titleTextStyle     | Style for display phone number text  | TextStyle | Optional |
 | timerTextStyle     | Style for timer text                 | TextStyle | Optional |
