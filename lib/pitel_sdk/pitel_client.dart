@@ -43,7 +43,7 @@ class PitelClient {
 
   final String wssTest = 'wss://sbc03.tel4vn.com:7444';
   final String domainTest = 'pi0003.tel4vn.com';
-  final int portTest = 50060;
+  final int portTest = 5060;
   final String usernameTest = '103';
   final String passwordTest = '12345678@X';
 
