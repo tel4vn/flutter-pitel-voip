@@ -111,6 +111,10 @@ class PitelCall implements SipUaHelperListener {
     _logger.info('callDirection ${call.direction}');
     switch (pitelCallState.state) {
       case PitelCallStateEnum.CALL_INITIATION:
+        print(_sipPitelHelperListener);
+        print('================_sipPitelHelperListener================');
+        print(_sipPitelHelperListener);
+        print('==================================');
         switch (call.direction) {
           case 'OUTGOING':
             for (var element in _sipPitelHelperListener) {
@@ -122,6 +126,8 @@ class PitelCall implements SipUaHelperListener {
               if (isBusy) {
                 _releaseCall(callId: call.id);
               } else {
+                print(
+                    '================register===========CALL_INITIATION=====');
                 element.onCallReceived(call.id!);
               }
             }
@@ -364,7 +370,7 @@ class PitelCall implements SipUaHelperListener {
         _releaseCall(callId: _callIdCurrent);
         return true;
       } else {
-        // _releaseCall(callId: null); //! WARNING: check releaseCall
+        _releaseCall(callId: null); //! WARNING: check releaseCall
         // _logger.error('You have to set callIdCurrent or pass param callId');
         return true;
       }

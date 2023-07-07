@@ -812,6 +812,7 @@ class PitelUA extends EventManager {
     emit(EventSocketConnected(socket: transport.socket));
 
     if (_dynConfiguration!.register!) {
+      print('================register================');
       await Future.delayed(Duration(milliseconds: 200));
       _registrator.register();
     }
