@@ -44,13 +44,14 @@ class GetExtensionResponse {
   String display_name;
   bool enabled;
 
-  GetExtensionResponse(
-      {required this.id,
-      required this.sipServer,
-      required this.username,
-      required this.password,
-      required this.display_name,
-      required this.enabled});
+  GetExtensionResponse({
+    required this.id,
+    required this.sipServer,
+    required this.username,
+    required this.password,
+    required this.display_name,
+    required this.enabled,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

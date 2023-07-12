@@ -16,52 +16,59 @@ class SipInfoData {
   final String wssUrl;
   final String? userName;
   final String? apiDomain;
+  final String? userAgent;
 
-  SipInfoData(
-      {required this.authPass,
-      required this.registerServer,
-      required this.outboundServer,
-      this.port,
-      required this.userID,
-      required this.authID,
-      required this.accountName,
-      required this.displayName,
-      this.dialPlan,
-      this.randomPort,
-      this.voicemail,
-      required this.wssUrl,
-      this.userName,
-      this.apiDomain});
+  SipInfoData({
+    required this.authPass,
+    required this.registerServer,
+    required this.outboundServer,
+    this.port,
+    required this.userID,
+    required this.authID,
+    required this.accountName,
+    required this.displayName,
+    this.dialPlan,
+    this.randomPort,
+    this.voicemail,
+    required this.wssUrl,
+    this.userName,
+    this.apiDomain,
+    this.userAgent,
+  });
 
   SipInfoData.defaultSipInfo()
       : this(
-            wssUrl: "",
-            userID: 0,
-            authID: 0,
-            accountName: "",
-            displayName: "",
-            registerServer: "",
-            outboundServer: "",
-            authPass: "",
-            userName: "",
-            apiDomain: "");
+          wssUrl: "",
+          userID: 0,
+          authID: 0,
+          accountName: "",
+          displayName: "",
+          registerServer: "",
+          outboundServer: "",
+          authPass: "",
+          userName: "",
+          apiDomain: "",
+          userAgent: "",
+        );
 
   factory SipInfoData.fromJson(Map<String, dynamic> data) {
     return SipInfoData(
-        authPass: data['authPass'],
-        userID: data['userID'],
-        authID: data['authID'],
-        registerServer: data['registerServer'],
-        outboundServer: data['outboundServer'],
-        port: data['port'],
-        accountName: data['accountName'],
-        displayName: data['displayName'],
-        dialPlan: data['dialPlan'],
-        randomPort: data['randomPort'],
-        voicemail: data['voicemail'],
-        wssUrl: data['wssUrl'],
-        userName: data['userName'],
-        apiDomain: data['apiDomain']);
+      authPass: data['authPass'],
+      userID: data['userID'],
+      authID: data['authID'],
+      registerServer: data['registerServer'],
+      outboundServer: data['outboundServer'],
+      port: data['port'],
+      accountName: data['accountName'],
+      displayName: data['displayName'],
+      dialPlan: data['dialPlan'],
+      randomPort: data['randomPort'],
+      voicemail: data['voicemail'],
+      wssUrl: data['wssUrl'],
+      userName: data['userName'],
+      apiDomain: data['apiDomain'],
+      userAgent: data['userAgent'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -79,7 +86,8 @@ class SipInfoData {
       'voicemail': voicemail,
       'wssUrl': wssUrl,
       'userName': userName,
-      'apiDomain': apiDomain
+      'apiDomain': apiDomain,
+      'userAgent': userAgent
     };
   }
 
@@ -93,6 +101,7 @@ class SipInfoData {
       transport: 0,
       createdAt: '',
       project: '',
+      userAgent: userAgent ?? '',
     );
 
     final getExtResponse = GetExtensionResponse(

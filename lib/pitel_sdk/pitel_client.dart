@@ -38,6 +38,7 @@ class PitelClient {
   String _username = '';
   String _password = '';
   String _displayName = '';
+  String _userAgent = '';
   final PitelLog _logger = PitelLog(tag: 'PitelClient');
   final PitelCall pitelCall = PitelCall();
 
@@ -81,7 +82,6 @@ class PitelClient {
 
   Future<PitelSettings> registerSipWithoutFCM(PnPushParams pnPushParams) async {
     final settings = PitelSettings();
-
     Map<String, String> _wsExtraHeaders = {
       'Origin': 'https://${_sipServer?.domain}:${_sipServer?.port}',
       'Host': '${_sipServer?.domain}:${_sipServer?.port}',
@@ -98,7 +98,7 @@ class PitelClient {
     settings.authorizationUser = _username;
     settings.password = _password;
     settings.displayName = _displayName;
-    settings.userAgent = 'Pitel Connect';
+    settings.userAgent = _userAgent;
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
 
@@ -112,6 +112,7 @@ class PitelClient {
     _username = extensionResponse.username;
     _password = extensionResponse.password;
     _displayName = extensionResponse.display_name;
+    _userAgent = extensionResponse.sipServer.userAgent ?? 'Pitel Connect';
     if (isTest) {
       _username = usernameTest;
       _password = passwordTest;

@@ -7,6 +7,7 @@ class SipServer {
   int transport;
   String createdAt;
   String project;
+  String? userAgent;
 
   SipServer({
     required this.id,
@@ -17,6 +18,7 @@ class SipServer {
     required this.transport,
     required this.createdAt,
     required this.project,
+    this.userAgent,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +31,7 @@ class SipServer {
       'transport': transport,
       'created_at': createdAt,
       'project': project,
+      'user_agent': userAgent,
     };
   }
 
@@ -50,6 +53,9 @@ class SipServer {
       project: map['project'] is int
           ? (map['project'] as int).toString()
           : map['project'] as String,
+      userAgent: map['user_agent'] is int
+          ? (map['user_agent'] as int).toString()
+          : map['user_agent'] as String,
     );
   }
 
@@ -60,6 +66,7 @@ class SipServer {
         'port $port \n'
         'outboundProxy $outboundProxy \n'
         'wss $wss \n'
+        'useAgent $userAgent \n'
         'transport $transport \n';
   }
 }
