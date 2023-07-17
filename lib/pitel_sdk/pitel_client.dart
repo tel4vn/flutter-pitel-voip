@@ -38,7 +38,7 @@ class PitelClient {
   String _username = '';
   String _password = '';
   String _displayName = '';
-  String _userAgent = '';
+  String _userAgent = 'Pitel Connect';
   final PitelLog _logger = PitelLog(tag: 'PitelClient');
   final PitelCall pitelCall = PitelCall();
 
