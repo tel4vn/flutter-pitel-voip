@@ -139,15 +139,22 @@ class _MyCallPageWidget extends State<CallPageWidget>
         textStyle: widget.textStyle,
         icon: pitelCall.audioMuted ? Icons.mic_off : Icons.mic,
         onPressed: () {
+          setState(() {
+            isStartTimer = false;
+          });
           pitelCall.mute(callId: _callId);
         },
       ),
       IconTextButton(
-        textDisplay: widget.txtSpeaker,
-        textStyle: widget.textStyle,
-        icon: _speakerOn ? Icons.volume_up : Icons.volume_off,
-        onPressed: () => _toggleSpeaker(),
-      ),
+          textDisplay: widget.txtSpeaker,
+          textStyle: widget.textStyle,
+          icon: _speakerOn ? Icons.volume_up : Icons.volume_off,
+          onPressed: () {
+            setState(() {
+              isStartTimer = false;
+            });
+            _toggleSpeaker();
+          }),
     ];
   }
 
