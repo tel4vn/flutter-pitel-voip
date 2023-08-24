@@ -53,6 +53,9 @@ class _AppLifecycleTrackerState extends State<AppLifecycleTracker>
       case AppLifecycleState.detached:
         s = AppState.detached;
         break;
+      default:
+        s = AppState.detached;
+        break;
     }
     widget.didChangeAppState(s);
   }
