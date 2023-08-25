@@ -165,7 +165,7 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/intl-0.18.1",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/intl-0.18.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -476,7 +476,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-08-24T09:09:25.117405Z",
+  "generated": "2023-08-25T05:11:33.124841Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }
