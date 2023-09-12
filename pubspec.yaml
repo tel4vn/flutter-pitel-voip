@@ -13,7 +13,7 @@ dependencies:
 
   crypto: ^3.0.0
   flutter_webrtc: 0.9.40
-  intl: 0.18.0
+  intl: ^0.18.0
   logger: ^1.0.0
   parser_error: ^0.2.0
   path: ^1.6.4
