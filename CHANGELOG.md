@@ -10,3 +10,8 @@
 - Incoming call in lock screen.
 - Re-register when open, re-open app: terminate, background, foreground app state.
 - Fixed some bug: duplicate call, reconnect websocket,...
+
+## 1.0.4 - 2023-10-2
+
+- Add field sip domain.
+- BLE support.

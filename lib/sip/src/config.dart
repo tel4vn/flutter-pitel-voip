@@ -21,13 +21,15 @@ class PitelSipSettings {
   String? display_name;
   dynamic uri;
   dynamic contact_uri;
+  //! sip_domain
+  dynamic sip_domain;
   String user_agent = DartSIP_C.USER_AGENT;
 
   // SIP instance id (GRUU).
   String? instance_id = null;
 
   // Preloaded SIP Route header field.
-  bool use_preloaded_route = false;
+  bool use_preloaded_route = true;
 
   // Session parameters.
   bool session_timers = true;
@@ -117,6 +119,14 @@ class Checks {
         return;
       } else {
         dst!.authorization_user = authorization_user;
+      }
+    },
+    //! sip_domain
+    'sip_domain': (PitelSipSettings src, PitelSipSettings? dst) {
+      String sip_domain = src.sip_domain;
+      if (sip_domain == null) return;
+      if (sip_domain is String) {
+        dst!.sip_domain = sip_domain;
       }
     },
     'user_agent': (PitelSipSettings src, PitelSipSettings? dst) {
