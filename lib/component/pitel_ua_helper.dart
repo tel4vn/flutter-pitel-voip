@@ -103,6 +103,8 @@ class PitelUAHelper extends EventManager {
     _settings!.sockets = <WebSocketInterface>[socket];
     _settings!.uri = uaSettings.uri;
     _settings!.contact_uri = uaSettings.contactUri;
+    //! sip_domain
+    _settings!.sip_domain = uaSettings.sipDomain;
     _settings!.password = uaSettings.password;
     _settings!.ha1 = uaSettings.ha1;
     _settings!.display_name = uaSettings.displayName;

@@ -270,6 +270,8 @@ class PitelSettings {
   String? password;
   String? ha1;
   String? displayName;
+  //! sip_domain
+  String? sipDomain;
 
   /// DTMF mode, in band (rfc2833) or out of band (sip info)
   DtmfMode dtmfMode = DtmfMode.INFO;
