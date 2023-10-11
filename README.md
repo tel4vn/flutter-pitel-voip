@@ -1,10 +1,10 @@
-##### plugin_pitel
+##### flutter_pitel_voip
 
 # Integrate Voip call to your project
 
 [![N|Solid](https://documents.tel4vn.com/img/pitel-logo.png)](https://documents.tel4vn.com/)
 
-`plugin_pitel` is package support for voip call.
+`flutter_pitel_voip` is package support for voip call.
 
 ## Demo
 
@@ -30,7 +30,7 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
    Add pubspec.yaml:
 
 ```pubspec.yaml
-plugin_pitel:
+flutter_pitel_voip:
     git:
       url: https://github.com/tel4vn/flutter-pitel-voip.git
       ref: 1.0.3 # branch name
@@ -45,7 +45,7 @@ flutter pub get
 3. Import
 
 ```
-import 'package:plugin_pitel/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 ```
 
 4. Configure Project
@@ -217,7 +217,7 @@ ElevatedButton(
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:plugin_pitel/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 class CallPage extends StatelessWidget {
   const CallPage({super.key});
   @override

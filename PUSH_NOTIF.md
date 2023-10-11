@@ -163,7 +163,7 @@ Replace your file ios/Runner/AppDelegate.swift with
 - Before handle Incoming call, you should import package in home screen
 
 ```dart
-import "package:plugin_pitel/flutter_pitel_voip.dart";
+import "package:flutter_pitel_voip/flutter_pitel_voip.dart";
 ```
 
 - Initialize firebase

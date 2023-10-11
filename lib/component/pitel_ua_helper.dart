@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:logger/logger.dart';
-import 'package:plugin_pitel/sip/sip_ua.dart';
-import 'package:plugin_pitel/sip/src/config.dart';
-import 'package:plugin_pitel/sip/src/constants.dart' as dart_sip_c;
-import 'package:plugin_pitel/sip/src/event_manager/event_manager.dart';
-import 'package:plugin_pitel/sip/src/logger.dart';
-import 'package:plugin_pitel/sip/src/message.dart';
-import 'package:plugin_pitel/sip/src/rtc_session.dart';
-import 'package:plugin_pitel/sip/src/stack_trace_nj.dart';
-import 'package:plugin_pitel/sip/src/transports/websocket_interface.dart';
-import 'package:plugin_pitel/sip/src/ua.dart';
+import 'package:flutter_pitel_voip/sip/sip_ua.dart';
+import 'package:flutter_pitel_voip/sip/src/config.dart';
+import 'package:flutter_pitel_voip/sip/src/constants.dart' as dart_sip_c;
+import 'package:flutter_pitel_voip/sip/src/event_manager/event_manager.dart';
+import 'package:flutter_pitel_voip/sip/src/logger.dart';
+import 'package:flutter_pitel_voip/sip/src/message.dart';
+import 'package:flutter_pitel_voip/sip/src/rtc_session.dart';
+import 'package:flutter_pitel_voip/sip/src/stack_trace_nj.dart';
+import 'package:flutter_pitel_voip/sip/src/transports/websocket_interface.dart';
+import 'package:flutter_pitel_voip/sip/src/ua.dart';
 
 class PitelUAHelper extends EventManager {
   PitelUA? _ua;

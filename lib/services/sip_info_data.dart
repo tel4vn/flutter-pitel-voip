@@ -1,5 +1,5 @@
-import 'package:plugin_pitel/model/http/get_extension_info.dart';
-import 'package:plugin_pitel/model/sip_server.dart';
+import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
+import 'package:flutter_pitel_voip/model/sip_server.dart';
 
 class SipInfoData {
   final String authPass;

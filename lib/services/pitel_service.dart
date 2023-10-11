@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:plugin_pitel/component/pitel_call_state.dart';
-import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
-import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
+import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
+import 'package:flutter_pitel_voip/component/sip_pitel_helper_listener.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
+import 'package:flutter_pitel_voip/sip/src/sip_ua_helper.dart';
 
 import 'models/pn_push_params.dart';
 import 'pitel_service_interface.dart';

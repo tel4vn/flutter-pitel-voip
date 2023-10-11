@@ -56,9 +56,9 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin path_provider_android, io.flutter.plugins.pathprovider.PathProviderPlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new com.pitel.plugin_pitel.PluginPitelPlugin());
+      flutterEngine.getPlugins().add(new com.pitel.flutter_pitel_voip.PluginPitelPlugin());
     } catch(Exception e) {
-      Log.e(TAG, "Error registering plugin plugin_pitel, com.pitel.plugin_pitel.PluginPitelPlugin", e);
+      Log.e(TAG, "Error registering plugin flutter_pitel_voip, com.pitel.flutter_pitel_voip.PluginPitelPlugin", e);
     }
     try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin());

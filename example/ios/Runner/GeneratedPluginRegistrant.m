@@ -48,10 +48,10 @@
 @import path_provider_ios;
 #endif
 
-#if __has_include(<plugin_pitel/PluginPitelPlugin.h>)
-#import <plugin_pitel/PluginPitelPlugin.h>
+#if __has_include(<flutter_pitel_voip/PluginPitelPlugin.h>)
+#import <flutter_pitel_voip/PluginPitelPlugin.h>
 #else
-@import plugin_pitel;
+@import flutter_pitel_voip;
 #endif
 
 #if __has_include(<shared_preferences_ios/FLTSharedPreferencesPlugin.h>)

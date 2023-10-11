@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:plugin_pitel/config/pitel_config.dart';
-import 'package:plugin_pitel/model/http/get_extension_info.dart';
-import 'package:plugin_pitel/model/http/push_notif_model.dart';
-import 'package:plugin_pitel/model/pitel_error.dart';
-import 'package:plugin_pitel/model/sip_server.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_api.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
-import 'package:plugin_pitel/services/models/pn_push_params.dart';
-import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
-import 'package:plugin_pitel/voip_push/device_information.dart';
+import 'package:flutter_pitel_voip/config/pitel_config.dart';
+import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
+import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
+import 'package:flutter_pitel_voip/model/pitel_error.dart';
+import 'package:flutter_pitel_voip/model/sip_server.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_api.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
+import 'package:flutter_pitel_voip/services/models/pn_push_params.dart';
+import 'package:flutter_pitel_voip/sip/src/sip_ua_helper.dart';
+import 'package:flutter_pitel_voip/voip_push/device_information.dart';
 
 import 'pitel_profile.dart';
 

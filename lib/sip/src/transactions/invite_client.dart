@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:plugin_pitel/sip/src/event_manager/event_manager.dart';
+import 'package:flutter_pitel_voip/sip/src/event_manager/event_manager.dart';
 
 import '../constants.dart';
 import '../event_manager/internal_events.dart';

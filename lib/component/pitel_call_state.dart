@@ -1,6 +1,6 @@
-import 'package:plugin_pitel/sip/sip_ua.dart';
-import 'package:plugin_pitel/sip/src/event_manager/events.dart';
-import 'package:plugin_pitel/sip/src/message.dart';
+import 'package:flutter_pitel_voip/sip/sip_ua.dart';
+import 'package:flutter_pitel_voip/sip/src/event_manager/events.dart';
+import 'package:flutter_pitel_voip/sip/src/message.dart';
 
 class PitelRegistrationState {
   late PitelRegistrationStateEnum state;

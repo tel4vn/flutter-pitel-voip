@@ -1,5 +1,5 @@
-import 'package:plugin_pitel/model/http/get_profile.dart';
-import 'package:plugin_pitel/model/sip_account.dart';
+import 'package:flutter_pitel_voip/model/http/get_profile.dart';
+import 'package:flutter_pitel_voip/model/sip_account.dart';
 
 class PitelProfileUser {
   String email;

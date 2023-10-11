@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plugin_pitel/config/pitel_config.dart';
+import 'package:flutter_pitel_voip/config/pitel_config.dart';
 
 class PitelLog {
   PitelLog({required String tag}) : _tag = tag;

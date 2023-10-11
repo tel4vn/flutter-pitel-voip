@@ -1,5 +1,5 @@
-import 'package:plugin_pitel/config/pitel_config.dart';
-import 'package:plugin_pitel/web_service/http_service.dart';
+import 'package:flutter_pitel_voip/config/pitel_config.dart';
+import 'package:flutter_pitel_voip/web_service/http_service.dart';
 
 class SDKService extends HttpService {
   static SDKService? _instance;

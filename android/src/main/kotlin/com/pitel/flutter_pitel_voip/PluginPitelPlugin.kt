@@ -1,4 +1,4 @@
-package com.pitel.plugin_pitel
+package com.pitel.flutter_pitel_voip
 
 import androidx.annotation.NonNull
 
@@ -17,7 +17,7 @@ class PluginPitelPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "plugin_pitel")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_pitel_voip")
     channel.setMethodCallHandler(this)
   }
 

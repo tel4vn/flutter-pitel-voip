@@ -1,4 +1,4 @@
-import 'package:plugin_pitel/model/sip_server.dart';
+import 'package:flutter_pitel_voip/model/sip_server.dart';
 
 class GetExtensionInfoRequest {
   String number;

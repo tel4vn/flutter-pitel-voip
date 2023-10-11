@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:plugin_pitel/model/http/get_extension_info.dart';
-import 'package:plugin_pitel/model/http/get_profile.dart';
-import 'package:plugin_pitel/model/http/get_sip_info.dart';
-import 'package:plugin_pitel/model/http/login.dart';
-import 'package:plugin_pitel/model/http/push_notif_model.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_profile.dart';
-import 'package:plugin_pitel/web_service/api_web_service.dart';
-import 'package:plugin_pitel/web_service/portal_service.dart';
-import 'package:plugin_pitel/web_service/push_notif_service.dart';
-import 'package:plugin_pitel/web_service/sdk_service.dart';
+import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
+import 'package:flutter_pitel_voip/model/http/get_profile.dart';
+import 'package:flutter_pitel_voip/model/http/get_sip_info.dart';
+import 'package:flutter_pitel_voip/model/http/login.dart';
+import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_profile.dart';
+import 'package:flutter_pitel_voip/web_service/api_web_service.dart';
+import 'package:flutter_pitel_voip/web_service/portal_service.dart';
+import 'package:flutter_pitel_voip/web_service/push_notif_service.dart';
+import 'package:flutter_pitel_voip/web_service/sdk_service.dart';
 
 class _PitelAPIImplement implements PitelApi {
   final ApiWebService _sdkService = SDKService.getInstance();

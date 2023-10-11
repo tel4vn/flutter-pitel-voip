@@ -1,10 +1,10 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:plugin_pitel/component/pitel_call_state.dart';
-import 'package:plugin_pitel/component/pitel_rtc_video_renderer.dart';
-import 'package:plugin_pitel/component/pitel_ua_helper.dart';
-import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
-import 'package:plugin_pitel/sip/sip_ua.dart';
+import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
+import 'package:flutter_pitel_voip/component/pitel_rtc_video_renderer.dart';
+import 'package:flutter_pitel_voip/component/pitel_ua_helper.dart';
+import 'package:flutter_pitel_voip/component/sip_pitel_helper_listener.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
+import 'package:flutter_pitel_voip/sip/sip_ua.dart';
 
 class PitelCall implements SipUaHelperListener {
   final PitelLog _logger = PitelLog(tag: 'PitelCall');

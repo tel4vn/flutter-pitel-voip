@@ -6,9 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
-import 'package:plugin_pitel/services/models/pn_push_params.dart';
-import 'package:plugin_pitel/services/sip_info_data.dart';
+import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
+import 'package:flutter_pitel_voip/services/models/pn_push_params.dart';
+import 'package:flutter_pitel_voip/services/sip_info_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_connection_service.dart';

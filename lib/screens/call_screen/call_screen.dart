@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
+import 'package:flutter_pitel_voip/sip/src/sip_ua_helper.dart';
 
 import 'call_page.dart';
 

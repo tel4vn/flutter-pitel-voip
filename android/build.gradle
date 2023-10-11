@@ -1,4 +1,4 @@
-group 'com.pitel.plugin_pitel'
+group 'com.pitel.flutter_pitel_voip'
 version '1.0-SNAPSHOT'
 
 buildscript {

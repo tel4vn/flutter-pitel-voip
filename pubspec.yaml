@@ -1,6 +1,6 @@
 name: flutter_pitel_voip
 description: flutter_pitel_voip is package support for voip call..
-version: 1.0.4
+version: 1.0.5
 homepage: https://github.com/tel4vn/flutter-pitel-voip/tree/1.0.5
 
 environment:
@@ -51,7 +51,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.pitel.plugin_pitel
+        package: com.pitel.flutter_pitel_voip
         pluginClass: PluginPitelPlugin
       ios:
         pluginClass: PluginPitelPlugin

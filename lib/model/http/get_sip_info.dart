@@ -1,4 +1,4 @@
-import 'package:plugin_pitel/model/http/base_header.dart';
+import 'package:flutter_pitel_voip/model/http/base_header.dart';
 
 class GetSipInfoRequest {
   String apiKey;

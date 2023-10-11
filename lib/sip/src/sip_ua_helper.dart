@@ -1,5 +1,5 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:plugin_pitel/sip/src/rtc_session/refer_subscriber.dart';
+import 'package:flutter_pitel_voip/sip/src/rtc_session/refer_subscriber.dart';
 
 import 'event_manager/event_manager.dart';
 import 'message.dart';
