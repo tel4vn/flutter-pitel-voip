@@ -1,0 +1,65 @@
+import 'dart:html';
+import 'dart:js_util' as JSUtils;
+
+import '../logger.dart';
+import '../sip_ua_helper.dart';
+
+typedef OnMessageCallback = void Function(dynamic msg);
+typedef OnCloseCallback = void Function(int? code, String? reason);
+typedef OnOpenCallback = void Function();
+
+class WebSocketImpl {
+  WebSocketImpl(this._url);
+
+  final String _url;
+  WebSocket? _socket;
+  OnOpenCallback? onOpen;
+  OnMessageCallback? onMessage;
+  OnCloseCallback? onClose;
+
+  void connect(
+      {Iterable<String>? protocols,
+      required WebSocketSettings webSocketSettings}) async {
+    logger.info('connect $_url, ${webSocketSettings.extraHeaders}, $protocols');
+    try {
+      _socket = WebSocket(_url, 'sip');
+      _socket!.onOpen.listen((Event e) {
+        onOpen?.call();
+      });
+
+      _socket!.onMessage.listen((MessageEvent e) async {
+        if (e.data is Blob) {
+          dynamic arrayBuffer = await JSUtils.promiseToFuture(
+              JSUtils.callMethod(e.data, 'arrayBuffer', <Object>[]));
+          String message = String.fromCharCodes(arrayBuffer.asUint8List());
+          onMessage?.call(message);
+        } else {
+          onMessage?.call(e.data);
+        }
+      });
+
+      _socket!.onClose.listen((CloseEvent e) {
+        onClose?.call(e.code, e.reason);
+      });
+    } catch (e) {
+      onClose?.call(0, e.toString());
+    }
+  }
+
+  void send(dynamic data) {
+    if (_socket != null && _socket!.readyState == WebSocket.OPEN) {
+      _socket!.send(data);
+      logger.debug('send: \n\n$data');
+    } else {
+      logger.error('WebSocket not connected, message $data not sent');
+    }
+  }
+
+  bool isConnecting() {
+    return _socket != null && _socket!.readyState == WebSocket.CONNECTING;
+  }
+
+  void close() {
+    _socket!.close();
+  }
+}
