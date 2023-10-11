@@ -74,11 +74,12 @@ abstract class HttpService implements ApiWebService {
       }
       throw (response.statusCode);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   void _addHeader(HttpClientRequest request, Map<String, dynamic>? headers) {
+    // ignore: avoid_function_literals_in_foreach_calls
     headers?.keys.forEach((key) {
       request.headers.set(key, headers[key]);
     });

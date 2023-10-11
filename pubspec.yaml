@@ -1,6 +1,7 @@
 name: plugin_pitel
 description: A new flutter plugin project.
 version: 1.0.4
+homepage: https://github.com/tel4vn/flutter-pitel-voip/tree/1.0.5
 
 environment:
   sdk: ">=2.12.0"
@@ -12,7 +13,7 @@ dependencies:
   rxdart: ^0.27.3
 
   crypto: ^3.0.0
-  flutter_webrtc: 0.9.40
+  flutter_webrtc: ^0.9.40
   intl: ^0.18.0
   logger: ^1.0.0
   parser_error: ^0.2.0

@@ -4,7 +4,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:logger/logger.dart';
 import 'package:plugin_pitel/sip/sip_ua.dart';
 import 'package:plugin_pitel/sip/src/config.dart';
-import 'package:plugin_pitel/sip/src/constants.dart' as DartSIP_C;
+import 'package:plugin_pitel/sip/src/constants.dart' as dart_sip_c;
 import 'package:plugin_pitel/sip/src/event_manager/event_manager.dart';
 import 'package:plugin_pitel/sip/src/logger.dart';
 import 'package:plugin_pitel/sip/src/message.dart';
@@ -20,7 +20,7 @@ class PitelUAHelper extends EventManager {
   final Map<String?, Call> _calls = <String?, Call>{};
 
   RegistrationState _registerState =
-      RegistrationState(state: RegistrationStateEnum.NONE);
+      RegistrationState(state: RegistrationStateEnum.none);
 
   set loggingLevel(Level loggingLevel) => Log.loggingLevel = loggingLevel;
 
@@ -109,7 +109,7 @@ class PitelUAHelper extends EventManager {
     _settings!.ha1 = uaSettings.ha1;
     _settings!.display_name = uaSettings.displayName;
     _settings!.authorization_user = uaSettings.authorizationUser;
-    _settings!.user_agent = uaSettings.userAgent ?? DartSIP_C.USER_AGENT;
+    _settings!.user_agent = uaSettings.userAgent ?? dart_sip_c.USER_AGENT;
     _settings!.register = uaSettings.register;
     _settings!.register_expires = uaSettings.register_expires;
     _settings!.register_extra_contact_uri_params =
@@ -147,21 +147,21 @@ class PitelUAHelper extends EventManager {
       _ua!.on(EventRegistered(), (EventRegistered event) {
         logger.debug('registered => ' + event.cause.toString());
         _registerState = RegistrationState(
-            state: RegistrationStateEnum.REGISTERED, cause: event.cause);
+            state: RegistrationStateEnum.registered, cause: event.cause);
         _notifyRegsistrationStateListeners(_registerState);
       });
 
       _ua!.on(EventUnregister(), (EventUnregister event) {
         logger.debug('unregistered => ' + event.cause.toString());
         _registerState = RegistrationState(
-            state: RegistrationStateEnum.UNREGISTERED, cause: event.cause);
+            state: RegistrationStateEnum.unregistered, cause: event.cause);
         _notifyRegsistrationStateListeners(_registerState);
       });
 
       _ua!.on(EventRegistrationFailed(), (EventRegistrationFailed event) {
         logger.debug('registrationFailed => ' + (event.cause.toString()));
         _registerState = RegistrationState(
-            state: RegistrationStateEnum.REGISTRATION_FAILED,
+            state: RegistrationStateEnum.registrationFailed,
             cause: event.cause);
         _notifyRegsistrationStateListeners(_registerState);
       });
@@ -273,7 +273,7 @@ class PitelUAHelper extends EventManager {
     });
     handlers.on(EventStream(), (EventStream event) async {
       // Wating for callscreen ready.
-      Timer(Duration(milliseconds: 100), () {
+      Timer(const Duration(milliseconds: 100), () {
         _notifyCallStateListeners(
             event,
             PitelCallState(PitelCallStateEnum.STREAM,
@@ -357,15 +357,15 @@ class PitelUAHelper extends EventManager {
   }
 
   void _notifyTransportStateListeners(PitelTransportState state) {
-    _sipUaHelperListeners.forEach((SipUaHelperListener listener) {
+    for (var listener in _sipUaHelperListeners) {
       listener.transportStateChanged(state);
-    });
+    }
   }
 
   void _notifyRegsistrationStateListeners(RegistrationState state) {
-    _sipUaHelperListeners.forEach((SipUaHelperListener listener) {
+    for (var listener in _sipUaHelperListeners) {
       listener.registrationStateChanged(state);
-    });
+    }
   }
 
   void _notifyCallStateListeners(CallEvent event, PitelCallState state) {

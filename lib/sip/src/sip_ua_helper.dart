@@ -179,10 +179,10 @@ class PitelCallState {
 }
 
 enum RegistrationStateEnum {
-  NONE,
-  REGISTRATION_FAILED,
-  REGISTERED,
-  UNREGISTERED,
+  none,
+  registrationFailed,
+  registered,
+  unregistered,
 }
 
 class RegistrationState {

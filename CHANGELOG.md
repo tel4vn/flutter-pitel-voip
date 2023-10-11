@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.5 - 2023-10-11
+
+- Update package to pub.dev
+- Fixed bug callId null when hang up
+- Update dependency flutter_webrtc: ^0.9.40
+- Support flutter version 3.10.x
+
 ## 1.0.2 - 2023-06-10
 
 - Minimize package import.

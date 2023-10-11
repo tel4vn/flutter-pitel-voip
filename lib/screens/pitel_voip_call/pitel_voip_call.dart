@@ -122,14 +122,14 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     switch (state.state) {
-      case PitelRegistrationStateEnum.REGISTRATION_FAILED:
+      case PitelRegistrationStateEnum.registrationFailed:
         break;
-      case PitelRegistrationStateEnum.NONE:
-      case PitelRegistrationStateEnum.UNREGISTERED:
+      case PitelRegistrationStateEnum.none:
+      case PitelRegistrationStateEnum.unregistered:
         prefs.setString("REGISTER_STATE", "UNREGISTERED");
         widget.onRegisterState("UNREGISTERED");
         break;
-      case PitelRegistrationStateEnum.REGISTERED:
+      case PitelRegistrationStateEnum.registered:
         prefs.setString("REGISTER_STATE", "REGISTERED");
         widget.onRegisterState("REGISTERED");
         break;
