@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'dart:developer';
 
 import 'package:eraser/eraser.dart';
 import 'package:firebase_core/firebase_core.dart';

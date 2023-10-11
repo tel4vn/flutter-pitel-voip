@@ -1,67 +1,74 @@
 import '../sip_ua.dart';
-import 'constants.dart' as DartSIP_C;
+import 'constants.dart' as dart_sip_c;
 import 'constants.dart';
-import 'exceptions.dart' as Exceptions;
+import 'exceptions.dart' as exceptions;
 import 'grammar.dart';
 import 'logger.dart';
+// ignore: library_prefixes
 import 'socket.dart' as Socket;
 import 'transports/websocket_interface.dart';
 import 'uri.dart';
-import 'utils.dart' as Utils;
+import 'utils.dart' as utils;
 
 // Default settings.
 class PitelSipSettings {
   // SIP authentication.
-  String? authorization_user;
+  String? authorizationUser;
   String? password;
   String? realm;
   String? ha1;
 
   // SIP account.
-  String? display_name;
+  String? displayName;
   dynamic uri;
-  dynamic contact_uri;
+  dynamic contactUri;
   //! sip_domain
-  dynamic sip_domain;
-  String user_agent = DartSIP_C.USER_AGENT;
+  dynamic sipDomain;
+  String userAgent = dart_sip_c.USER_AGENT;
 
   // SIP instance id (GRUU).
-  String? instance_id = null;
+  String? instanceId;
 
   // Preloaded SIP Route header field.
-  bool use_preloaded_route = true;
+  bool usePreloadedRoute = true;
 
   // Session parameters.
-  bool session_timers = true;
-  SipMethod session_timers_refresh_method = SipMethod.UPDATE;
-  int no_answer_timeout = 60;
+  bool sessionTimers = true;
+  SipMethod sessionTimersRefreshMethod = SipMethod.UPDATE;
+  int noAnswerTimeout = 60;
 
   // Registration parameters.
   bool? register = true;
-  int? register_expires = 600;
-  dynamic registrar_server;
-  Map<String, dynamic>? register_extra_contact_uri_params;
+  int? registerExpires = 600;
+  dynamic registrarServer;
+  Map<String, dynamic>? registerExtraContactUriParams;
 
   // Dtmf mode
-  DtmfMode dtmf_mode = DtmfMode.INFO;
+  DtmfMode dtmfMode = DtmfMode.INFO;
 
   // Connection options.
   List<WebSocketInterface>? sockets = <WebSocketInterface>[];
+  // ignore: non_constant_identifier_names
   int connection_recovery_max_interval = 30;
+  // ignore: non_constant_identifier_names
   int connection_recovery_min_interval = 2;
 
   /*
    * Host address.
    * Value to be set in Via sent_by and host part of Contact FQDN.
   */
-  String? via_host = '${Utils.createRandomToken(12)}.invalid';
+  // ignore: non_constant_identifier_names
+  String? via_host = '${utils.createRandomToken(12)}.invalid';
 
   // DartSIP ID
+  // ignore: non_constant_identifier_names
   String? jssip_id;
 
+  // ignore: non_constant_identifier_names
   String? hostport_params;
 
   /// ICE Gathering Timeout (in millisecond).
+  // ignore: non_constant_identifier_names
   int ice_gathering_timeout = 500;
 }
 
@@ -79,14 +86,14 @@ class Checks {
        *  List of Objects and Socket: [{socket: socket1}, socket2]
        */
       List<WebSocketInterface> copy = <WebSocketInterface>[];
-      if (sockets is List && sockets!.length > 0) {
+      if (sockets is List && sockets!.isNotEmpty) {
         for (WebSocketInterface socket in sockets) {
           if (Socket.isSocket(socket)) {
             copy.add(socket);
           }
         }
       } else {
-        throw Exceptions.ConfigurationError('sockets', sockets);
+        throw exceptions.ConfigurationError('sockets', sockets);
       }
 
       dst!.sockets = copy;
@@ -94,16 +101,16 @@ class Checks {
     'uri': (PitelSipSettings src, PitelSipSettings? dst) {
       dynamic uri = src.uri;
       if (src.uri == null && dst!.uri == null) {
-        throw Exceptions.ConfigurationError('uri', null);
+        throw exceptions.ConfigurationError('uri', null);
       }
       if (!uri.contains(RegExp(r'^sip:', caseSensitive: false))) {
-        uri = '${DartSIP_C.SIP}:$uri';
+        uri = '${dart_sip_c.SIP}:$uri';
       }
       dynamic parsed = URI.parse(uri);
       if (parsed == null) {
-        throw Exceptions.ConfigurationError('uri', parsed);
+        throw exceptions.ConfigurationError('uri', parsed);
       } else if (parsed.user == null) {
-        throw Exceptions.ConfigurationError('uri', parsed);
+        throw exceptions.ConfigurationError('uri', parsed);
       } else {
         dst!.uri = parsed;
       }
@@ -113,95 +120,79 @@ class Checks {
       optional =
       <String, Null Function(PitelSipSettings src, PitelSipSettings? dst)>{
     'authorization_user': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? authorization_user = src.authorization_user;
-      if (authorization_user == null) return;
-      if (Grammar.parse('"$authorization_user"', 'quoted_string') == -1) {
+      String? authorizationUser = src.authorizationUser;
+      if (authorizationUser == null) return;
+      if (Grammar.parse('"$authorizationUser"', 'quoted_string') == -1) {
         return;
       } else {
-        dst!.authorization_user = authorization_user;
+        dst!.authorizationUser = authorizationUser;
       }
     },
     //! sip_domain
     'sip_domain': (PitelSipSettings src, PitelSipSettings? dst) {
-      String sip_domain = src.sip_domain;
-      if (sip_domain == null) return;
-      if (sip_domain is String) {
-        dst!.sip_domain = sip_domain;
-      }
+      String sipDomain = src.sipDomain;
+      dst!.sipDomain = sipDomain;
     },
     'user_agent': (PitelSipSettings src, PitelSipSettings? dst) {
-      String user_agent = src.user_agent;
-      if (user_agent == null) return;
-      if (user_agent is String) {
-        dst!.user_agent = user_agent;
-      }
+      String userAgent = src.userAgent;
+      dst!.userAgent = userAgent;
     },
     'connection_recovery_max_interval':
         (PitelSipSettings src, PitelSipSettings? dst) {
-      int connection_recovery_max_interval =
-          src.connection_recovery_max_interval;
-      if (connection_recovery_max_interval == null) return;
-      if (connection_recovery_max_interval > 0) {
-        dst!.connection_recovery_max_interval =
-            connection_recovery_max_interval;
+      int connectionRecoveryMaxInterval = src.connection_recovery_max_interval;
+      if (connectionRecoveryMaxInterval > 0) {
+        dst!.connection_recovery_max_interval = connectionRecoveryMaxInterval;
       }
     },
     'connection_recovery_min_interval':
         (PitelSipSettings src, PitelSipSettings? dst) {
-      int connection_recovery_min_interval =
-          src.connection_recovery_min_interval;
-      if (connection_recovery_min_interval == null) return;
-      if (connection_recovery_min_interval > 0) {
-        dst!.connection_recovery_min_interval =
-            connection_recovery_min_interval;
+      int connectionRecoveryMinInterval = src.connection_recovery_min_interval;
+      if (connectionRecoveryMinInterval > 0) {
+        dst!.connection_recovery_min_interval = connectionRecoveryMinInterval;
       }
     },
     'contact_uri': (PitelSipSettings src, PitelSipSettings? dst) {
-      dynamic contact_uri = src.contact_uri;
-      if (contact_uri == null) return;
-      if (contact_uri is String) {
-        dynamic uri = Grammar.parse(contact_uri, 'SIP_URI');
+      dynamic contactUri = src.contactUri;
+      if (contactUri == null) return;
+      if (contactUri is String) {
+        dynamic uri = Grammar.parse(contactUri, 'SIP_URI');
         if (uri != -1) {
-          dst!.contact_uri = uri;
+          dst!.contactUri = uri;
         }
       }
     },
     'display_name': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? display_name = src.display_name;
-      if (display_name == null) return;
-      dst!.display_name = display_name;
+      String? displayName = src.displayName;
+      if (displayName == null) return;
+      dst!.displayName = displayName;
     },
     'instance_id': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? instance_id = src.instance_id;
-      if (instance_id == null) return;
-      if (instance_id.contains(RegExp(r'^uuid:', caseSensitive: false))) {
-        instance_id = instance_id.substring(5);
+      String? instanceId = src.instanceId;
+      if (instanceId == null) return;
+      if (instanceId.contains(RegExp(r'^uuid:', caseSensitive: false))) {
+        instanceId = instanceId.substring(5);
       }
-      if (Grammar.parse(instance_id, 'uuid') == -1) {
+      if (Grammar.parse(instanceId, 'uuid') == -1) {
         return;
       } else {
-        dst!.instance_id = instance_id;
+        dst!.instanceId = instanceId;
       }
     },
     'no_answer_timeout': (PitelSipSettings src, PitelSipSettings? dst) {
-      int no_answer_timeout = src.no_answer_timeout;
-      if (no_answer_timeout == null) return;
-      if (no_answer_timeout > 0) {
-        dst!.no_answer_timeout = no_answer_timeout;
+      int noAnswerTimeout = src.noAnswerTimeout;
+      if (noAnswerTimeout > 0) {
+        dst!.noAnswerTimeout = noAnswerTimeout;
       }
     },
     'session_timers': (PitelSipSettings src, PitelSipSettings? dst) {
-      bool session_timers = src.session_timers;
-      if (session_timers == null) return;
-      if (session_timers is bool) {
-        dst!.session_timers = session_timers;
-      }
+      bool sessionTimers = src.sessionTimers;
+      dst!.sessionTimers = sessionTimers;
     },
     'session_timers_refresh_method':
         (PitelSipSettings src, PitelSipSettings? dst) {
-      SipMethod method = src.session_timers_refresh_method;
+      SipMethod method = src.sessionTimersRefreshMethod;
       if (method == SipMethod.INVITE || method == SipMethod.UPDATE) {
-        dst!.session_timers_refresh_method = method;
+        dst!.sessionTimersRefreshMethod = method;
       }
     },
     'password': (PitelSipSettings src, PitelSipSettings? dst) {
@@ -222,53 +213,42 @@ class Checks {
     'register': (PitelSipSettings src, PitelSipSettings? dst) {
       bool? register = src.register;
       if (register == null) return;
-      if (register is bool) {
-        dst!.register = register;
-      }
+      dst!.register = register;
     },
     'register_expires': (PitelSipSettings src, PitelSipSettings? dst) {
-      int? register_expires = src.register_expires;
-      if (register_expires == null) return;
-      if (register_expires > 0) {
-        dst!.register_expires = register_expires;
+      int? registerExpires = src.registerExpires;
+      if (registerExpires == null) return;
+      if (registerExpires > 0) {
+        dst!.registerExpires = registerExpires;
       }
     },
     'registrar_server': (PitelSipSettings src, PitelSipSettings? dst) {
-      dynamic registrar_server = src.registrar_server;
-      if (registrar_server == null) return;
-      if (!registrar_server.contains(RegExp(r'^sip:', caseSensitive: false))) {
-        registrar_server = '${DartSIP_C.SIP}:$registrar_server';
+      dynamic registrarServer = src.registrarServer;
+      if (registrarServer == null) return;
+      if (!registrarServer.contains(RegExp(r'^sip:', caseSensitive: false))) {
+        registrarServer = '${dart_sip_c.SIP}:$registrarServer';
       }
-      dynamic parsed = URI.parse(registrar_server);
+      dynamic parsed = URI.parse(registrarServer);
       if (parsed == null || parsed.user != null) {
         return;
       } else {
-        dst!.registrar_server = parsed;
+        dst!.registrarServer = parsed;
       }
     },
     'register_extra_contact_uri_params':
         (PitelSipSettings src, PitelSipSettings? dst) {
-      Map<String, dynamic>? register_extra_contact_uri_params =
-          src.register_extra_contact_uri_params;
-      if (register_extra_contact_uri_params == null) return;
-      if (register_extra_contact_uri_params is Map<String, dynamic>) {
-        dst!.register_extra_contact_uri_params =
-            register_extra_contact_uri_params;
-      }
+      Map<String, dynamic>? registerExtraContactUriParams =
+          src.registerExtraContactUriParams;
+      if (registerExtraContactUriParams == null) return;
+      dst!.registerExtraContactUriParams = registerExtraContactUriParams;
     },
     'use_preloaded_route': (PitelSipSettings src, PitelSipSettings? dst) {
-      bool use_preloaded_route = src.use_preloaded_route;
-      if (use_preloaded_route == null) return;
-      if (use_preloaded_route is bool) {
-        dst!.use_preloaded_route = use_preloaded_route;
-      }
+      bool usePreloadedRoute = src.usePreloadedRoute;
+      dst!.usePreloadedRoute = usePreloadedRoute;
     },
     'dtmf_mode': (PitelSipSettings src, PitelSipSettings? dst) {
-      DtmfMode dtmf_mode = src.dtmf_mode;
-      if (dtmf_mode == null) return;
-      if (dtmf_mode is DtmfMode) {
-        dst!.dtmf_mode = dtmf_mode;
-      }
+      DtmfMode dtmfMode = src.dtmfMode;
+      dst!.dtmfMode = dtmfMode;
     },
   };
 }
@@ -292,6 +272,6 @@ void load(PitelSipSettings src, PitelSipSettings? dst) {
     });
   } catch (e) {
     logger.error('Failed to load config: ${e.toString()}');
-    throw e;
+    rethrow;
   }
 }

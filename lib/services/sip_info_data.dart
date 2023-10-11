@@ -109,7 +109,7 @@ class SipInfoData {
       sipServer: sipServer,
       username: accountName,
       password: authPass,
-      display_name: displayName,
+      displayName: displayName,
       enabled: true,
     );
 

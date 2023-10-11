@@ -1,13 +1,11 @@
-import 'dart:async';
+// ignore_for_file: unnecessary_null_comparison
 
 import '../constants.dart';
 import '../dialog.dart';
 import '../event_manager/event_manager.dart';
 import '../event_manager/internal_events.dart';
 import '../request_sender.dart';
-import '../rtc_session.dart' as RTCSession;
 import '../sip_message.dart';
-import '../timers.dart';
 import '../transactions/transaction_base.dart';
 import '../ua.dart';
 
@@ -27,7 +25,6 @@ class DialogRequestSender {
   late OutgoingRequest _request;
   late EventManager _eventHandlers;
   late bool _reattempt;
-  Timer? _reattemptTimer;
   late RequestSender _request_sender;
   RequestSender get request_sender => _request_sender;
   OutgoingRequest get request => _request;
@@ -89,13 +86,6 @@ class DialogRequestSender {
       } else {
         _dialog.local_seqnum = _dialog.local_seqnum! + 1;
         _request.cseq = _dialog.local_seqnum!.toInt();
-        _reattemptTimer = setTimeout(() {
-          // TODO(cloudwebrtc): look at dialog state instead.
-          if (_dialog.owner!.status != RTCSession.C.STATUS_TERMINATED) {
-            _reattempt = true;
-            _request_sender.send();
-          }
-        }, 1000);
       }
     } else if (response.status_code >= 200 && response.status_code < 300) {
       _eventHandlers.emit(EventOnSuccessResponse(response: response));

@@ -5,7 +5,6 @@ import 'package:plugin_pitel/model/http/get_profile.dart';
 import 'package:plugin_pitel/model/http/get_sip_info.dart';
 import 'package:plugin_pitel/model/http/login.dart';
 import 'package:plugin_pitel/model/http/push_notif_model.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_profile.dart';
 import 'package:plugin_pitel/web_service/api_web_service.dart';
 import 'package:plugin_pitel/web_service/portal_service.dart';
@@ -16,7 +15,6 @@ class _PitelAPIImplement implements PitelApi {
   final ApiWebService _sdkService = SDKService.getInstance();
   final ApiWebService _portalService = PortalService.getInstance();
   final ApiWebService _pushNotifService = PushNotifService.getInstance();
-  final PitelLog _logger = PitelLog(tag: 'PitelApi');
 
   @override
   Future<String> login(
@@ -142,9 +140,7 @@ class _PitelAPIImplement implements PitelApi {
 abstract class PitelApi {
   static PitelApi? _pitelApi;
   static PitelApi getInstance() {
-    if (_pitelApi == null) {
-      _pitelApi = _PitelAPIImplement();
-    }
+    _pitelApi ??= _PitelAPIImplement();
     return _pitelApi!;
   }
 

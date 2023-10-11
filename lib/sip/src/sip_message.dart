@@ -15,16 +15,14 @@ import 'ua.dart';
 import 'uri.dart';
 import 'utils.dart' as utils;
 
-/**
- * -param {String} method request method
- * -param {String} ruri request uri
- * -param {UA} ua
- * -param {Object} params parameters that will have priority over ua.configuration parameters:
- * <br>
- *  - cseq, call_id, from_tag, from_uri, from_display_name, to_uri, to_tag, route_set
- * -param {Object} [headers] extra headers
- * -param {String} [body]
- */
+/// -param {String} method request method
+/// -param {String} ruri request uri
+/// -param {UA} ua
+/// -param {Object} params parameters that will have priority over ua.configuration parameters:
+/// <br>
+///  - cseq, call_id, from_tag, from_uri, from_display_name, to_uri, to_tag, route_set
+/// -param {Object} [headers] extra headers
+/// -param {String} [body]
 class OutgoingRequest {
   OutgoingRequest(this.method, this.ruri, this.ua,
       [Map<String, dynamic>? params,
@@ -46,11 +44,11 @@ class OutgoingRequest {
     // Route.
     if (params['route_set'] != null) {
       setHeader('route', params['route_set']);
-    } else if (ua!.configuration!.use_preloaded_route) {
+    } else if (ua!.configuration!.usePreloadedRoute) {
       //! sip_domain
       // setHeader('route', '<${ua!.transport!.sip_uri};sipml5-outbound;lr>');
       setHeader('route',
-          '<sip:${ua!.configuration!.sip_domain};lr;sipml5-outbound;transport=udp>');
+          '<sip:${ua!.configuration!.sipDomain};lr;sipml5-outbound;transport=udp>');
     }
 
     // Via.
@@ -79,8 +77,8 @@ class OutgoingRequest {
 
     if (params['from_display_name'] != null) {
       display_name = params['from_display_name'];
-    } else if (ua!.configuration!.display_name != null) {
-      display_name = ua!.configuration!.display_name;
+    } else if (ua!.configuration!.displayName != null) {
+      display_name = ua!.configuration!.displayName;
     } else {
       display_name = null;
     }
@@ -246,7 +244,7 @@ class OutgoingRequest {
         supported.add('gruu');
         break;
       case SipMethod.INVITE:
-        if (ua!.configuration!.session_timers) {
+        if (ua!.configuration!.sessionTimers) {
           supported.add('timer');
         }
         if (ua!.contact!.pub_gruu != null || ua!.contact!.temp_gruu != null) {
@@ -256,7 +254,7 @@ class OutgoingRequest {
         supported.add('replaces');
         break;
       case SipMethod.UPDATE:
-        if (ua!.configuration!.session_timers) {
+        if (ua!.configuration!.sessionTimers) {
           supported.add('timer');
         }
         supported.add('ice');
@@ -267,7 +265,7 @@ class OutgoingRequest {
 
     supported.add('outbound');
 
-    String userAgent = ua!.configuration!.user_agent;
+    String userAgent = ua!.configuration!.userAgent;
 
     // Allow.
     msg += 'Allow: ${DartSIP_C.ALLOWED_METHODS}\r\n';
@@ -592,7 +590,7 @@ class IncomingRequest extends IncomingMessage {
     // Supported.
     switch (method) {
       case SipMethod.INVITE:
-        if (ua!.configuration!.session_timers) {
+        if (ua!.configuration!.sessionTimers) {
           supported.add('timer');
         }
         if (ua!.contact!.pub_gruu != null || ua!.contact!.temp_gruu != null) {
@@ -602,7 +600,7 @@ class IncomingRequest extends IncomingMessage {
         supported.add('replaces');
         break;
       case SipMethod.UPDATE:
-        if (ua!.configuration!.session_timers) {
+        if (ua!.configuration!.sessionTimers) {
           supported.add('timer');
         }
         if (body != null) {

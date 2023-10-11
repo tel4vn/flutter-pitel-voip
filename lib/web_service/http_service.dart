@@ -32,7 +32,7 @@ abstract class HttpService implements ApiWebService {
       }
       throw (response.statusCode);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -50,7 +50,7 @@ abstract class HttpService implements ApiWebService {
       }
       throw (response.statusCode);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 

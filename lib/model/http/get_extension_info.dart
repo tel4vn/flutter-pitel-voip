@@ -41,7 +41,7 @@ class GetExtensionResponse {
   SipServer sipServer;
   String username;
   String password;
-  String display_name;
+  String displayName;
   bool enabled;
 
   GetExtensionResponse({
@@ -49,7 +49,7 @@ class GetExtensionResponse {
     required this.sipServer,
     required this.username,
     required this.password,
-    required this.display_name,
+    required this.displayName,
     required this.enabled,
   });
 
@@ -59,7 +59,7 @@ class GetExtensionResponse {
       'sip_server': sipServer.toMap(),
       'username': username,
       'password': password,
-      'display_name': display_name,
+      'display_name': displayName,
       'enabled': enabled,
     };
   }
@@ -72,7 +72,7 @@ class GetExtensionResponse {
       sipServer: SipServer.fromMap(map['sip_server'] as Map<String, dynamic>),
       username: map['username'] as String,
       password: map['password'] as String,
-      display_name: map['display_name'] as String,
+      displayName: map['display_name'] as String,
       enabled: map['enabled'] is String
           ? map['enabled'].toLowerCase() == 'true'
           : map['enabled'] as bool,

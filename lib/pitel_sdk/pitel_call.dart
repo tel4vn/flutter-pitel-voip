@@ -111,10 +111,6 @@ class PitelCall implements SipUaHelperListener {
     _logger.info('callDirection ${call.direction}');
     switch (pitelCallState.state) {
       case PitelCallStateEnum.CALL_INITIATION:
-        print(_sipPitelHelperListener);
-        print('================_sipPitelHelperListener================');
-        print(_sipPitelHelperListener);
-        print('==================================');
         switch (call.direction) {
           case 'OUTGOING':
             for (var element in _sipPitelHelperListener) {
@@ -126,8 +122,6 @@ class PitelCall implements SipUaHelperListener {
               if (isBusy) {
                 _releaseCall(callId: call.id);
               } else {
-                print(
-                    '================register===========CALL_INITIATION=====');
                 element.onCallReceived(call.id!);
               }
             }
@@ -282,7 +276,6 @@ class PitelCall implements SipUaHelperListener {
   }
 
   bool sendDTMF(String tone, {String? callId}) {
-    print('Dtmf tone => $tone');
     if (callId == null) {
       if (!callCurrentIsEmpty()) {
         Call? call = _sipuaHelper.findCall(_callIdCurrent!);
@@ -410,26 +403,26 @@ class PitelCall implements SipUaHelperListener {
 
   @override
   void onNewMessage(SIPMessageRequest msg) {
-    _sipPitelHelperListener.forEach((element) {
+    for (var element in _sipPitelHelperListener) {
       final message = PitelSIPMessageRequest(
           msg.message!, msg.originator ?? "", msg.request);
       element.onNewMessage(message);
-    });
+    }
   }
 
   @override
   void registrationStateChanged(RegistrationState state) {
-    _sipPitelHelperListener.forEach((element) {
+    for (var element in _sipPitelHelperListener) {
       final registerState = PitelRegistrationState(state);
       element.registrationStateChanged(registerState);
-    });
+    }
   }
 
   @override
   void transportStateChanged(PitelTransportState state) {
-    _sipPitelHelperListener.forEach((element) {
+    for (var element in _sipPitelHelperListener) {
       element.transportStateChanged(state);
-    });
+    }
   }
 
   void register(PitelSettings settings) {

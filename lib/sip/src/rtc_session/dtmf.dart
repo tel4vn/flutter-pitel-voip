@@ -46,8 +46,8 @@ class DTMF extends EventManager {
     _direction = 'outgoing';
 
     // Check RTCSession Status.
-    if (_session.status != rtc.C.STATUS_CONFIRMED &&
-        _session.status != rtc.C.STATUS_WAITING_FOR_ACK) {
+    if (_session.status != rtc.C.statusConfirmed &&
+        _session.status != rtc.C.statusWaitingForAck) {
       throw Exceptions.InvalidStateError(_session.status);
     }
 

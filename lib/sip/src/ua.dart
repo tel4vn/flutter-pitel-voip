@@ -85,8 +85,6 @@ class PitelUA extends EventManager {
   PitelUA(PitelSipSettings? configuration) {
     logger.debug('new() [configuration:${configuration.toString()}]');
 
-    _cache = <String, dynamic>{'credentials': <dynamic>{}};
-
     _configuration = PitelSipSettings();
     _dynConfiguration = DynamicSettings();
     _dialogs = <String, Dialog>{};
@@ -98,11 +96,9 @@ class PitelUA extends EventManager {
     _transport = null;
     _contact = null;
     _status = C.STATUS_INIT;
-    _error = null;
     _transactions = TransactionBag();
 
     // Custom UA empty object for high level use.
-    _data = <String, dynamic>{};
 
     _closeTimer = null;
 
@@ -116,7 +112,6 @@ class PitelUA extends EventManager {
       _loadConfig(configuration);
     } catch (e) {
       _status = C.STATUS_NOT_READY;
-      _error = C.CONFIGURATION_ERROR;
       throw e;
     }
 
@@ -124,7 +119,6 @@ class PitelUA extends EventManager {
     _registrator = Registrator(this);
   }
 
-  Map<String, dynamic>? _cache;
   PitelSipSettings? _configuration;
   DynamicSettings? _dynConfiguration;
   late Map<String, Dialog> _dialogs;
@@ -133,9 +127,7 @@ class PitelUA extends EventManager {
   Transport? _transport;
   Contact? _contact;
   int? _status;
-  int? _error;
   TransactionBag _transactions = TransactionBag();
-  Map<String, dynamic>? _data;
   Timer? _closeTimer;
   late Registrator _registrator;
 
@@ -384,7 +376,7 @@ class PitelUA extends EventManager {
 
       case 'display_name':
         {
-          _configuration!.display_name = value;
+          _configuration!.displayName = value;
           break;
         }
 
@@ -709,13 +701,13 @@ class PitelUA extends EventManager {
     // Post Configuration Process.
 
     // Allow passing 0 number as display_name.
-    if (_configuration!.display_name is num &&
-        (_configuration!.display_name as num?) == 0) {
-      _configuration!.display_name = '0';
+    if (_configuration!.displayName is num &&
+        (_configuration!.displayName as num?) == 0) {
+      _configuration!.displayName = '0';
     }
 
     // Instance-id for GRUU.
-    _configuration!.instance_id ??= Utils.newUUID();
+    _configuration!.instanceId ??= Utils.newUUID();
 
     // Jssip_id instance parameter. Static random tag of length 5.
     _configuration!.jssip_id = Utils.createRandomToken(5);
@@ -758,35 +750,35 @@ class PitelUA extends EventManager {
 
     // Check whether authorization_user is explicitly defined.
     // Take '_configuration.uri.user' value if not.
-    _configuration!.authorization_user ??= _configuration!.uri.user;
+    _configuration!.authorizationUser ??= _configuration!.uri.user;
 
     // If no 'registrar_server' is set use the 'uri' value without user portion and
     // without URI params/headers.
-    if (_configuration!.registrar_server == null) {
+    if (_configuration!.registrarServer == null) {
       URI registrar_server = _configuration!.uri.clone();
       registrar_server.user = null;
       registrar_server.clearParams();
       registrar_server.clearHeaders();
-      _configuration!.registrar_server = registrar_server;
+      _configuration!.registrarServer = registrar_server;
     }
 
     // User no_answer_timeout.
-    _configuration!.no_answer_timeout *= 1000;
+    _configuration!.noAnswerTimeout *= 1000;
 
     // Via Host.
-    if (_configuration!.contact_uri != null) {
-      _configuration!.via_host = _configuration!.contact_uri.host;
+    if (_configuration!.contactUri != null) {
+      _configuration!.via_host = _configuration!.contactUri.host;
     }
     // Contact URI.
     else {
-      _configuration!.contact_uri = URI(
+      _configuration!.contactUri = URI(
           'sip',
           Utils.createRandomToken(8),
           _configuration!.via_host,
           null,
           <dynamic, dynamic>{'transport': transport});
     }
-    _contact = Contact(_configuration!.contact_uri);
+    _contact = Contact(_configuration!.contactUri);
     return;
   }
 
@@ -807,7 +799,6 @@ class PitelUA extends EventManager {
       return;
     }
     _status = C.STATUS_READY;
-    _error = null;
 
     emit(EventSocketConnected(socket: transport.socket));
 
@@ -831,7 +822,6 @@ class PitelUA extends EventManager {
 
     if (_status != C.STATUS_USER_CLOSED) {
       _status = C.STATUS_NOT_READY;
-      _error = C.NETWORK_ERROR;
     }
   }
 

@@ -102,20 +102,20 @@ class PitelUAHelper extends EventManager {
         uaSettings.webSocketUrl, uaSettings.webSocketSettings);
     _settings!.sockets = <WebSocketInterface>[socket];
     _settings!.uri = uaSettings.uri;
-    _settings!.contact_uri = uaSettings.contactUri;
+    _settings!.contactUri = uaSettings.contactUri;
     _settings!.password = uaSettings.password;
     //! sip_domain
-    _settings!.sip_domain = uaSettings.sipDomain;
+    _settings!.sipDomain = uaSettings.sipDomain;
     _settings!.ha1 = uaSettings.ha1;
-    _settings!.display_name = uaSettings.displayName;
-    _settings!.authorization_user = uaSettings.authorizationUser;
-    _settings!.user_agent = uaSettings.userAgent ?? dart_sip_c.USER_AGENT;
+    _settings!.displayName = uaSettings.displayName;
+    _settings!.authorizationUser = uaSettings.authorizationUser;
+    _settings!.userAgent = uaSettings.userAgent ?? dart_sip_c.USER_AGENT;
     _settings!.register = uaSettings.register;
-    _settings!.register_expires = uaSettings.register_expires;
-    _settings!.register_extra_contact_uri_params =
+    _settings!.registerExpires = uaSettings.register_expires;
+    _settings!.registerExtraContactUriParams =
         uaSettings.registerParams.extraContactUriParams;
-    _settings!.dtmf_mode = uaSettings.dtmfMode;
-    _settings!.session_timers = uaSettings.sessionTimers;
+    _settings!.dtmfMode = uaSettings.dtmfMode;
+    _settings!.sessionTimers = uaSettings.sessionTimers;
     _settings!.ice_gathering_timeout = uaSettings.iceGatheringTimeout;
 
     try {

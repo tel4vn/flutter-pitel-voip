@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:plugin_pitel/config/pitel_config.dart';
 import 'package:plugin_pitel/model/http/get_extension_info.dart';
 import 'package:plugin_pitel/model/http/push_notif_model.dart';
@@ -12,10 +11,8 @@ import 'package:plugin_pitel/pitel_sdk/pitel_api.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/services/models/pn_push_params.dart';
-import 'package:plugin_pitel/sip/src/sanity_check.dart';
 import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
 import 'package:plugin_pitel/voip_push/device_information.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pitel_profile.dart';
 
@@ -113,7 +110,7 @@ class PitelClient {
     _sipServer = extensionResponse.sipServer;
     _username = extensionResponse.username;
     _password = extensionResponse.password;
-    _displayName = extensionResponse.display_name;
+    _displayName = extensionResponse.displayName;
     _userAgent = extensionResponse.sipServer.userAgent ?? 'Pitel Connect';
     if (isTest) {
       _username = usernameTest;
@@ -183,7 +180,9 @@ class PitelClient {
       _logger.info('token - $_token');
       return true;
     } catch (err) {
-      print(err);
+      if (kDebugMode) {
+        print(err);
+      }
       return false;
     }
   }
@@ -195,7 +194,9 @@ class PitelClient {
       // _logger.info('profile ${profileUser.toString()}');
       return true;
     } catch (err) {
-      print(err);
+      if (kDebugMode) {
+        print(err);
+      }
       return false;
     }
   }
@@ -204,7 +205,7 @@ class PitelClient {
     try {
       final pitelToken = await _pitelApi.getSipInfo(
           token: _token,
-          apiKey: PitelConfigure.API_KEY,
+          apiKey: PitelConfigure.apiKey,
           sipUsername: profileUser.sipAccount.sipUserName);
       _pitelToken = pitelToken;
       _logger.info('pitelToken $_pitelToken');
@@ -225,7 +226,7 @@ class PitelClient {
         _sipServer = sipResponse.sipServer;
         _username = sipResponse.username;
         _password = sipResponse.password;
-        _displayName = sipResponse.display_name;
+        _displayName = sipResponse.displayName;
         if (isTest) {
           _username = usernameTest;
           _password = passwordTest;

@@ -1,20 +1,22 @@
+// ignore_for_file: unused_field
+
 import 'dart:async';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sdp_transform/sdp_transform.dart' as sdp_transform;
 
-import 'constants.dart' as DartSIP_C;
+import 'constants.dart' as dart_sip_c;
 import 'constants.dart';
 import 'dialog.dart';
 import 'event_manager/event_manager.dart';
 import 'event_manager/internal_events.dart';
-import 'exceptions.dart' as Exceptions;
+import 'exceptions.dart' as exceptions;
 import 'logger.dart';
 import 'name_addr_header.dart';
 import 'request_sender.dart';
-import 'rtc_session/dtmf.dart' as RTCSession_DTMF;
+import 'rtc_session/dtmf.dart' as rtc_session_dtfm;
 import 'rtc_session/dtmf.dart';
-import 'rtc_session/info.dart' as RTCSession_Info;
+import 'rtc_session/info.dart' as rtc_session_info;
 import 'rtc_session/info.dart';
 import 'rtc_session/refer_notifier.dart';
 import 'rtc_session/refer_subscriber.dart';
@@ -28,21 +30,19 @@ import 'utils.dart' as utils;
 
 class C {
   // RTCSession states.
-  static const int STATUS_NULL = 0;
-  static const int STATUS_INVITE_SENT = 1;
-  static const int STATUS_1XX_RECEIVED = 2;
-  static const int STATUS_INVITE_RECEIVED = 3;
-  static const int STATUS_WAITING_FOR_ANSWER = 4;
-  static const int STATUS_ANSWERED = 5;
-  static const int STATUS_WAITING_FOR_ACK = 6;
-  static const int STATUS_CANCELED = 7;
-  static const int STATUS_TERMINATED = 8;
-  static const int STATUS_CONFIRMED = 9;
+  static const int statusNull = 0;
+  static const int statusInviteSent = 1;
+  static const int status1xxReceived = 2;
+  static const int statusInviteReceived = 3;
+  static const int statusWaitingForAnswer = 4;
+  static const int statusAnswered = 5;
+  static const int statusWaitingForAck = 6;
+  static const int statusCanceled = 7;
+  static const int statusTerminated = 8;
+  static const int statusConfirmed = 9;
 }
 
-/**
- * Local variables.
- */
+/// Local variables.
 const List<String?> holdMediaTypes = <String?>['audio', 'video'];
 
 class SIPTimers {
@@ -70,7 +70,7 @@ class RTCSession extends EventManager {
 
     _id = null;
     _ua = ua;
-    _status = C.STATUS_NULL;
+    _status = C.statusNull;
     _dialog = null;
     _earlyDialogs = <String?, Dialog>{};
     _contact = null;
@@ -123,9 +123,9 @@ class RTCSession extends EventManager {
 
     // Session Timers (RFC 4028).
     _sessionTimers = RFC4028Timers(
-        _ua!.configuration!.session_timers,
-        _ua!.configuration!.session_timers_refresh_method,
-        DartSIP_C.SESSION_EXPIRES,
+        _ua!.configuration!.sessionTimers,
+        _ua!.configuration!.sessionTimersRefreshMethod,
+        dart_sip_c.SESSION_EXPIRES,
         null,
         false,
         false,
@@ -182,12 +182,10 @@ class RTCSession extends EventManager {
 
   late Function(IncomingRequest) receiveRequest;
 
-  /**
-   * User API
-   */
+  /// User API
 
   // Expose session failed/ended causes as a property of the RTCSession instance.
-  Type get causes => DartSIP_C.CausesType;
+  Type get causes => dart_sip_c.CausesType;
 
   String? get id => _id;
 
@@ -216,11 +214,11 @@ class RTCSession extends EventManager {
 
   bool isInProgress() {
     switch (_status) {
-      case C.STATUS_NULL:
-      case C.STATUS_INVITE_SENT:
-      case C.STATUS_1XX_RECEIVED:
-      case C.STATUS_INVITE_RECEIVED:
-      case C.STATUS_WAITING_FOR_ANSWER:
+      case C.statusNull:
+      case C.statusInviteSent:
+      case C.status1xxReceived:
+      case C.statusInviteReceived:
+      case C.statusWaitingForAnswer:
         return true;
       default:
         return false;
@@ -229,9 +227,9 @@ class RTCSession extends EventManager {
 
   bool isEstablished() {
     switch (_status) {
-      case C.STATUS_ANSWERED:
-      case C.STATUS_WAITING_FOR_ACK:
-      case C.STATUS_CONFIRMED:
+      case C.statusAnswered:
+      case C.statusWaitingForAck:
+      case C.statusConfirmed:
         return true;
       default:
         return false;
@@ -240,8 +238,8 @@ class RTCSession extends EventManager {
 
   bool isEnded() {
     switch (_status) {
-      case C.STATUS_CANCELED:
-      case C.STATUS_TERMINATED:
+      case C.statusCanceled:
+      case C.statusTerminated:
         return true;
       default:
         return false;
@@ -281,34 +279,34 @@ class RTCSession extends EventManager {
 
     // Check target.
     if (target == null) {
-      throw Exceptions.TypeError('Not enough arguments');
+      throw exceptions.TypeError('Not enough arguments');
     }
 
     // Check Session Status.
-    if (_status != C.STATUS_NULL) {
-      throw Exceptions.InvalidStateError(_status);
+    if (_status != C.statusNull) {
+      throw exceptions.InvalidStateError(_status);
     }
 
     // Check WebRTC support.
     // TODO(cloudwebrtc): change support for flutter-webrtc
     //if (RTCPeerConnection == null)
     //{
-    //  throw Exceptions.NotSupportedError('WebRTC not supported');
+    //  throw exceptions.NotSupportedError('WebRTC not supported');
     //}
 
     // Check target validity.
     target = _ua!.normalizeTarget(target);
     if (target == null) {
-      throw Exceptions.TypeError('Invalid target: $originalTarget');
+      throw exceptions.TypeError('Invalid target: $originalTarget');
     }
 
     // Session Timers.
     if (_sessionTimers.enabled) {
       if (utils.isDecimal(options['sessionTimersExpires'])) {
-        if (options['sessionTimersExpires'] >= DartSIP_C.MIN_SESSION_EXPIRES) {
+        if (options['sessionTimersExpires'] >= dart_sip_c.MIN_SESSION_EXPIRES) {
           _sessionTimers.defaultExpires = options['sessionTimersExpires'];
         } else {
-          _sessionTimers.defaultExpires = DartSIP_C.SESSION_EXPIRES;
+          _sessionTimers.defaultExpires = dart_sip_c.SESSION_EXPIRES;
         }
       }
     }
@@ -379,7 +377,7 @@ class RTCSession extends EventManager {
     }
 
     // Session parameter initialization.
-    _status = C.STATUS_INVITE_RECEIVED;
+    _status = C.statusInviteReceived;
     _from_tag = request.from_tag;
     _id = request.call_id! + _from_tag!;
     _request = request;
@@ -407,24 +405,24 @@ class RTCSession extends EventManager {
       _late_sdp = true;
     }
 
-    _status = C.STATUS_WAITING_FOR_ANSWER;
+    _status = C.statusWaitingForAnswer;
 
     // Set userNoAnswerTimer.
     _timers.userNoAnswerTimer = setTimeout(() {
       request.reply(408);
-      _failed('local', null, null, null, 408, DartSIP_C.CausesType.NO_ANSWER,
+      _failed('local', null, null, null, 408, dart_sip_c.CausesType.NO_ANSWER,
           'No Answer');
-    }, _ua!.configuration!.no_answer_timeout);
+    }, _ua!.configuration!.noAnswerTimeout);
 
     /* Set expiresTimer
      * RFC3261 13.3.1
      */
     if (expires != null) {
       _timers.expiresTimer = setTimeout(() {
-        if (_status == C.STATUS_WAITING_FOR_ANSWER) {
+        if (_status == C.statusWaitingForAnswer) {
           request.reply(487);
-          _failed('system', null, null, null, 487, DartSIP_C.CausesType.EXPIRES,
-              'Timeout');
+          _failed('system', null, null, null, 487,
+              dart_sip_c.CausesType.EXPIRES, 'Timeout');
         }
       }, expires);
     }
@@ -443,7 +441,7 @@ class RTCSession extends EventManager {
     _newRTCSession('remote', request);
 
     // The user may have rejected the call in the 'newRTCSession' event.
-    if (_status == C.STATUS_TERMINATED) {
+    if (_status == C.statusTerminated) {
       return;
     }
 
@@ -491,27 +489,27 @@ class RTCSession extends EventManager {
 
     // Check Session Direction and Status.
     if (_direction != 'incoming') {
-      throw Exceptions.NotSupportedError(
+      throw exceptions.NotSupportedError(
           '"answer" not supported for outgoing RTCSession');
     }
 
     // Check Session status.
-    if (_status != C.STATUS_WAITING_FOR_ANSWER) {
-      throw Exceptions.InvalidStateError(_status);
+    if (_status != C.statusWaitingForAnswer) {
+      throw exceptions.InvalidStateError(_status);
     }
 
     // Session Timers.
     if (_sessionTimers.enabled) {
       if (utils.isDecimal(options['sessionTimersExpires'])) {
-        if (options['sessionTimersExpires'] >= DartSIP_C.MIN_SESSION_EXPIRES) {
+        if (options['sessionTimersExpires'] >= dart_sip_c.MIN_SESSION_EXPIRES) {
           _sessionTimers.defaultExpires = options['sessionTimersExpires'];
         } else {
-          _sessionTimers.defaultExpires = DartSIP_C.SESSION_EXPIRES;
+          _sessionTimers.defaultExpires = dart_sip_c.SESSION_EXPIRES;
         }
       }
     }
 
-    _status = C.STATUS_ANSWERED;
+    _status = C.statusAnswered;
 
     // An error on dialog creation will fire 'failed' event.
     if (!_createDialog(request, 'UAS')) {
@@ -601,8 +599,8 @@ class RTCSession extends EventManager {
         stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
         emit(EventStream(session: this, originator: 'local', stream: stream));
       } catch (error) {
-        if (_status == C.STATUS_TERMINATED) {
-          throw Exceptions.InvalidStateError('terminated');
+        if (_status == C.statusTerminated) {
+          throw exceptions.InvalidStateError('terminated');
         }
         request.reply(480);
         _failed(
@@ -611,16 +609,16 @@ class RTCSession extends EventManager {
             null,
             null,
             480,
-            DartSIP_C.CausesType.USER_DENIED_MEDIA_ACCESS,
+            dart_sip_c.CausesType.USER_DENIED_MEDIA_ACCESS,
             'User Denied Media Access');
         logger.error('emit "getusermediafailed" [error:${error.toString()}]');
         emit(EventGetUserMediaFailed(exception: error));
-        throw Exceptions.InvalidStateError('getUserMedia() failed');
+        throw exceptions.InvalidStateError('getUserMedia() failed');
       }
     }
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     // Attach MediaStream to RTCPeerconnection.
@@ -638,7 +636,7 @@ class RTCSession extends EventManager {
           break;
         default:
           logger.error('Unkown sdp semantics $sdpSemantics');
-          throw Exceptions.NotReadyError('Unkown sdp semantics $sdpSemantics');
+          throw exceptions.NotReadyError('Unkown sdp semantics $sdpSemantics');
       }
     }
 
@@ -661,18 +659,18 @@ class RTCSession extends EventManager {
           null,
           null,
           488,
-          DartSIP_C.CausesType.WEBRTC_ERROR,
+          dart_sip_c.CausesType.WEBRTC_ERROR,
           'SetRemoteDescription(offer) failed');
       logger.error(
           'emit "peerconnection:setremotedescriptionfailed" [error:${error.toString()}]');
       emit(EventSetRemoteDescriptionFailed(exception: error));
-      throw Exceptions.TypeError(
+      throw exceptions.TypeError(
           'peerconnection.setRemoteDescription() failed');
     }
 
     // Create local description.
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     // TODO(cloudwebrtc): Is this event already useful?
@@ -686,42 +684,40 @@ class RTCSession extends EventManager {
       }
     } catch (e) {
       request.reply(500);
-      throw Exceptions.TypeError('_createLocalDescription() failed');
+      throw exceptions.TypeError('_createLocalDescription() failed');
     }
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     // Send reply.
     try {
       _handleSessionTimersInIncomingRequest(request, extraHeaders);
       request.reply(200, null, extraHeaders, desc.sdp, () {
-        _status = C.STATUS_WAITING_FOR_ACK;
+        _status = C.statusWaitingForAck;
         _setInvite2xxTimer(request, desc.sdp);
         _setACKTimer();
         _accepted('local');
       }, () {
         _failed('system', null, null, null, 500,
-            DartSIP_C.CausesType.CONNECTION_ERROR, 'Transport Error');
+            dart_sip_c.CausesType.CONNECTION_ERROR, 'Transport Error');
       });
     } catch (error, s) {
-      if (_status == C.STATUS_TERMINATED) {
+      if (_status == C.statusTerminated) {
         return;
       }
       logger.error('Failed to answer(): ${error.toString()}', error, s);
     }
   }
 
-  /**
-   * Terminate the call.
-   */
+  /// Terminate the call.
   void terminate([Map<String, dynamic>? options]) {
     logger.debug('terminate()');
 
     options = options ?? <String, dynamic>{};
 
-    Object cause = options['cause'] ?? DartSIP_C.CausesType.BYE;
+    Object cause = options['cause'] ?? dart_sip_c.CausesType.BYE;
 
     List<dynamic> extraHeaders = options['extraHeaders'] != null
         ? utils.cloneArray(options['extraHeaders'])
@@ -733,65 +729,66 @@ class RTCSession extends EventManager {
     String? reason_phrase = options['reason_phrase'] as String?;
 
     // Check Session Status.
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError(_status);
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError(_status);
     }
 
     switch (_status) {
       // - UAC -
-      case C.STATUS_NULL:
-      case C.STATUS_INVITE_SENT:
-      case C.STATUS_1XX_RECEIVED:
+      case C.statusNull:
+      case C.statusInviteSent:
+      case C.status1xxReceived:
         logger.debug('canceling session');
 
         if (status_code != null && (status_code < 200 || status_code >= 700)) {
-          throw Exceptions.TypeError('Invalid status_code: $status_code');
+          throw exceptions.TypeError('Invalid status_code: $status_code');
         } else if (status_code != null) {
-          reason_phrase = reason_phrase ?? DartSIP_C.REASON_PHRASE[status_code];
+          reason_phrase =
+              reason_phrase ?? dart_sip_c.REASON_PHRASE[status_code];
           cancel_reason = 'SIP ;cause=$status_code ;text="$reason_phrase"';
         }
 
         // Check Session Status.
-        if (_status == C.STATUS_NULL || _status == C.STATUS_INVITE_SENT) {
+        if (_status == C.statusNull || _status == C.statusInviteSent) {
           _is_canceled = true;
           _cancel_reason = cancel_reason;
-        } else if (_status == C.STATUS_1XX_RECEIVED) {
+        } else if (_status == C.status1xxReceived) {
           _request.cancel(cancel_reason ?? '');
         }
 
-        _status = C.STATUS_CANCELED;
+        _status = C.statusCanceled;
         cancel_reason = cancel_reason ?? 'Canceled by local';
         status_code = status_code ?? 100;
         _failed('local', null, null, null, status_code,
-            DartSIP_C.CausesType.CANCELED, cancel_reason);
+            dart_sip_c.CausesType.CANCELED, cancel_reason);
         break;
 
       // - UAS -
-      case C.STATUS_WAITING_FOR_ANSWER:
-      case C.STATUS_ANSWERED:
+      case C.statusWaitingForAnswer:
+      case C.statusAnswered:
         logger.debug('rejecting session');
 
         status_code = status_code ?? 480;
 
         if (status_code < 300 || status_code >= 700) {
-          throw Exceptions.InvalidStateError(
+          throw exceptions.InvalidStateError(
               'Invalid status_code: $status_code');
         }
 
         _request.reply(status_code, reason_phrase, extraHeaders, body);
         _failed('local', null, null, null, status_code,
-            DartSIP_C.CausesType.REJECTED, reason_phrase);
+            dart_sip_c.CausesType.REJECTED, reason_phrase);
         break;
 
-      case C.STATUS_WAITING_FOR_ACK:
-      case C.STATUS_CONFIRMED:
+      case C.statusWaitingForAck:
+      case C.statusConfirmed:
         logger.debug('terminating session');
 
         reason_phrase = options['reason_phrase'] as String? ??
-            DartSIP_C.REASON_PHRASE[status_code ?? 0];
+            dart_sip_c.REASON_PHRASE[status_code ?? 0];
 
         if (status_code != null && (status_code < 200 || status_code >= 700)) {
-          throw Exceptions.InvalidStateError(
+          throw exceptions.InvalidStateError(
               'Invalid status_code: $status_code');
         } else if (status_code != null) {
           extraHeaders
@@ -804,7 +801,7 @@ class RTCSession extends EventManager {
           * until it has received an ACK for its 2xx response or until the server
           * transaction times out."
           */
-        if (_status == C.STATUS_WAITING_FOR_ACK &&
+        if (_status == C.statusWaitingForAck &&
             _direction == 'incoming' &&
             _request.server_transaction.state != TransactionState.TERMINATED) {
           /// Save the dialog for later restoration.
@@ -869,20 +866,20 @@ class RTCSession extends EventManager {
 
     options = options ?? <String, dynamic>{};
 
-    DtmfMode mode = _ua!.configuration!.dtmf_mode;
+    DtmfMode mode = _ua!.configuration!.dtmfMode;
 
     // sensible defaults
-    int duration = options['duration'] ?? RTCSession_DTMF.C.DEFAULT_DURATION;
+    int duration = options['duration'] ?? rtc_session_dtfm.C.DEFAULT_DURATION;
     int interToneGap =
-        options['interToneGap'] ?? RTCSession_DTMF.C.DEFAULT_INTER_TONE_GAP;
+        options['interToneGap'] ?? rtc_session_dtfm.C.DEFAULT_INTER_TONE_GAP;
 
     if (tones == null) {
-      throw Exceptions.TypeError('Not enough arguments');
+      throw exceptions.TypeError('Not enough arguments');
     }
 
     // Check Session Status.
-    if (_status != C.STATUS_CONFIRMED && _status != C.STATUS_WAITING_FOR_ACK) {
-      throw Exceptions.InvalidStateError(_status);
+    if (_status != C.statusConfirmed && _status != C.statusWaitingForAck) {
+      throw exceptions.InvalidStateError(_status);
     }
 
     // Convert to string.
@@ -894,23 +891,23 @@ class RTCSession extends EventManager {
     if (tones == null ||
         tones is! String ||
         !tones.contains(RegExp(r'^[0-9A-DR#*,]+$', caseSensitive: false))) {
-      throw Exceptions.TypeError('Invalid tones: ${tones.toString()}');
+      throw exceptions.TypeError('Invalid tones: ${tones.toString()}');
     }
 
     // Check duration.
     if (duration != null && !utils.isDecimal(duration)) {
-      throw Exceptions.TypeError(
+      throw exceptions.TypeError(
           'Invalid tone duration: ${duration.toString()}');
     } else if (duration == null) {
-      duration = RTCSession_DTMF.C.DEFAULT_DURATION;
-    } else if (duration < RTCSession_DTMF.C.MIN_DURATION) {
+      duration = rtc_session_dtfm.C.DEFAULT_DURATION;
+    } else if (duration < rtc_session_dtfm.C.MIN_DURATION) {
       logger.debug(
-          '"duration" value is lower than the minimum allowed, setting it to ${RTCSession_DTMF.C.MIN_DURATION} milliseconds');
-      duration = RTCSession_DTMF.C.MIN_DURATION;
-    } else if (duration > RTCSession_DTMF.C.MAX_DURATION) {
+          '"duration" value is lower than the minimum allowed, setting it to ${rtc_session_dtfm.C.MIN_DURATION} milliseconds');
+      duration = rtc_session_dtfm.C.MIN_DURATION;
+    } else if (duration > rtc_session_dtfm.C.MAX_DURATION) {
       logger.debug(
-          '"duration" value is greater than the maximum allowed, setting it to ${RTCSession_DTMF.C.MAX_DURATION} milliseconds');
-      duration = RTCSession_DTMF.C.MAX_DURATION;
+          '"duration" value is greater than the maximum allowed, setting it to ${rtc_session_dtfm.C.MAX_DURATION} milliseconds');
+      duration = rtc_session_dtfm.C.MAX_DURATION;
     } else {
       duration = utils.Math.abs(duration) as int;
     }
@@ -918,14 +915,14 @@ class RTCSession extends EventManager {
 
     // Check interToneGap.
     if (interToneGap != null && !utils.isDecimal(interToneGap)) {
-      throw Exceptions.TypeError(
+      throw exceptions.TypeError(
           'Invalid interToneGap: ${interToneGap.toString()}');
     } else if (interToneGap == null) {
-      interToneGap = RTCSession_DTMF.C.DEFAULT_INTER_TONE_GAP;
-    } else if (interToneGap < RTCSession_DTMF.C.MIN_INTER_TONE_GAP) {
+      interToneGap = rtc_session_dtfm.C.DEFAULT_INTER_TONE_GAP;
+    } else if (interToneGap < rtc_session_dtfm.C.MIN_INTER_TONE_GAP) {
       logger.debug(
-          '"interToneGap" value is lower than the minimum allowed, setting it to ${RTCSession_DTMF.C.MIN_INTER_TONE_GAP} milliseconds');
-      interToneGap = RTCSession_DTMF.C.MIN_INTER_TONE_GAP;
+          '"interToneGap" value is lower than the minimum allowed, setting it to ${rtc_session_dtfm.C.MIN_INTER_TONE_GAP} milliseconds');
+      interToneGap = rtc_session_dtfm.C.MIN_INTER_TONE_GAP;
     } else {
       interToneGap = utils.Math.abs(interToneGap) as int;
     }
@@ -941,7 +938,7 @@ class RTCSession extends EventManager {
       if (tone == ',') {
         // queue the delay
         dtmfFuture = dtmfFuture.then((_) async {
-          if (_status == C.STATUS_TERMINATED) {
+          if (_status == C.statusTerminated) {
             return;
           }
           await Future<void>.delayed(Duration(milliseconds: 2000), () {});
@@ -949,11 +946,11 @@ class RTCSession extends EventManager {
       } else {
         // queue playing the tone
         dtmfFuture = dtmfFuture.then((_) async {
-          if (_status == C.STATUS_TERMINATED) {
+          if (_status == C.statusTerminated) {
             return;
           }
 
-          RTCSession_DTMF.DTMF dtmf = RTCSession_DTMF.DTMF(this, mode: mode);
+          rtc_session_dtfm.DTMF dtmf = rtc_session_dtfm.DTMF(this, mode: mode);
 
           EventManager handlers = EventManager();
           handlers.on(EventCallFailed(), (EventCallFailed event) {
@@ -974,11 +971,11 @@ class RTCSession extends EventManager {
     logger.debug('sendInfo()');
 
     // Check Session Status.
-    if (_status != C.STATUS_CONFIRMED && _status != C.STATUS_WAITING_FOR_ACK) {
-      throw Exceptions.InvalidStateError(_status);
+    if (_status != C.statusConfirmed && _status != C.statusWaitingForAck) {
+      throw exceptions.InvalidStateError(_status);
     }
 
-    RTCSession_Info.Info info = RTCSession_Info.Info(this);
+    rtc_session_info.Info info = rtc_session_info.Info(this);
 
     info.send(contentType, body, options);
   }
@@ -1047,7 +1044,7 @@ class RTCSession extends EventManager {
 
     options = options ?? <String, dynamic>{};
 
-    if (_status != C.STATUS_WAITING_FOR_ACK && _status != C.STATUS_CONFIRMED) {
+    if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
       return false;
     }
 
@@ -1071,7 +1068,7 @@ class RTCSession extends EventManager {
     });
     handlers.on(EventCallFailed(), (EventCallFailed event) {
       terminate(<String, dynamic>{
-        'cause': DartSIP_C.CausesType.WEBRTC_ERROR,
+        'cause': dart_sip_c.CausesType.WEBRTC_ERROR,
         'status_code': 500,
         'reason_phrase': 'Hold Failed'
       });
@@ -1098,7 +1095,7 @@ class RTCSession extends EventManager {
 
     options = options ?? <String, dynamic>{};
 
-    if (_status != C.STATUS_WAITING_FOR_ACK && _status != C.STATUS_CONFIRMED) {
+    if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
       return false;
     }
 
@@ -1121,7 +1118,7 @@ class RTCSession extends EventManager {
     });
     handlers.on(EventCallFailed(), (EventCallFailed event) {
       terminate(<String, dynamic>{
-        'cause': DartSIP_C.CausesType.WEBRTC_ERROR,
+        'cause': dart_sip_c.CausesType.WEBRTC_ERROR,
         'status_code': 500,
         'reason_phrase': 'Unhold Failed'
       });
@@ -1151,7 +1148,7 @@ class RTCSession extends EventManager {
     Map<String, dynamic>? rtcOfferConstraints =
         options['rtcOfferConstraints'] ?? _rtcOfferConstraints;
 
-    if (_status != C.STATUS_WAITING_FOR_ACK && _status != C.STATUS_CONFIRMED) {
+    if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
       return false;
     }
 
@@ -1168,7 +1165,7 @@ class RTCSession extends EventManager {
 
     handlers.on(EventCallFailed(), (EventCallFailed event) {
       terminate(<String, dynamic>{
-        'cause': DartSIP_C.CausesType.WEBRTC_ERROR,
+        'cause': dart_sip_c.CausesType.WEBRTC_ERROR,
         'status_code': 500,
         'reason_phrase': 'Media Renegotiation Failed'
       });
@@ -1204,14 +1201,14 @@ class RTCSession extends EventManager {
 
     dynamic originalTarget = target;
 
-    if (_status != C.STATUS_WAITING_FOR_ACK && _status != C.STATUS_CONFIRMED) {
+    if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
       return null;
     }
 
     // Check target validity.
     target = _ua!.normalizeTarget(target);
     if (target == null) {
-      throw Exceptions.TypeError('Invalid target: $originalTarget');
+      throw exceptions.TypeError('Invalid target: $originalTarget');
     }
 
     ReferSubscriber referSubscriber = ReferSubscriber(this);
@@ -1238,9 +1235,7 @@ class RTCSession extends EventManager {
     return referSubscriber;
   }
 
-  /**
-   * Send a generic in-dialog Request
-   */
+  /// Send a generic in-dialog Request
   OutgoingRequest sendRequest(SipMethod method,
       [Map<String, dynamic>? options]) {
     logger.debug('sendRequest()');
@@ -1248,9 +1243,7 @@ class RTCSession extends EventManager {
     return _dialog!.sendRequest(method, options);
   }
 
-  /**
-   * In dialog Request Reception
-   */
+  /// In dialog Request Reception
   void _receiveRequest(IncomingRequest request) async {
     logger.debug('receiveRequest()');
 
@@ -1266,29 +1259,28 @@ class RTCSession extends EventManager {
       * Terminate the whole session in case the user didn't accept (or yet send the answer)
       * nor reject the request opening the session.
       */
-      if (_status == C.STATUS_WAITING_FOR_ANSWER ||
-          _status == C.STATUS_ANSWERED) {
-        _status = C.STATUS_CANCELED;
+      if (_status == C.statusWaitingForAnswer || _status == C.statusAnswered) {
+        _status = C.statusCanceled;
         _request.reply(487);
         _failed('remote', null, request, null, 487,
-            DartSIP_C.CausesType.CANCELED, request.reason_phrase);
+            dart_sip_c.CausesType.CANCELED, request.reason_phrase);
       }
     } else {
       // Requests arriving here are in-dialog requests.
       switch (request.method) {
         case SipMethod.ACK:
-          if (_status != C.STATUS_WAITING_FOR_ACK) {
+          if (_status != C.statusWaitingForAck) {
             return;
           }
           // Update signaling status.
-          _status = C.STATUS_CONFIRMED;
+          _status = C.statusConfirmed;
           clearTimeout(_timers.ackTimer);
           clearTimeout(_timers.invite2xxTimer);
 
           if (_late_sdp) {
             if (request.body == null) {
               terminate(<String, dynamic>{
-                'cause': DartSIP_C.CausesType.MISSING_SDP,
+                'cause': dart_sip_c.CausesType.MISSING_SDP,
                 'status_code': 400
               });
               break;
@@ -1304,7 +1296,7 @@ class RTCSession extends EventManager {
               await _connection!.setRemoteDescription(answer);
             } catch (error) {
               terminate(<String, dynamic>{
-                'cause': DartSIP_C.CausesType.BAD_MEDIA_DESCRIPTION,
+                'cause': dart_sip_c.CausesType.BAD_MEDIA_DESCRIPTION,
                 'status_code': 488
               });
               logger.error(
@@ -1317,23 +1309,23 @@ class RTCSession extends EventManager {
           }
           break;
         case SipMethod.BYE:
-          if (_status == C.STATUS_CONFIRMED) {
+          if (_status == C.statusConfirmed) {
             request.reply(200);
             _ended(
                 'remote',
                 request,
                 ErrorCause(
-                    cause: DartSIP_C.CausesType.BYE,
+                    cause: dart_sip_c.CausesType.BYE,
                     status_code: 200,
                     reason_phrase: 'BYE Received'));
-          } else if (_status == C.STATUS_INVITE_RECEIVED) {
+          } else if (_status == C.statusInviteReceived) {
             request.reply(200);
             _request.reply(487, 'BYE Received');
             _ended(
                 'remote',
                 request,
                 ErrorCause(
-                    cause: DartSIP_C.CausesType.BYE,
+                    cause: dart_sip_c.CausesType.BYE,
                     status_code: request.status_code,
                     reason_phrase: request.reason_phrase));
           } else {
@@ -1341,7 +1333,7 @@ class RTCSession extends EventManager {
           }
           break;
         case SipMethod.INVITE:
-          if (_status == C.STATUS_CONFIRMED) {
+          if (_status == C.statusConfirmed) {
             if (request.hasHeader('replaces')) {
               _receiveReplaces(request);
             } else {
@@ -1352,18 +1344,18 @@ class RTCSession extends EventManager {
           }
           break;
         case SipMethod.INFO:
-          if (_status == C.STATUS_1XX_RECEIVED ||
-              _status == C.STATUS_WAITING_FOR_ANSWER ||
-              _status == C.STATUS_ANSWERED ||
-              _status == C.STATUS_WAITING_FOR_ACK ||
-              _status == C.STATUS_CONFIRMED) {
+          if (_status == C.status1xxReceived ||
+              _status == C.statusWaitingForAnswer ||
+              _status == C.statusAnswered ||
+              _status == C.statusWaitingForAck ||
+              _status == C.statusConfirmed) {
             String? contentType = request.getHeader('content-type');
             if (contentType != null &&
                 contentType.contains(RegExp(r'^application\/dtmf-relay',
                     caseSensitive: false))) {
-              RTCSession_DTMF.DTMF(this).init_incoming(request);
+              rtc_session_dtfm.DTMF(this).init_incoming(request);
             } else if (contentType != null) {
-              RTCSession_Info.Info(this).init_incoming(request);
+              rtc_session_info.Info(this).init_incoming(request);
             } else {
               request.reply(415);
             }
@@ -1372,21 +1364,21 @@ class RTCSession extends EventManager {
           }
           break;
         case SipMethod.UPDATE:
-          if (_status == C.STATUS_CONFIRMED) {
+          if (_status == C.statusConfirmed) {
             _receiveUpdate(request);
           } else {
             request.reply(403, 'Wrong Status');
           }
           break;
         case SipMethod.REFER:
-          if (_status == C.STATUS_CONFIRMED) {
+          if (_status == C.statusConfirmed) {
             _receiveRefer(request);
           } else {
             request.reply(403, 'Wrong Status');
           }
           break;
         case SipMethod.NOTIFY:
-          if (_status == C.STATUS_CONFIRMED) {
+          if (_status == C.statusConfirmed) {
             _receiveNotify(request);
           } else {
             request.reply(403, 'Wrong Status');
@@ -1398,16 +1390,14 @@ class RTCSession extends EventManager {
     }
   }
 
-  /**
-   * Session Callbacks
-   */
+  /// Session Callbacks
   void onTransportError() {
     logger.error('onTransportError()');
-    if (_status != C.STATUS_TERMINATED) {
+    if (_status != C.statusTerminated) {
       terminate(<String, dynamic>{
         'status_code': 500,
-        'reason_phrase': DartSIP_C.CausesType.CONNECTION_ERROR,
-        'cause': DartSIP_C.CausesType.CONNECTION_ERROR
+        'reason_phrase': dart_sip_c.CausesType.CONNECTION_ERROR,
+        'cause': dart_sip_c.CausesType.CONNECTION_ERROR
       });
     }
   }
@@ -1415,11 +1405,11 @@ class RTCSession extends EventManager {
   void onRequestTimeout() {
     logger.error('onRequestTimeout()');
 
-    if (_status != C.STATUS_TERMINATED) {
+    if (_status != C.statusTerminated) {
       terminate(<String, dynamic>{
         'status_code': 408,
-        'reason_phrase': DartSIP_C.CausesType.REQUEST_TIMEOUT,
-        'cause': DartSIP_C.CausesType.REQUEST_TIMEOUT
+        'reason_phrase': dart_sip_c.CausesType.REQUEST_TIMEOUT,
+        'cause': dart_sip_c.CausesType.REQUEST_TIMEOUT
       });
     }
   }
@@ -1427,11 +1417,11 @@ class RTCSession extends EventManager {
   void onDialogError() {
     logger.error('onDialogError()');
 
-    if (_status != C.STATUS_TERMINATED) {
+    if (_status != C.statusTerminated) {
       terminate(<String, dynamic>{
         'status_code': 500,
-        'reason_phrase': DartSIP_C.CausesType.DIALOG_ERROR,
-        'cause': DartSIP_C.CausesType.DIALOG_ERROR
+        'reason_phrase': dart_sip_c.CausesType.DIALOG_ERROR,
+        'cause': dart_sip_c.CausesType.DIALOG_ERROR
       });
     }
   }
@@ -1450,9 +1440,7 @@ class RTCSession extends EventManager {
     emit(EventNewInfo(originator: originator, info: info, request: request));
   }
 
-  /**
-   * Check if RTCSession is ready for an outgoing re-INVITE or UPDATE with SDP.
-   */
+  /// Check if RTCSession is ready for an outgoing re-INVITE or UPDATE with SDP.
   bool _isReadyToReOffer() {
     if (!_rtcReady) {
       logger.debug('_isReadyToReOffer() | internal WebRTC status not ready');
@@ -1481,10 +1469,10 @@ class RTCSession extends EventManager {
 
   void _close() async {
     logger.debug('close()');
-    if (_status == C.STATUS_TERMINATED) {
+    if (_status == C.statusTerminated) {
       return;
     }
-    _status = C.STATUS_TERMINATED;
+    _status = C.statusTerminated;
     // Terminate RTC.
     if (_connection != null) {
       try {
@@ -1536,16 +1524,14 @@ class RTCSession extends EventManager {
    * Private API.
    */
 
-  /**
-   * RFC3261 13.3.1.4
-   * Response retransmissions cannot be accomplished by transaction layer
-   *  since it is destroyed when receiving the first 2xx answer
-   */
+  /// RFC3261 13.3.1.4
+  /// Response retransmissions cannot be accomplished by transaction layer
+  ///  since it is destroyed when receiving the first 2xx answer
   void _setInvite2xxTimer(dynamic request, String? body) {
     int timeout = Timers.T1;
 
     void invite2xxRetransmission() {
-      if (_status != C.STATUS_WAITING_FOR_ACK) {
+      if (_status != C.statusWaitingForAck) {
         return;
       }
       request.reply(200, null, <String>['Contact: $_contact'], body);
@@ -1561,14 +1547,12 @@ class RTCSession extends EventManager {
     _timers.invite2xxTimer = setTimeout(invite2xxRetransmission, timeout);
   }
 
-  /**
-   * RFC3261 14.2
-   * If a UAS generates a 2xx response and never receives an ACK,
-   *  it SHOULD generate a BYE to terminate the dialog.
-   */
+  /// RFC3261 14.2
+  /// If a UAS generates a 2xx response and never receives an ACK,
+  ///  it SHOULD generate a BYE to terminate the dialog.
   void _setACKTimer() {
     _timers.ackTimer = setTimeout(() {
-      if (_status == C.STATUS_WAITING_FOR_ACK) {
+      if (_status == C.statusWaitingForAck) {
         logger.debug('no ACK received, terminating the session');
 
         clearTimeout(_timers.invite2xxTimer);
@@ -1577,7 +1561,7 @@ class RTCSession extends EventManager {
             'remote',
             null,
             ErrorCause(
-                cause: DartSIP_C.CausesType.NO_ACK,
+                cause: dart_sip_c.CausesType.NO_ACK,
                 status_code: 408, // Request Timeout
                 reason_phrase: 'no ACK received, terminating the session'));
       }
@@ -1598,9 +1582,9 @@ class RTCSession extends EventManager {
       // TODO(cloudwebrtc): Do more with different states.
       if (state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
         terminate(<String, dynamic>{
-          'cause': DartSIP_C.CausesType.RTP_TIMEOUT,
+          'cause': dart_sip_c.CausesType.RTP_TIMEOUT,
           'status_code': 408,
-          'reason_phrase': DartSIP_C.CausesType.RTP_TIMEOUT
+          'reason_phrase': dart_sip_c.CausesType.RTP_TIMEOUT
         });
       } else if (state ==
           RTCIceConnectionState.RTCIceConnectionStateDisconnected) {
@@ -1644,7 +1628,7 @@ class RTCSession extends EventManager {
         Completer<RTCSessionDescription>();
 
     if (type != 'offer' && type != 'answer') {
-      completer.completeError(Exceptions.TypeError(
+      completer.completeError(exceptions.TypeError(
           'createLocalDescription() | invalid type "$type"'));
     }
 
@@ -1674,7 +1658,7 @@ class RTCSession extends EventManager {
     bool finished = false;
 
     Future<void> ready() async {
-      if (!finished && _status != C.STATUS_TERMINATED) {
+      if (!finished && _status != C.statusTerminated) {
         finished = true;
         _connection!.onIceCandidate = null;
         _connection!.onIceGatheringState = null;
@@ -1734,9 +1718,7 @@ class RTCSession extends EventManager {
     return completer.future;
   }
 
-  /**
-   * Dialog Management
-   */
+  /// Dialog Management
   bool _createDialog(dynamic message, String type, [bool early = false]) {
     String? local_tag = (type == 'UAS') ? message.to_tag : message.from_tag;
     String? remote_tag = (type == 'UAS') ? message.from_tag : message.to_tag;
@@ -1758,7 +1740,7 @@ class RTCSession extends EventManager {
               null,
               null,
               500,
-              DartSIP_C.CausesType.INTERNAL_ERROR,
+              dart_sip_c.CausesType.INTERNAL_ERROR,
               'Can\'t create Early Dialog');
           return false;
         }
@@ -1791,7 +1773,7 @@ class RTCSession extends EventManager {
             null,
             null,
             500,
-            DartSIP_C.CausesType.INTERNAL_ERROR,
+            dart_sip_c.CausesType.INTERNAL_ERROR,
             'Can\'t create Confirmed Dialog');
         return false;
       }
@@ -1812,12 +1794,12 @@ class RTCSession extends EventManager {
       String reason_phrase = options['reason_phrase'] ?? '';
       List<dynamic> extraHeaders = utils.cloneArray(options['extraHeaders']);
 
-      if (_status != C.STATUS_CONFIRMED) {
+      if (_status != C.statusConfirmed) {
         return false;
       }
 
       if (status_code < 300 || status_code >= 700) {
-        throw Exceptions.TypeError('Invalid status_code: $status_code');
+        throw exceptions.TypeError('Invalid status_code: $status_code');
       }
 
       request.reply(status_code, reason_phrase, extraHeaders);
@@ -1843,7 +1825,7 @@ class RTCSession extends EventManager {
       }
 
       request.reply(200, null, extraHeaders, sdp, () {
-        _status = C.STATUS_WAITING_FOR_ACK;
+        _status = C.statusWaitingForAck;
         _setInvite2xxTimer(request, sdp);
         _setACKTimer();
       });
@@ -1878,7 +1860,7 @@ class RTCSession extends EventManager {
     try {
       RTCSessionDescription desc = await _processInDialogSdpOffer(request);
       // Send answer.
-      if (_status == C.STATUS_TERMINATED) {
+      if (_status == C.statusTerminated) {
         return;
       }
       sendAnswer(desc.sdp);
@@ -1887,9 +1869,7 @@ class RTCSession extends EventManager {
     }
   }
 
-  /**
-   * In dialog UPDATE Reception
-   */
+  /// In dialog UPDATE Reception
   void _receiveUpdate(IncomingRequest request) async {
     logger.debug('receiveUpdate()');
 
@@ -1902,12 +1882,12 @@ class RTCSession extends EventManager {
       String reason_phrase = options['reason_phrase'] ?? '';
       List<dynamic> extraHeaders = utils.cloneArray(options['extraHeaders']);
 
-      if (_status != C.STATUS_CONFIRMED) {
+      if (_status != C.statusConfirmed) {
         return false;
       }
 
       if (status_code < 300 || status_code >= 700) {
-        throw Exceptions.TypeError('Invalid status_code: $status_code');
+        throw exceptions.TypeError('Invalid status_code: $status_code');
       }
 
       request.reply(status_code, reason_phrase, extraHeaders);
@@ -1944,7 +1924,7 @@ class RTCSession extends EventManager {
 
     try {
       RTCSessionDescription desc = await _processInDialogSdpOffer(request);
-      if (_status == C.STATUS_TERMINATED) return;
+      if (_status == C.statusTerminated) return;
       // Send answer.
       sendAnswer(desc.sdp);
     } catch (error) {
@@ -1982,8 +1962,8 @@ class RTCSession extends EventManager {
 
     RTCSessionDescription offer = RTCSessionDescription(request.body, 'offer');
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
     try {
       await _connection!.setRemoteDescription(offer);
@@ -1994,12 +1974,12 @@ class RTCSession extends EventManager {
 
       emit(EventSetRemoteDescriptionFailed(exception: error));
 
-      throw Exceptions.TypeError(
+      throw exceptions.TypeError(
           'peerconnection.setRemoteDescription() failed');
     }
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     if (_remoteHold == true && hold == false) {
@@ -2012,21 +1992,19 @@ class RTCSession extends EventManager {
 
     // Create local description.
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     try {
       return await _createLocalDescription('answer', _rtcAnswerConstraints);
     } catch (_) {
       request.reply(500);
-      throw Exceptions.TypeError('_createLocalDescription() failed');
+      throw exceptions.TypeError('_createLocalDescription() failed');
     }
   }
 
-  /**
-   * In dialog Refer Reception
-   */
+  /// In dialog Refer Reception
   void _receiveRefer(IncomingRequest request) {
     logger.debug('receiveRefer()');
 
@@ -2037,7 +2015,7 @@ class RTCSession extends EventManager {
       return;
     }
 
-    if (request.refer_to.uri.scheme != DartSIP_C.SIP) {
+    if (request.refer_to.uri.scheme != dart_sip_c.SIP) {
       logger.debug('Refer-To header field points to a non-SIP URI scheme');
       request.reply(416);
       return;
@@ -2052,8 +2030,7 @@ class RTCSession extends EventManager {
         InitSuccessCallback? initCallback, Map<String, dynamic> options) {
       initCallback = (initCallback is Function) ? initCallback : null;
 
-      if (_status != C.STATUS_WAITING_FOR_ACK &&
-          _status != C.STATUS_CONFIRMED) {
+      if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
         return false;
       }
 
@@ -2161,8 +2138,7 @@ class RTCSession extends EventManager {
     logger.debug('receiveReplaces()');
 
     bool accept(InitSuccessCallback initCallback) {
-      if (_status != C.STATUS_WAITING_FOR_ACK &&
-          _status != C.STATUS_CONFIRMED) {
+      if (_status != C.statusWaitingForAck && _status != C.statusConfirmed) {
         return false;
       }
 
@@ -2238,8 +2214,8 @@ class RTCSession extends EventManager {
         stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
         emit(EventStream(session: this, originator: 'local', stream: stream));
       } catch (error) {
-        if (_status == C.STATUS_TERMINATED) {
-          throw Exceptions.InvalidStateError('terminated');
+        if (_status == C.statusTerminated) {
+          throw exceptions.InvalidStateError('terminated');
         }
         _failed(
             'local',
@@ -2247,7 +2223,7 @@ class RTCSession extends EventManager {
             null,
             null,
             500,
-            DartSIP_C.CausesType.USER_DENIED_MEDIA_ACCESS,
+            dart_sip_c.CausesType.USER_DENIED_MEDIA_ACCESS,
             'User Denied Media Access');
         logger.error('emit "getusermediafailed" [error:${error.toString()}]');
         emit(EventGetUserMediaFailed(exception: error));
@@ -2255,8 +2231,8 @@ class RTCSession extends EventManager {
       }
     }
 
-    if (_status == C.STATUS_TERMINATED) {
-      throw Exceptions.InvalidStateError('terminated');
+    if (_status == C.statusTerminated) {
+      throw exceptions.InvalidStateError('terminated');
     }
 
     _localMediaStream = stream;
@@ -2273,7 +2249,7 @@ class RTCSession extends EventManager {
           break;
         default:
           logger.error('Unkown sdp semantics $sdpSemantics');
-          throw Exceptions.NotReadyError('Unkown sdp semantics $sdpSemantics');
+          throw exceptions.NotReadyError('Unkown sdp semantics $sdpSemantics');
       }
     }
 
@@ -2282,12 +2258,12 @@ class RTCSession extends EventManager {
     try {
       RTCSessionDescription desc =
           await _createLocalDescription('offer', rtcOfferConstraints);
-      if (_is_canceled || _status == C.STATUS_TERMINATED) {
-        throw Exceptions.InvalidStateError('terminated');
+      if (_is_canceled || _status == C.statusTerminated) {
+        throw exceptions.InvalidStateError('terminated');
       }
 
       _request.body = desc.sdp;
-      _status = C.STATUS_INVITE_SENT;
+      _status = C.statusInviteSent;
 
       logger.debug('emit "sending" [request]');
 
@@ -2297,9 +2273,9 @@ class RTCSession extends EventManager {
       request_sender.send();
     } catch (error, s) {
       logger.error(error.toString(), null, s);
-      _failed('local', null, null, null, 500, DartSIP_C.CausesType.WEBRTC_ERROR,
-          'Can\'t create local SDP');
-      if (_status == C.STATUS_TERMINATED) {
+      _failed('local', null, null, null, 500,
+          dart_sip_c.CausesType.WEBRTC_ERROR, 'Can\'t create local SDP');
+      if (_status == C.statusTerminated) {
         return;
       }
       logger.error('Failed to _sendInitialRequest: ${error.toString()}');
@@ -2348,7 +2324,7 @@ class RTCSession extends EventManager {
       return;
     }
 
-    if (_status != C.STATUS_INVITE_SENT && _status != C.STATUS_1XX_RECEIVED) {
+    if (_status != C.statusInviteSent && _status != C.status1xxReceived) {
       return;
     }
 
@@ -2356,7 +2332,7 @@ class RTCSession extends EventManager {
 
     if (utils.test100(status_code)) {
       // 100 trying
-      _status = C.STATUS_1XX_RECEIVED;
+      _status = C.status1xxReceived;
     } else if (utils.test1XX(status_code)) {
       // 1XX
       // Do nothing with 1xx responses without To tag.
@@ -2373,7 +2349,7 @@ class RTCSession extends EventManager {
         }
       }
 
-      _status = C.STATUS_1XX_RECEIVED;
+      _status = C.status1xxReceived;
       _progress('remote', response);
 
       if (response.body == null || response.body!.isEmpty) {
@@ -2395,12 +2371,12 @@ class RTCSession extends EventManager {
       }
     } else if (utils.test2XX(status_code)) {
       // 2XX
-      _status = C.STATUS_CONFIRMED;
+      _status = C.statusConfirmed;
 
       if (response.body == null || response.body!.isEmpty) {
-        _acceptAndTerminate(response, 400, DartSIP_C.CausesType.MISSING_SDP);
+        _acceptAndTerminate(response, 400, dart_sip_c.CausesType.MISSING_SDP);
         _failed('remote', null, null, response, 400,
-            DartSIP_C.CausesType.BAD_MEDIA_DESCRIPTION, 'Missing SDP');
+            dart_sip_c.CausesType.BAD_MEDIA_DESCRIPTION, 'Missing SDP');
         return;
       }
 
@@ -2433,7 +2409,7 @@ class RTCSession extends EventManager {
               null,
               response,
               500,
-              DartSIP_C.CausesType.WEBRTC_ERROR,
+              dart_sip_c.CausesType.WEBRTC_ERROR,
               'Can\'t create offer ${error.toString()}');
         }
       }
@@ -2448,7 +2424,7 @@ class RTCSession extends EventManager {
       } catch (error) {
         _acceptAndTerminate(response, 488, 'Not Acceptable Here');
         _failed('remote', null, null, response, 488,
-            DartSIP_C.CausesType.BAD_MEDIA_DESCRIPTION, 'Not Acceptable Here');
+            dart_sip_c.CausesType.BAD_MEDIA_DESCRIPTION, 'Not Acceptable Here');
         logger.error(
             'emit "peerconnection:setremotedescriptionfailed" [error:${error.toString()}]');
         emit(EventSetRemoteDescriptionFailed(exception: error));
@@ -2491,7 +2467,7 @@ class RTCSession extends EventManager {
     }
 
     void onSucceeded(IncomingResponse? response) async {
-      if (_status == C.STATUS_TERMINATED) {
+      if (_status == C.statusTerminated) {
         return;
       }
 
@@ -2598,7 +2574,7 @@ class RTCSession extends EventManager {
     }
 
     void onSucceeded(IncomingResponse? response) async {
-      if (_status == C.STATUS_TERMINATED) {
+      if (_status == C.statusTerminated) {
         return;
       }
 
@@ -2714,7 +2690,7 @@ class RTCSession extends EventManager {
 
     if (status_code != null) {
       reason_phrase =
-          reason_phrase ?? DartSIP_C.REASON_PHRASE[status_code] ?? '';
+          reason_phrase ?? dart_sip_c.REASON_PHRASE[status_code] ?? '';
       extraHeaders
           .add('Reason: SIP ;cause=$status_code; text="$reason_phrase"');
     }
@@ -2727,7 +2703,7 @@ class RTCSession extends EventManager {
     }
 
     // Update session status.
-    _status = C.STATUS_TERMINATED;
+    _status = C.statusTerminated;
   }
 
   /**
@@ -2821,7 +2797,7 @@ class RTCSession extends EventManager {
 
     if (request.session_expires != null &&
         request.session_expires! > 0 &&
-        request.session_expires! >= DartSIP_C.MIN_SESSION_EXPIRES) {
+        request.session_expires! >= dart_sip_c.MIN_SESSION_EXPIRES) {
       _sessionTimers.currentExpires = request.session_expires;
       session_expires_refresher = request.session_expires_refresher ?? 'uas';
     } else {
@@ -2849,7 +2825,7 @@ class RTCSession extends EventManager {
 
     if (response.session_expires != null &&
         response.session_expires != 0 &&
-        response.session_expires >= DartSIP_C.MIN_SESSION_EXPIRES) {
+        response.session_expires >= dart_sip_c.MIN_SESSION_EXPIRES) {
       _sessionTimers.currentExpires = response.session_expires;
       session_expires_refresher = response.session_expires_refresher ?? 'uac';
     } else {
@@ -2871,7 +2847,7 @@ class RTCSession extends EventManager {
     // I'm the refresher.
     if (_sessionTimers.refresher) {
       _sessionTimers.timer = setTimeout(() {
-        if (_status == C.STATUS_TERMINATED) {
+        if (_status == C.statusTerminated) {
           return;
         }
 
@@ -2887,7 +2863,7 @@ class RTCSession extends EventManager {
     // I'm not the refresher.
     else {
       _sessionTimers.timer = setTimeout(() {
-        if (_status == C.STATUS_TERMINATED) {
+        if (_status == C.statusTerminated) {
           return;
         }
 
@@ -2895,7 +2871,7 @@ class RTCSession extends EventManager {
             'runSessionTimer() | timer expired, terminating the session');
 
         terminate(<String, dynamic>{
-          'cause': DartSIP_C.CausesType.REQUEST_TIMEOUT,
+          'cause': dart_sip_c.CausesType.REQUEST_TIMEOUT,
           'status_code': 408,
           'reason_phrase': 'Session Timer Expired'
         });

@@ -3,7 +3,7 @@ class PitelConfigure {
   static String get domainSDK => 'https://sdkdemo.tel4vn.com';
   static String get domainPortal => 'https://portal.tel4vn.com';
   static String get apiPushUrl => 'https://api-pusher.tel4vn.com/v1';
-  static String get API_KEY => _apiKey;
+  static String get apiKey => _apiKey;
   static bool isDebug = true;
 
   static void setApiKey(String key) {

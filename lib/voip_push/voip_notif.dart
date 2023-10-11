@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'dart:async';
-import 'dart:developer';
 
 class VoipNotifService {
   static Future<void> listenerEvent({
@@ -74,7 +74,9 @@ class VoipNotifService {
         }
       });
     } on Exception {
-      print('=================Exception===============');
+      if (kDebugMode) {
+        print('=================Exception===============');
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
+
 const String USER_AGENT = 'dart-sip-ua v0.2.2';
 
 // SIP scheme.
@@ -47,6 +49,7 @@ Map<String, List<int>> SIP_ERROR_CAUSES = <String, List<int>>{
   CausesType.AUTHENTICATION_ERROR: <int>[401, 407]
 };
 
+// ignore: camel_case_types
 class causes {
   static const String CONNECTION_ERROR = CausesType.CONNECTION_ERROR;
   static const String REQUEST_TIMEOUT = CausesType.REQUEST_TIMEOUT;

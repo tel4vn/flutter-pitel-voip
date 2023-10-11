@@ -9,7 +9,7 @@ import 'transactions/ack_client.dart';
 import 'transactions/invite_client.dart';
 import 'transactions/non_invite_client.dart';
 import 'transactions/transaction_base.dart';
-import 'ua.dart' as UAC;
+import 'ua.dart' as uac;
 import 'ua.dart';
 
 // Default event handlers.
@@ -26,7 +26,7 @@ class RequestSender {
     _staled = false;
 
     // If ua is in closing process or even closed just allow sending Bye and ACK.
-    if (ua.status == UAC.C.STATUS_USER_CLOSED &&
+    if (ua.status == uac.C.STATUS_USER_CLOSED &&
         (_method != SipMethod.BYE || _method != SipMethod.ACK)) {
       _eventHandlers.emit(EventOnTransportError());
     }
@@ -40,9 +40,7 @@ class RequestSender {
   late bool _staled;
   late TransactionBase clientTransaction;
 
-  /**
-  * Create the client transaction and send the message.
-  */
+  /// Create the client transaction and send the message.
   void send() {
     EventManager handlers = EventManager();
     handlers.on(EventOnRequestTimeout(), (EventOnRequestTimeout event) {
@@ -75,29 +73,27 @@ class RequestSender {
     clientTransaction.send();
   }
 
-  /**
-  * Called from client transaction when receiving a correct response to the request.
-  * Authenticate request if needed or pass the response back to the applicant.
-  */
+  /// Called from client transaction when receiving a correct response to the request.
+  /// Authenticate request if needed or pass the response back to the applicant.
   void _receiveResponse(IncomingResponse response) {
     ParsedData? challenge;
-    String authorization_header_name;
-    int? status_code = response.status_code;
+    String authorizationHeaderName;
+    int? statusCode = response.status_code;
 
     /*
     * Authentication
     * Authenticate once. _challenged_ flag used to avoid infinite authentications.
     */
-    if ((status_code == 401 || status_code == 407) &&
+    if ((statusCode == 401 || statusCode == 407) &&
         (_ua.configuration!.password != null ||
             _ua.configuration!.ha1 != null)) {
       // Get and parse the appropriate WWW-Authenticate or Proxy-Authenticate header.
       if (response.status_code == 401) {
         challenge = response.parseHeader('www-authenticate');
-        authorization_header_name = 'authorization';
+        authorizationHeaderName = 'authorization';
       } else {
         challenge = response.parseHeader('proxy-authenticate');
-        authorization_header_name = 'proxy-authorization';
+        authorizationHeaderName = 'proxy-authorization';
       }
 
       // Verify it seems a valid challenge.
@@ -111,7 +107,7 @@ class RequestSender {
 
       if (!_challenged || (!_staled && challenge.stale == true)) {
         _auth ??= DigestAuthentication(Credentials.fromMap(<String, dynamic>{
-          'username': _ua.configuration!.authorization_user,
+          'username': _ua.configuration!.authorizationUser,
           'password': _ua.configuration!.password,
           'realm': _ua.configuration!.realm,
           'ha1': _ua.configuration!.ha1
@@ -146,7 +142,7 @@ class RequestSender {
         _request!.cseq = _request!.cseq! + 1;
         _request!.setHeader(
             'cseq', '${_request!.cseq} ${SipMethodHelper.getName(_method)}');
-        _request!.setHeader(authorization_header_name, _auth.toString());
+        _request!.setHeader(authorizationHeaderName, _auth.toString());
 
         _eventHandlers.emit(EventOnAuthenticated(request: _request));
         send();

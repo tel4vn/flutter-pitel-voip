@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'constants.dart';
 import 'logger.dart';
 import 'utils.dart' as utils;
