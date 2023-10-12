@@ -26,7 +26,9 @@ class VoipNotifService {
             // TODO: show screen calling in Flutter
             break;
           case Event.actionCallAccept:
+            debugPrint('===============onCallAccept=====1============');
             if (onCallAccept != null) {
+              debugPrint('===============onCallAccept=====2============');
               onCallAccept();
             }
             break;

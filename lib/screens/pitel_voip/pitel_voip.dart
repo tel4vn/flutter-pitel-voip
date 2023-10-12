@@ -42,7 +42,8 @@ class _PitelVoipState extends State<PitelVoip> {
         pitelCall.hangup();
       },
     );
-    initRegister();
+    //! WARNING
+    // initRegister();
   }
 
   void initRegister() async {
