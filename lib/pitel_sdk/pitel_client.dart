@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
@@ -107,11 +108,17 @@ class PitelClient {
 
   void setExtensionInfo(GetExtensionResponse extensionResponse) {
     _logger.info('sipServer ${extensionResponse.sipServer.toString()}');
+    final String userAgentInit = extensionResponse.sipServer.userAgent ?? '';
+    final String userAgentConvert = userAgentInit.isNotEmpty
+        ? userAgentInit
+        : 'Flutter SDK: Pitel Connect v1.0.6';
+
     _sipServer = extensionResponse.sipServer;
     _username = extensionResponse.username;
     _password = extensionResponse.password;
     _displayName = extensionResponse.displayName;
-    _userAgent = extensionResponse.sipServer.userAgent ?? 'Pitel Connect';
+    _userAgent = userAgentConvert;
+
     if (isTest) {
       _username = usernameTest;
       _password = passwordTest;
