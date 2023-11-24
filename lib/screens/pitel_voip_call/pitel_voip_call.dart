@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
@@ -11,6 +12,9 @@ class PitelVoipCall extends StatefulWidget {
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
+  final String bundleId;
+  final SipInfoData sipInfoData;
+  final String appMode;
 
   PitelVoipCall({
     Key? key,
@@ -19,6 +23,9 @@ class PitelVoipCall extends StatefulWidget {
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
+    required this.bundleId,
+    required this.sipInfoData,
+    this.appMode = '',
   }) : super(key: key);
 
   @override
@@ -128,11 +135,43 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       case PitelRegistrationStateEnum.unregistered:
         prefs.setString("REGISTER_STATE", "UNREGISTERED");
         widget.onRegisterState("UNREGISTERED");
+        _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
         prefs.setString("REGISTER_STATE", "REGISTERED");
         widget.onRegisterState("REGISTERED");
+        _registerExtSuccess();
         break;
     }
+  }
+
+  void _registerExtSuccess() async {
+    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+    final fcmToken = await PushVoipNotif.getFCMToken();
+    final appModeStatus = widget.appMode.isNotEmpty
+        ? widget.appMode
+        : kReleaseMode
+            ? 'production'
+            : 'dev';
+
+    pitelClient.registerDeviceToken(
+      deviceToken: deviceTokenRes,
+      platform: Platform.isIOS ? 'ios' : 'android',
+      bundleId: widget.bundleId,
+      domain: widget.sipInfoData.registerServer,
+      extension: widget.sipInfoData.userID.toString(),
+      appMode: appModeStatus,
+      fcmToken: fcmToken,
+    );
+  }
+
+  void _registerExtFailed() async {
+    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+
+    final response = await pitelClient.removeDeviceToken(
+      deviceToken: deviceTokenRes,
+      domain: widget.sipInfoData.registerServer,
+      extension: widget.sipInfoData.userID.toString(),
+    );
   }
 }

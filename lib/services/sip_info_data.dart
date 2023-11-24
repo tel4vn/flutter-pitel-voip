@@ -6,8 +6,8 @@ class SipInfoData {
   final String registerServer;
   final String outboundServer;
   final int? port;
-  final int userID;
-  final int authID;
+  final int? userID;
+  final int? authID;
   final String accountName;
   final String displayName;
   final String? dialPlan;
@@ -23,10 +23,10 @@ class SipInfoData {
     required this.registerServer,
     required this.outboundServer,
     this.port,
-    required this.userID,
-    required this.authID,
+    this.userID,
+    this.authID,
     required this.accountName,
-    required this.displayName,
+    this.displayName = '',
     this.dialPlan,
     this.randomPort,
     this.voicemail,
