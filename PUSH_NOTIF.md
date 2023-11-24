@@ -156,7 +156,7 @@ dependencies:
 
 Replace your file ios/Runner/AppDelegate.swift with
 
-[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/ios/Runner/AppDelegate.swift)
+[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/ios/Runner/AppDelegate.swift)
 
 ## **Usage**
 
@@ -177,7 +177,7 @@ void main() async {
 }
 ```
 
-- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/firebase_options.dart).
+- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/firebase_options.dart).
 
 - Get device push token VoIP.
 
@@ -189,42 +189,6 @@ await PushVoipNotif.getDeviceToken();
 
 ```dart
 await PushVoipNotif.getFcmToken();
-```
-
-- Register device token after user login success
-
-```dart
-void _registerDeviceToken() async {
-    final fcmToken = await PushVoipNotif.getFCMToken();
-    final deviceToken = await PushVoipNotif.getDeviceToken();
-    final response = await pitelClient.registerDeviceToken(
-      deviceToken: deviceToken,
-      platform: 'ios',
-      bundleId: '${BundleId}',     // BundleId/packageId
-      domain: '${Domain}',
-      extension: '${UUser}',
-      appMode: kReleaseMode ? 'production' : 'dev', // check APNs certificate of Apple run production or dev mode
-      fcmToken: fcmToken,
-    );
-  }
-```
-
-- Remove Device toke when user logout success
-
-```dart
-    void _removeDeviceToken() async {
-        final deviceToken = await PushVoipNotif.getDeviceToken();
-        final response = await pitelClient.removeDeviceToken(
-          deviceToken: deviceToken, // Device token
-          domain: '${Domain}',
-          extension: '${UUser}',
-      );
-  }
-
-    void _logout() {
-        _removeDeviceToken();      // Remove device token
-        pitelCall.unregister();    // Disconnect SIP call when user logout
-  }
 ```
 
 ## How to test

@@ -33,7 +33,7 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 flutter_pitel_voip:
     git:
       url: https://github.com/tel4vn/flutter-pitel-voip.git
-      ref: 1.0.3 # branch name
+      ref: 1.0.6 # branch name
 ```
 
 2. Get package
@@ -114,14 +114,14 @@ dependencies {
 
 ## Example
 
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.3)
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.6)
 
 ## Usage
 
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/app.dart)
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/app.dart)
 
-> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/app.dart)
+> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/app.dart)
 
 ```dart
 Widget build(BuildContext context) {
@@ -136,13 +136,17 @@ Widget build(BuildContext context) {
 ```
 
 - In file `home_screen.dart`.
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/features/home/home_screen.dart).
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/features/home/home_screen.dart).
   Add WidgetsBindingObserver to handle AppLifecycleState change
 
 ```dart
 ...
 Widget build(BuildContext context) {
-    return PitelVoipCall(                       // Wrap with PitelVoipCall
+    return PitelVoipCall(
+        // Wrap with PitelVoipCall
+        bundleId: '${bundle_id}',
+        appMode: 'dev', // dev or production
+        sipInfoData: sipInfoData,
         goBack: () {
             // go back function
         },
@@ -164,47 +168,39 @@ Widget build(BuildContext context) {
 
 #### Properties
 
-| Prop            | Description                   | Type                      | Default  |
-| --------------- | ----------------------------- | ------------------------- | -------- |
-| goBack          | goback navigation             | () {}                     | Required |
-| goToCall        | navigation, go to call screen | () {}                     | Required |
-| onCallState     | set call status               | (callState) {}            | Required |
-| onRegisterState | get extension register status | (String registerState) {} | Required |
-| child           | child widget                  | Widget                    | Required |
+| Prop            | Description                     | Type                      | Default  |
+| --------------- | ------------------------------- | ------------------------- | -------- |
+| bundleId        | bundleId IOS, packageId android | String                    | Required |
+| appMode         | debug mode or release mode      | String                    | Required |
+| sipInfoData     | SIP information data            | () {}                     | Required |
+| goBack          | goback navigation               | () {}                     | Required |
+| goToCall        | navigation, go to call screen   | () {}                     | Required |
+| onCallState     | set call status                 | (callState) {}            | Required |
+| onRegisterState | get extension register status   | (String registerState) {} | Required |
+| child           | child widget                    | Widget                    | Required |
 
 Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 button to fill data to register extension.
 
 ```dart
 ElevatedButton(
         onPressed: () asyns {
-          final fcmToken = await PushVoipNotif.getFCMToken();
-          final pnPushParams = PnPushParams(
-            pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
-            pnParam: Platform.isAndroid
-                ? '${bundleId}' // Example com.company.app
-                : '${apple_team_id}.${bundleId}.voip', // Example com.company.app
-            pnPrid: '${deviceToken}',
-            fcmToken: fcmToken,
+          final PushNotifParams pushNotifParams = PushNotifParams(
+            teamId: '${apple_team_id}',
+            bundleId: '${bundle_id}',
           );
-          final sipInfo = SipInfoData.fromJson({
+          final sipInfoData = SipInfoData.fromJson({
             "authPass": "${Password}",
             "registerServer": "${Domain}",
             "outboundServer": "${Outbound Proxy}",
             "port": PORT,
-            "userID": UUser,                // Example 101
-            "authID": UUser,                // Example 101
             "accountName": "${UUser}",      // Example 101
             "displayName": "${UUser}@${Domain}",
-            "dialPlan": null,
-            "randomPort": null,
-            "voicemail": null,
             "wssUrl": "${URL WSS}",
-            "userName": "${username}@${Domain}",
             "apiDomain": "${URL API}"
           });
 
           final pitelClient = PitelServiceImpl();
-          final pitelSetting = await pitelClient.setExtensionInfo(sipInfo, pnPushParams);
+          final pitelSetting = await pitelClient.setExtensionInfo(sipInfoData, pushNotifParams);
           // IMPORTANT: Set pitelSetting to your global state management. Example: bloc, getX, riverpod,..
           // Example riverpod
           // ref.read(pitelSettingProvider.notifier).state = pitelSettingRes;
@@ -213,7 +209,7 @@ ElevatedButton(
 ```
 
 - In file `call_screen.dart`
-  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.3/lib/features/call_screen/call_page.dart)
+  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/features/call_screen/call_page.dart)
 
 ```dart
 import 'package:flutter/material.dart';
