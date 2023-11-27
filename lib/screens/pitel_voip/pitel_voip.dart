@@ -43,7 +43,7 @@ class _PitelVoipState extends State<PitelVoip> {
       },
     );
     //! WARNING
-    // initRegister();
+    initRegister();
   }
 
   void initRegister() async {

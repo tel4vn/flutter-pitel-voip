@@ -159,7 +159,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       platform: Platform.isIOS ? 'ios' : 'android',
       bundleId: widget.bundleId,
       domain: widget.sipInfoData.registerServer,
-      extension: widget.sipInfoData.userID.toString(),
+      extension: widget.sipInfoData.accountName.toString(),
       appMode: appModeStatus,
       fcmToken: fcmToken,
     );
