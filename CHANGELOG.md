@@ -1,9 +1,13 @@
 # Changelog
 
+## 1.0.6+1 - 2023-11-27
+
+- Fixed some bugs.
+
 ## 1.0.6 - 2023-11-02
 
-- Update package flutter_callkit_incoming to 2.0.0+2
-- Fix error cancel fullscreen notifcation when call out cancel call.
+- Optimize register params (remove some field not use).
+- Change package name from plugin_pitel to flutter_pitel_voip.
 
 ## 1.0.5 - 2023-10-11
 

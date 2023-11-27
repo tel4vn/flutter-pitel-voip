@@ -27,13 +27,17 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 ## Installation
 
 1. Install Packages
-   Add pubspec.yaml:
+
+- Run this command:
+
+```dart
+flutter pub add flutter_pitel_voip
+```
+
+- Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip:
-    git:
-      url: https://github.com/tel4vn/flutter-pitel-voip.git
-      ref: 1.0.6 # branch name
+flutter_pitel_voip: ^1.0.6+1
 ```
 
 2. Get package

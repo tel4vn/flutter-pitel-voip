@@ -16,60 +16,57 @@ class VoipNotifService {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
         switch (event!.event) {
-          case Event.actionCallIncoming:
+          case Event.ACTION_CALL_INCOMING:
             if (onIncomingCall != null) {
               onIncomingCall(event);
             }
             break;
-          case Event.actionCallStart:
+          case Event.ACTION_CALL_START:
             // TODO: started an outgoing call
             // TODO: show screen calling in Flutter
             break;
-          case Event.actionCallAccept:
+          case Event.ACTION_CALL_ACCEPT:
             if (onCallAccept != null) {
               onCallAccept();
             }
             break;
-          case Event.actionCallDecline:
+          case Event.ACTION_CALL_DECLINE:
             if (onCallDecline != null) {
               onCallDecline(event);
             }
             break;
-          case Event.actionCallEnded:
+          case Event.ACTION_CALL_ENDED:
             if (onCallEnd != null) {
               onCallEnd();
             }
             break;
-          case Event.actionCallTimeout:
+          case Event.ACTION_CALL_TIMEOUT:
             if (onCallTimeOut != null) {
               onCallTimeOut(event);
             }
             break;
-          case Event.actionCallCallback:
+          case Event.ACTION_CALL_CALLBACK:
             // TODO: only Android - click action `Call back` from missed call notification
             break;
-          case Event.actionCallToggleHold:
+          case Event.ACTION_CALL_TOGGLE_HOLD:
             // TODO: only iOS
             break;
-          case Event.actionCallToggleMute:
+          case Event.ACTION_CALL_TOGGLE_MUTE:
             // TODO: only iOS
             break;
-          case Event.actionCallToggleDmtf:
+          case Event.ACTION_CALL_TOGGLE_DMTF:
             // TODO: only iOS
             break;
-          case Event.actionCallToggleGroup:
+          case Event.ACTION_CALL_TOGGLE_GROUP:
             // TODO: only iOS
             break;
-          case Event.actionCallToggleAudioSession:
+          case Event.ACTION_CALL_TOGGLE_AUDIO_SESSION:
             if (swipeInLockscreen != null) {
               swipeInLockscreen();
             }
             break;
-          case Event.actionDidUpdateDevicePushTokenVoip:
+          case Event.ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP:
             // TODO: only iOS
-            break;
-          case Event.actionCallCustom:
-            // TODO: Handle this case.
             break;
         }
         if (callback != null) {
