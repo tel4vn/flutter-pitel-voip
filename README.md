@@ -37,7 +37,7 @@ flutter pub add flutter_pitel_voip
 - Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.6+1
+flutter_pitel_voip: ^1.0.6+2
 ```
 
 2. Get package
@@ -96,7 +96,7 @@ platform :ios, '12.0'
 
 5. Pushkit/ Push notification - Received VoIP and Wake app from Terminated State.
    > **Note**
-   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
+   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.6/PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
 
 ## Troubleshooting
 

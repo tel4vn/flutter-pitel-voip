@@ -168,7 +168,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void _registerExtFailed() async {
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
 
-    final response = await pitelClient.removeDeviceToken(
+    await pitelClient.removeDeviceToken(
       deviceToken: deviceTokenRes,
       domain: widget.sipInfoData.registerServer,
       extension: widget.sipInfoData.userID.toString(),

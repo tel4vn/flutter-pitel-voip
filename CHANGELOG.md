@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6+2 - 2023-11-27
+
+- Update new push notification documentation.
+
 ## 1.0.6+1 - 2023-11-27
 
 - Fixed some bugs.
