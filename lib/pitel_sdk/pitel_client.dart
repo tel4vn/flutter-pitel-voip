@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pitel_voip/config/pitel_config.dart';
+import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/model/pitel_error.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
 import 'package:flutter_pitel_voip/services/models/pn_push_params.dart';
 import 'package:flutter_pitel_voip/sip/src/sip_ua_helper.dart';
 import 'package:flutter_pitel_voip/voip_push/device_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pitel_profile.dart';
 
@@ -320,6 +322,19 @@ class PitelClient {
     } catch (err) {
       return null;
     }
+  }
+
+  Future<void> logoutExtension(SipInfoData sipInfoData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("HAS_DEVICE_TOKEN");
+    pitelCall.unregister();
+
+    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+    await removeDeviceToken(
+      deviceToken: deviceTokenRes,
+      domain: sipInfoData.registerServer,
+      extension: sipInfoData.accountName.toString(),
+    );
   }
 
   String? get _mySipUri =>

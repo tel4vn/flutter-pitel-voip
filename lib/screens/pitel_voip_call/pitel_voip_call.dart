@@ -13,7 +13,7 @@ class PitelVoipCall extends StatefulWidget {
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
   final String bundleId;
-  final SipInfoData sipInfoData;
+  final SipInfoData? sipInfoData;
   final String appMode;
 
   PitelVoipCall({
@@ -135,7 +135,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       case PitelRegistrationStateEnum.unregistered:
         prefs.setString("REGISTER_STATE", "UNREGISTERED");
         widget.onRegisterState("UNREGISTERED");
-        _registerExtFailed();
+        //! WARNING
+        // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
         prefs.setString("REGISTER_STATE", "REGISTERED");
@@ -146,6 +147,11 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   }
 
   void _registerExtSuccess() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final hasDeviceToken = prefs.getBool("HAS_DEVICE_TOKEN");
+    if (hasDeviceToken == true) return;
+    prefs.setBool("HAS_DEVICE_TOKEN", true);
+
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     final fcmToken = await PushVoipNotif.getFCMToken();
     final appModeStatus = widget.appMode.isNotEmpty
@@ -153,25 +159,16 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         : kReleaseMode
             ? 'production'
             : 'dev';
-
-    pitelClient.registerDeviceToken(
-      deviceToken: deviceTokenRes,
-      platform: Platform.isIOS ? 'ios' : 'android',
-      bundleId: widget.bundleId,
-      domain: widget.sipInfoData.registerServer,
-      extension: widget.sipInfoData.accountName.toString(),
-      appMode: appModeStatus,
-      fcmToken: fcmToken,
-    );
-  }
-
-  void _registerExtFailed() async {
-    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
-
-    await pitelClient.removeDeviceToken(
-      deviceToken: deviceTokenRes,
-      domain: widget.sipInfoData.registerServer,
-      extension: widget.sipInfoData.userID.toString(),
-    );
+    if (widget.sipInfoData != null) {
+      pitelClient.registerDeviceToken(
+        deviceToken: deviceTokenRes,
+        platform: Platform.isIOS ? 'ios' : 'android',
+        bundleId: widget.bundleId,
+        domain: widget.sipInfoData!.registerServer,
+        extension: widget.sipInfoData!.accountName.toString(),
+        appMode: appModeStatus,
+        fcmToken: fcmToken,
+      );
+    }
   }
 }

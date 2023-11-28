@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6+3 - 2023-11-27
+
+- Fix bug remove device token
+
 ## 1.0.6+2 - 2023-11-27
 
 - Update new push notification documentation.
