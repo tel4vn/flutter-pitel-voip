@@ -87,6 +87,8 @@ class PitelClient {
       'Host': '${_sipServer?.domain}:${_sipServer?.port}',
     };
 
+    final turn = await turnConfig();
+
     settings.webSocketUrl = _sipServer?.wss ?? "";
     //settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.webSocketSettings.allowBadCertificate = true;
@@ -101,6 +103,11 @@ class PitelClient {
     settings.userAgent = _userAgent;
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
+    if (turn != null) {
+      Map<String, String> turnLast = jsonDecode(jsonEncode(turn.data));
+      settings.iceServers.add(turnLast);
+    }
+
     //! sip_domain
     settings.sipDomain = '${_sipServer?.domain}:${_sipServer?.port}';
 
@@ -309,6 +316,16 @@ class PitelClient {
         domain: domain,
         extension: extension,
       );
+      return response;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  // turn config
+  Future<TurnConfigRes?> turnConfig() async {
+    try {
+      final response = await _pitelApi.turnConfig();
       return response;
     } catch (err) {
       return null;
