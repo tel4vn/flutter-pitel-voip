@@ -104,7 +104,9 @@ class PitelClient {
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
     if (turn != null) {
-      Map<String, String> turnLast = jsonDecode(jsonEncode(turn.data));
+      Map turnDecode = jsonDecode(jsonEncode(turn.data));
+      Map<String, String> turnLast =
+          turnDecode.map((key, value) => MapEntry(key, value.toString()));
       settings.iceServers.add(turnLast);
     }
 

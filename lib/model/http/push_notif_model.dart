@@ -116,8 +116,8 @@ class TurnConfigRes {
 
   TurnConfigRes.fromJson(Map<String, dynamic> json) {
     code = json['code'] as String?;
-    data = (json['data'] as Map<String, String>?) != null
-        ? Data.fromJson(json['data'] as Map<String, String>)
+    data = (json['data'] as Map<String, dynamic>?) != null
+        ? Data.fromJson(json['data'] as Map<String, dynamic>)
         : null;
     message = json['message'] as String?;
   }
