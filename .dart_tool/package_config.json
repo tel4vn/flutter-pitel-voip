@@ -131,7 +131,7 @@
       "name": "flutter",
       "rootUri": "file:///Users/anhquangdev/development/flutter/packages/flutter",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.2"
     },
     {
       "name": "flutter_callkit_incoming",
@@ -149,13 +149,13 @@
       "name": "flutter_test",
       "rootUri": "file:///Users/anhquangdev/development/flutter/packages/flutter_test",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.2"
     },
     {
       "name": "flutter_web_plugins",
       "rootUri": "file:///Users/anhquangdev/development/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.2"
     },
     {
       "name": "flutter_webrtc",
@@ -200,14 +200,20 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "material_color_utilities",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/material_color_utilities-0.2.0",
+      "name": "matcher",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/matcher-0.12.16",
       "packageUri": "lib/",
-      "languageVersion": "2.13"
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "material_color_utilities",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/material_color_utilities-0.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "meta",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/meta-1.9.1",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/meta-1.10.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -347,7 +353,7 @@
       "name": "sky_engine",
       "rootUri": "file:///Users/anhquangdev/development/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.2"
     },
     {
       "name": "source_span",
@@ -381,9 +387,9 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/test_api-0.6.0",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/test_api-0.6.1",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.0"
     },
     {
       "name": "text",
@@ -440,6 +446,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "web",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/web-0.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "webrtc_interface",
       "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/webrtc_interface-1.0.10",
       "packageUri": "lib/",
@@ -464,7 +476,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-10-02T08:41:55.754283Z",
+  "generated": "2023-12-25T03:26:02.697630Z",
   "generator": "pub",
-  "generatorVersion": "2.19.4"
+  "generatorVersion": "3.2.3"
 }
