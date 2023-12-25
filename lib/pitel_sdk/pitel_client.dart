@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -86,6 +87,8 @@ class PitelClient {
       'Host': '${_sipServer?.domain}:${_sipServer?.port}',
     };
 
+    final turn = await turnConfig();
+
     settings.webSocketUrl = _sipServer?.wss ?? "";
     //settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.webSocketSettings.allowBadCertificate = true;
@@ -100,6 +103,12 @@ class PitelClient {
     settings.userAgent = _userAgent;
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
+    if (turn != null) {
+      Map turnDecode = jsonDecode(jsonEncode(turn.data));
+      Map<String, String> turnLast =
+          turnDecode.map((key, value) => MapEntry(key, value.toString()));
+      settings.iceServers.add(turnLast);
+    }
     //! sip_domain
     settings.sipDomain = '${_sipServer?.domain}:${_sipServer?.port}';
 
@@ -335,6 +344,16 @@ class PitelClient {
       domain: sipInfoData.registerServer,
       extension: sipInfoData.accountName.toString(),
     );
+  }
+
+  // turn config
+  Future<TurnConfigRes?> turnConfig() async {
+    try {
+      final response = await _pitelApi.turnConfig();
+      return response;
+    } catch (err) {
+      return null;
+    }
   }
 
   String? get _mySipUri =>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6+4 - 2023-12-25
+
+- Fix bug IPv6
+
 ## 1.0.6+3 - 2023-11-27
 
 - Fix bug remove device token

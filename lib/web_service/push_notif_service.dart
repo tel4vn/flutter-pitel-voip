@@ -10,4 +10,6 @@ class PushNotifService extends HttpService {
 
   @override
   String get domain => PitelConfigure.apiPushUrl;
+
+  String get token => PitelConfigure.token;
 }
