@@ -5,6 +5,7 @@ import 'package:eraser/eraser.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_callkeep/flutter_callkeep.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
 import 'package:flutter_pitel_voip/services/models/pn_push_params.dart';
@@ -63,8 +64,9 @@ class PushNotifAndroid {
         break;
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
-        FlutterCallkitIncoming.endAllCalls();
-        Eraser.clearAllAppNotifications();
+        // FlutterCallkitIncoming.endAllCalls();
+        // Eraser.clearAllAppNotifications();
+        CallKeep.instance.endAllCalls();
         break;
       case "CALL":
         handleShowCallKit(message);
