@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_callkeep/flutter_callkeep.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'dart:async';
@@ -74,6 +75,29 @@ class VoipNotifService {
         }
         if (callback != null) {
           callback(event.toString());
+        }
+      });
+
+      CallKeep.instance.onEvent.listen((event) async {
+        // TODO: Implement other events
+        if (event == null) return;
+        switch (event.type) {
+          case CallKeepEventType.callAccept:
+            final data = event.data as CallKeepCallData;
+            print('call answered: ${data.toMap()}');
+            if (onCallAccept != null) {
+              onCallAccept();
+            }
+            break;
+          case CallKeepEventType.callDecline:
+            final data = event.data as CallKeepCallData;
+            print('call declined: ${data.toMap()}');
+            // if (onCallDecline != null) {
+            //   onCallDecline(event);
+            // }
+            break;
+          default:
+            break;
         }
       });
     } on Exception {
