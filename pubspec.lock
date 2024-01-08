@@ -185,11 +185,12 @@ packages:
   flutter_callkit_incoming:
     dependency: "direct main"
     description:
-      name: flutter_callkit_incoming
-      sha256: "8e76be35d86bce00c358fc083c6f6232a7630958616d3e49cbc89ef661a4a464"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3+3"
+      path: "."
+      ref: main
+      resolved-ref: "4b8899cae3d2a6bbc77b78fb3bc8a3e28d9c534f"
+      url: "https://github.com/anhquangmobile/flutter_callkit_incoming.git"
+    source: git
+    version: "1.0.3+4"
   flutter_lints:
     dependency: "direct dev"
     description:
