@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eraser/eraser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
@@ -68,6 +69,11 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
+    }
+    if (state.state == PitelCallStateEnum.ACCEPTED) {
+      if (Platform.isAndroid) {
+        Eraser.clearAllAppNotifications();
+      }
     }
   }
 
