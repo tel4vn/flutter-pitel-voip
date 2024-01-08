@@ -135,7 +135,7 @@
     },
     {
       "name": "flutter_callkit_incoming",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_callkit_incoming-1.0.3+3",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/git/flutter_callkit_incoming-4b8899cae3d2a6bbc77b78fb3bc8a3e28d9c534f/",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -476,7 +476,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-12-25T03:26:02.697630Z",
+  "generated": "2024-01-08T02:25:39.977836Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

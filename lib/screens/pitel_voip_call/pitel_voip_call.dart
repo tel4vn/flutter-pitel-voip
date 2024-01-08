@@ -115,6 +115,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         widget.onRegisterState("UNREGISTERED");
         break;
       case PitelRegistrationStateEnum.REGISTERED:
+        if (Platform.isIOS) {
+          FlutterCallkitIncoming.startIncomingCall();
+        }
         prefs.setString("REGISTER_STATE", "REGISTERED");
         widget.onRegisterState("REGISTERED");
         break;
