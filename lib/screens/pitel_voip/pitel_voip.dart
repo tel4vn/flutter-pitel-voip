@@ -47,40 +47,13 @@ class _PitelVoipState extends State<PitelVoip> {
   }
 
   void initRegister() async {
-    isCall = true;
-    final List<dynamic> res = await FlutterCallkitIncoming.activeCalls();
     if (Platform.isAndroid) {
-      widget.handleRegister();
-    }
-    if (res.isEmpty && Platform.isIOS) {
       widget.handleRegister();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppLifecycleTracker(
-      didChangeAppState: (state) async {
-        if (Platform.isIOS) {
-          final List<dynamic> res = await FlutterCallkitIncoming.activeCalls();
-          if (state == AppState.resumed && res.isEmpty) {
-            if (!isCall) {
-              widget.handleRegister();
-            }
-          }
-          if (state == AppState.inactive || state == AppState.paused) {
-            setState(() {
-              isCall = false;
-            });
-          }
-        }
-        if (Platform.isAndroid && state == AppState.resumed) {
-          if (!pitelCall.isConnected) {
-            widget.handleRegister();
-          }
-        }
-      },
-      child: widget.child,
-    );
+    return widget.child;
   }
 }
