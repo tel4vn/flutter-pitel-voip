@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_pitel_voip/component/button/action_button.dart';
 import 'package:flutter_pitel_voip/component/button/icon_text_button.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';

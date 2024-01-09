@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:flutter_callkit_incoming/entities/call_event.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/entities/call_event.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pitel_voip/component/app_life_cycle/app_life_cycle.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
 import 'package:flutter_pitel_voip/voip_push/voip_notif.dart';

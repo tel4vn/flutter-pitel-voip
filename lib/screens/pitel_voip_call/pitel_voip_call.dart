@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:eraser/eraser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
