@@ -156,7 +156,7 @@ dependencies:
 
 Replace your file ios/Runner/AppDelegate.swift with
 
-[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/ios/Runner/AppDelegate.swift)
+[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/ios/Runner/AppDelegate.swift)
 
 ## **Usage**
 
@@ -177,7 +177,7 @@ void main() async {
 }
 ```
 
-- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/firebase_options.dart).
+- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/firebase_options.dart).
 
 - Get device push token VoIP.
 

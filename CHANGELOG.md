@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7+1 - 2023-01-09
+
+- Remove re-register when reopen app.
+- Add count time IOS callkit.
+- Refactor function outgoing call.
+
 ## 1.0.6+4 - 2023-12-25
 
 - Fix bug IPv6

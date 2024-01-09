@@ -37,7 +37,7 @@ flutter pub add flutter_pitel_voip
 - Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.6+4
+flutter_pitel_voip: ^1.0.7
 ```
 
 2. Get package
@@ -96,7 +96,7 @@ platform :ios, '12.0'
 
 5. Pushkit/ Push notification - Received VoIP and Wake app from Terminated State.
    > **Note**
-   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.6/PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
+   > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.7/PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
 
 ## Troubleshooting
 
@@ -118,14 +118,14 @@ dependencies {
 
 ## Example
 
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.6)
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.7)
 
 ## Usage
 
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/app.dart)
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/app.dart)
 
-> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/app.dart)
+> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/app.dart)
 
 ```dart
 Widget build(BuildContext context) {
@@ -140,7 +140,7 @@ Widget build(BuildContext context) {
 ```
 
 - In file `home_screen.dart`.
-  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/features/home/home_screen.dart).
+  Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/features/home/home_screen.dart).
   Add WidgetsBindingObserver to handle AppLifecycleState change
 
 ```dart
@@ -219,7 +219,7 @@ pitelClient.logoutExtension(sipInfoData);
 ```
 
 - In file `call_screen.dart`
-  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.6/lib/features/call_screen/call_page.dart)
+  [Example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/features/call_screen/call_page.dart)
 
 ```dart
 import 'package:flutter/material.dart';
@@ -259,6 +259,19 @@ class CallPage extends StatelessWidget {
 | timerTextStyle     | Style for timer text                 | TextStyle | Optional |
 | directionTextStyle | Style for direction text             | TextStyle | Optional |
 | userName           | Custom title text                    | String    | Optional |
+
+- Outgoing call
+
+```dart
+pitelCall.outgoingCall(phoneNumber, handleRegisterCall);
+```
+
+#### Properties
+
+| Prop               | Description               | Type   | Default  |
+| ------------------ | ------------------------- | ------ | -------- |
+| phoneNumber        | phone number for call out | String | Required |
+| handleRegisterCall | re-register when call out | () {}  | Required |
 
 ## How to test
 
