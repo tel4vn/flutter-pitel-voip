@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
 import 'package:flutter_pitel_voip/component/pitel_rtc_video_renderer.dart';
@@ -5,6 +6,8 @@ import 'package:flutter_pitel_voip/component/pitel_ua_helper.dart';
 import 'package:flutter_pitel_voip/component/sip_pitel_helper_listener.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
 import 'package:flutter_pitel_voip/sip/sip_ua.dart';
+
+import 'pitel_client.dart';
 
 class PitelCall implements SipUaHelperListener {
   final PitelLog _logger = PitelLog(tag: 'PitelCall');
@@ -438,5 +441,20 @@ class PitelCall implements SipUaHelperListener {
 
   void busyNow() {
     isBusy = true;
+  }
+
+  void outgoingCall(
+    String phoneNumber,
+    VoidCallback onRegister,
+  ) async {
+    final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
+    final isRegistered = getRegisterState();
+    if (isRegistered == 'Registered') {
+      _pitelCall.call(phoneNumber, true);
+    } else {
+      onRegister();
+      await Future.delayed(const Duration(milliseconds: 500));
+      _pitelCall.call(phoneNumber, true);
+    }
   }
 }

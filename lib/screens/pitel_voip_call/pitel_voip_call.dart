@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eraser/eraser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -82,7 +83,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       if (Platform.isAndroid) {
-        FlutterCallkitIncoming.endAllCalls();
+        Eraser.clearAllAppNotifications();
       }
     }
   }
