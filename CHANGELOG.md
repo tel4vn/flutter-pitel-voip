@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.7+1 - 2023-01-09
+## 1.0.7+3 - 2023-01-09
 
 - Remove re-register when reopen app.
 - Add count time IOS callkit.

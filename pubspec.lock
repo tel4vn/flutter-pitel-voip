@@ -178,10 +178,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_callkit_incoming_timer
-      sha256: "2338e7755a04ff5345bab09681a39604d136304816f8235f8dbd0c9d0e8a3166"
+      sha256: "0c09b932694fe812fe78e9510d3eec8e7ea84e6c11d20617eb1c4a8afce124ec"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3+6"
+    version: "1.0.3+7"
   flutter_lints:
     dependency: "direct dev"
     description:

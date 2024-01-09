@@ -37,7 +37,7 @@ flutter pub add flutter_pitel_voip
 - Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.7+1
+flutter_pitel_voip: ^1.0.7+2
 ```
 
 2. Get package
