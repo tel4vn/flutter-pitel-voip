@@ -80,6 +80,11 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
     }
+    if (state.state == PitelCallStateEnum.ACCEPTED) {
+      if (Platform.isAndroid) {
+        FlutterCallkitIncoming.endAllCalls();
+      }
+    }
   }
 
   @override
