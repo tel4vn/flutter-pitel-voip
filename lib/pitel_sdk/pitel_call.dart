@@ -450,18 +450,30 @@ class PitelCall implements SipUaHelperListener {
     isBusy = true;
   }
 
-  void outgoingCall(
+  Future<String> outgoingCall(
     String phoneNumber,
     VoidCallback onRegister,
   ) async {
-    final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
-    final isRegistered = getRegisterState();
-    if (isRegistered == 'Registered') {
-      _pitelCall.call(phoneNumber, true);
-    } else {
-      onRegister();
-      await Future.delayed(const Duration(milliseconds: 500));
-      _pitelCall.call(phoneNumber, true);
+    try {
+      final isRegistered = getRegisterState();
+      if (isRegistered == 'Registered') {
+        final res = await _handleCall(phoneNumber);
+        return res;
+      } else {
+        onRegister();
+        await Future.delayed(const Duration(milliseconds: 500));
+        final res = await _handleCall(phoneNumber);
+        return res;
+      }
+    } catch (error) {
+      return error.toString();
     }
+  }
+
+  Future<String> _handleCall(String phoneNumber) async {
+    final PitelClient pitelClient = PitelClient.getInstance();
+    return pitelClient
+        .call(phoneNumber, true)
+        .then((value) => value.fold((succ) => "OK", (err) => err.toString()));
   }
 }
