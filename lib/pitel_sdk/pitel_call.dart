@@ -461,7 +461,7 @@ class PitelCall implements SipUaHelperListener {
         return res;
       } else {
         onRegister();
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 1000));
         final res = await _handleCall(phoneNumber);
         return res;
       }
