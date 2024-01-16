@@ -140,8 +140,20 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_easyloading",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_easyloading-3.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_lints-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_spinkit",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_spinkit-5.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -476,7 +488,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-01-09T03:43:39.547288Z",
+  "generated": "2024-01-17T00:35:11.259807Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:eraser/eraser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,8 @@ class PitelVoipCall extends StatefulWidget {
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
+  final String outPhone;
+  final VoidCallback clearOutgoing;
 
   PitelVoipCall({
     Key? key,
@@ -20,6 +23,8 @@ class PitelVoipCall extends StatefulWidget {
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
+    required this.outPhone,
+    required this.clearOutgoing,
   }) : super(key: key);
 
   @override
@@ -61,10 +66,12 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void callStateChanged(String callId, PitelCallState state) {
     widget.onCallState(state.state);
     if (state.state == PitelCallStateEnum.ENDED) {
+      widget.clearOutgoing();
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.FAILED) {
+      widget.clearOutgoing();
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.STREAM) {
@@ -114,6 +121,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
     switch (state.state) {
       case PitelRegistrationStateEnum.REGISTRATION_FAILED:
+        widget.clearOutgoing();
+        EasyLoading.dismiss();
         break;
       case PitelRegistrationStateEnum.NONE:
       case PitelRegistrationStateEnum.UNREGISTERED:
@@ -121,6 +130,17 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         widget.onRegisterState("UNREGISTERED");
         break;
       case PitelRegistrationStateEnum.REGISTERED:
+        if (widget.outPhone.isNotEmpty) {
+          EasyLoading.dismiss();
+          pitelClient.call(widget.outPhone, true).then(
+                (value) => value.fold((succ) => "OK", (err) {
+                  EasyLoading.showToast(
+                    err.toString(),
+                    toastPosition: EasyLoadingToastPosition.center,
+                  );
+                }),
+              );
+        }
         if (Platform.isIOS) {
           FlutterCallkitIncoming.startIncomingCall();
         }
