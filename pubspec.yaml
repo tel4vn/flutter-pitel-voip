@@ -34,6 +34,8 @@ dependencies:
   shared_preferences: ^2.1.0
   eraser: ^2.0.1
   flutter_easyloading: ^3.0.5
+  throttling: ^1.0.0
+  connectivity_plus: ^3.0.2
 
 dev_dependencies:
   flutter_test:

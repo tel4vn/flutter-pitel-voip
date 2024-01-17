@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:plugin_pitel/component/pitel_call_state.dart';
 import 'package:plugin_pitel/component/pitel_rtc_video_renderer.dart';
@@ -5,6 +6,13 @@ import 'package:plugin_pitel/component/pitel_ua_helper.dart';
 import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/sip/sip_ua.dart';
+import 'package:throttling/throttling.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'pitel_client.dart';
+
+final thr = Throttling(duration: const Duration(milliseconds: 2000));
 
 class PitelCall implements SipUaHelperListener {
   final PitelLog _logger = PitelLog(tag: 'PitelCall');
@@ -38,6 +46,14 @@ class PitelCall implements SipUaHelperListener {
   bool get isHaveCall => _callIdCurrent?.isNotEmpty ?? false;
   String? _callIdCurrent;
   bool isBusy = false;
+  String _outPhone = "";
+  ConnectivityResult _checkConnectivity = ConnectivityResult.none;
+
+  String get outPhone => _outPhone;
+
+  void resetOutPhone() {
+    _outPhone = "";
+  }
 
   void setCallCurrent(String? id) {
     _callIdCurrent = id;
@@ -439,5 +455,45 @@ class PitelCall implements SipUaHelperListener {
 
   void busyNow() {
     isBusy = true;
+  }
+
+  void outGoingCall({
+    required String phoneNumber,
+    required VoidCallback handleRegisterCall,
+  }) {
+    thr.throttle(() async {
+      _outPhone = phoneNumber;
+      final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
+      final PitelClient pitelClient = PitelClient.getInstance();
+
+      final connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        EasyLoading.showToast(
+          'Please check your network',
+          toastPosition: EasyLoadingToastPosition.center,
+        );
+        return;
+      }
+      if (connectivityResult != _checkConnectivity) {
+        _checkConnectivity = connectivityResult;
+        EasyLoading.show(status: "Connecting...");
+        handleRegisterCall();
+        return;
+      }
+      final isRegistered = pitelCall.getRegisterState();
+      if (isRegistered == 'Registered') {
+        pitelClient
+            .call(phoneNumber, true)
+            .then((value) => value.fold((succ) => "OK", (err) {
+                  EasyLoading.showToast(
+                    err.toString(),
+                    toastPosition: EasyLoadingToastPosition.center,
+                  );
+                }));
+      } else {
+        EasyLoading.show(status: "Connecting...");
+        handleRegisterCall();
+      }
+    });
   }
 }

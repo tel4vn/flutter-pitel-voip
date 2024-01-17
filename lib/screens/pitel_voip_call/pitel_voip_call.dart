@@ -13,8 +13,6 @@ class PitelVoipCall extends StatefulWidget {
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
-  final String outPhone;
-  final VoidCallback clearOutgoing;
 
   PitelVoipCall({
     Key? key,
@@ -23,8 +21,6 @@ class PitelVoipCall extends StatefulWidget {
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
-    required this.outPhone,
-    required this.clearOutgoing,
   }) : super(key: key);
 
   @override
@@ -66,12 +62,12 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void callStateChanged(String callId, PitelCallState state) {
     widget.onCallState(state.state);
     if (state.state == PitelCallStateEnum.ENDED) {
-      widget.clearOutgoing();
+      pitelCall.resetOutPhone();
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.FAILED) {
-      widget.clearOutgoing();
+      pitelCall.resetOutPhone();
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.STREAM) {
@@ -121,7 +117,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
     switch (state.state) {
       case PitelRegistrationStateEnum.REGISTRATION_FAILED:
-        widget.clearOutgoing();
+        pitelCall.resetOutPhone();
         EasyLoading.dismiss();
         break;
       case PitelRegistrationStateEnum.NONE:
@@ -130,9 +126,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         widget.onRegisterState("UNREGISTERED");
         break;
       case PitelRegistrationStateEnum.REGISTERED:
-        if (widget.outPhone.isNotEmpty) {
+        if (pitelCall.outPhone.isNotEmpty) {
           EasyLoading.dismiss();
-          pitelClient.call(widget.outPhone, true).then(
+          pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
                   EasyLoading.showToast(
                     err.toString(),
