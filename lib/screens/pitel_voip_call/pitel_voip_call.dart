@@ -3,6 +3,7 @@ import 'package:eraser/eraser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -70,11 +71,13 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (state.state == PitelCallStateEnum.ENDED) {
+      pitelCall.resetOutPhone();
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
       prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.FAILED) {
+      pitelCall.resetOutPhone();
       widget.goBack();
       prefs.setBool("ACCEPT_CALL", false);
     }
@@ -136,6 +139,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
     switch (state.state) {
       case PitelRegistrationStateEnum.registrationFailed:
+        pitelCall.resetOutPhone();
         break;
       case PitelRegistrationStateEnum.none:
       case PitelRegistrationStateEnum.unregistered:
@@ -145,6 +149,17 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
+        if (pitelCall.outPhone.isNotEmpty) {
+          EasyLoading.dismiss();
+          pitelClient.call(pitelCall.outPhone, true).then(
+                (value) => value.fold((succ) => "OK", (err) {
+                  EasyLoading.showToast(
+                    err.toString(),
+                    toastPosition: EasyLoadingToastPosition.center,
+                  );
+                }),
+              );
+        }
         if (Platform.isIOS) {
           FlutterCallkitIncoming.startIncomingCall();
         }

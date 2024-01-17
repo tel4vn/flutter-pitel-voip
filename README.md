@@ -37,7 +37,7 @@ flutter pub add flutter_pitel_voip
 - Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.7+2
+flutter_pitel_voip: ^1.0.7+4
 ```
 
 2. Get package
@@ -263,7 +263,7 @@ class CallPage extends StatelessWidget {
 - Outgoing call
 
 ```dart
-pitelCall.outgoingCall(phoneNumber, handleRegisterCall);
+pitelCall.outGoingCall(phoneNumber, handleRegisterCall);
 ```
 
 #### Properties

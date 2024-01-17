@@ -1,6 +1,11 @@
 # Changelog
 
-## 1.0.7+3 - 2023-01-09
+## 1.0.7+4 - 2024-01-17
+
+- Fix bug change network wifi <-> mobile data.
+- Add function outGoingCall.
+
+## 1.0.7+3 - 2024-01-09
 
 - Remove re-register when reopen app.
 - Add count time IOS callkit.
