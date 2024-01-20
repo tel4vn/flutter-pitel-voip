@@ -54,6 +54,18 @@ import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 
 4. Configure Project
 
+- In file app.dart config easyloading
+
+```dart
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+  // ....
+  return MaterialApp.router(
+    // ...
+    builder: EasyLoading.init(),
+  )
+```
+
 #### Android:
 
 - In file `android/app/src/main/AndroidManifest.xml`

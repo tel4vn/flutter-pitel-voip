@@ -149,8 +149,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
+        EasyLoading.dismiss();
         if (pitelCall.outPhone.isNotEmpty) {
-          EasyLoading.dismiss();
           pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
                   EasyLoading.showToast(

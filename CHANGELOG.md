@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7+5 - 2024-01-20
+
+- Add loading when accept incoming call.
+
 ## 1.0.7+4 - 2024-01-17
 
 - Fix bug change network wifi <-> mobile data.

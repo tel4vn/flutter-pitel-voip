@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_callkit_incoming_timer/entities/call_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
 import 'package:flutter_pitel_voip/voip_push/voip_notif.dart';
@@ -33,6 +34,7 @@ class _PitelVoipState extends State<PitelVoip> {
     VoipNotifService.listenerEvent(
       callback: (event) {},
       onCallAccept: () {
+        EasyLoading.show(status: "Connecting...");
         widget.handleRegisterCall();
       },
       onCallDecline: (CallEvent event) {},
