@@ -126,8 +126,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         widget.onRegisterState("UNREGISTERED");
         break;
       case PitelRegistrationStateEnum.REGISTERED:
+        EasyLoading.dismiss();
         if (pitelCall.outPhone.isNotEmpty) {
-          EasyLoading.dismiss();
           pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
                   EasyLoading.showToast(
