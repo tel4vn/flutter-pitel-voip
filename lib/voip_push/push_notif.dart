@@ -71,7 +71,6 @@ class PushNotifAndroid {
         handleShowCallKit(message);
         break;
       default:
-        handleShowCallKit(message);
         break;
     }
   }
