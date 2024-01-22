@@ -241,7 +241,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void enableSpeakerphone(bool enable) {
-    Helper.setSpeakerphoneOn(false);
+    Helper.setSpeakerphoneOn(enable);
   }
 
   bool toggleCamera({String? callId}) {
