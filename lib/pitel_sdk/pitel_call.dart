@@ -9,6 +9,7 @@ import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
 import 'package:flutter_pitel_voip/sip/sip_ua.dart';
 import 'package:throttling/throttling.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 import 'pitel_client.dart';
 
@@ -48,11 +49,17 @@ class PitelCall implements SipUaHelperListener {
   bool isBusy = false;
   String _outPhone = "";
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
+  ConnectivityResult get checkConnectivity => _checkConnectivity;
+  String? _wifiIP;
 
   String get outPhone => _outPhone;
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void resetConnectivity() {
+    _checkConnectivity = ConnectivityResult.none;
   }
 
   void setCallCurrent(String? id) {
@@ -467,6 +474,7 @@ class PitelCall implements SipUaHelperListener {
 
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
+        _checkConnectivity = ConnectivityResult.none;
         EasyLoading.showToast(
           'Please check your network',
           toastPosition: EasyLoadingToastPosition.center,
@@ -478,6 +486,21 @@ class PitelCall implements SipUaHelperListener {
         EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
+      }
+      if (connectivityResult == ConnectivityResult.wifi) {
+        try {
+          final wifiIP = await NetworkInfo().getWifiIP();
+          if (wifiIP != _wifiIP) {
+            _wifiIP = wifiIP;
+            EasyLoading.show(status: "Connecting...");
+            handleRegisterCall();
+            return;
+          }
+        } catch (error) {
+          EasyLoading.show(status: "Connecting...");
+          handleRegisterCall();
+          return;
+        }
       }
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
