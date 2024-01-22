@@ -1,6 +1,6 @@
 ##### flutter_pitel_voip
 
-# Integrate Voip call to your project
+# Integrate VoIP call to your project
 
 [![N|Solid](https://documents.tel4vn.com/img/pitel-logo.png)](https://documents.tel4vn.com/)
 
@@ -37,7 +37,7 @@ flutter pub add flutter_pitel_voip
 - Add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.7+4
+flutter_pitel_voip: ^1.0.7+6
 ```
 
 2. Get package
