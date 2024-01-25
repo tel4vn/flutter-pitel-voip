@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -77,13 +78,15 @@ class PitelClient {
     }
   }
 
-  bool registerSipWithoutFCM(PnPushParams pnPushParams) {
+  Future<void> registerSipWithoutFCM(PnPushParams pnPushParams) async {
     final settings = PitelSettings();
 
     Map<String, String> _wsExtraHeaders = {
       'Origin': 'https://${_sipServer?.domain}:${_sipServer?.port}',
       'Host': '${_sipServer?.domain}:${_sipServer?.port}',
     };
+
+    final turn = await turnConfig();
 
     settings.webSocketUrl = _sipServer?.wss ?? "";
     //settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
@@ -98,10 +101,16 @@ class PitelClient {
     settings.displayName = _displayName;
     settings.userAgent = 'SIP Client';
     settings.dtmfMode = DtmfMode.RFC2833;
+    if (turn != null) {
+      Map turnDecode = jsonDecode(jsonEncode(turn.data));
+      Map<String, String> turnLast =
+          turnDecode.map((key, value) => MapEntry(key, value.toString()));
+      settings.iceServers.add(turnLast);
+    }
+
     inspect(settings);
 
     pitelCall.register(settings);
-    return true;
   }
 
   void setExtensionInfo(GetExtensionResponse extensionResponse) {
@@ -302,6 +311,16 @@ class PitelClient {
         domain: domain,
         extension: extension,
       );
+      return response;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  // turn config
+  Future<TurnConfigRes?> turnConfig() async {
+    try {
+      final response = await _pitelApi.turnConfig();
       return response;
     } catch (err) {
       return null;

@@ -98,3 +98,57 @@ class RemoveDeviceTokenReq {
     );
   }
 }
+
+class TurnConfigRes {
+  String? code;
+  Data? data;
+  String? message;
+
+  TurnConfigRes({
+    this.code,
+    this.data,
+    this.message,
+  });
+
+  TurnConfigRes.fromJson(Map<String, dynamic> json) {
+    code = json['code'] as String?;
+    data = (json['data'] as Map<String, dynamic>?) != null
+        ? Data.fromJson(json['data'] as Map<String, dynamic>)
+        : null;
+    message = json['message'] as String?;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    json['code'] = code;
+    json['data'] = data?.toJson();
+    json['message'] = message;
+    return json;
+  }
+}
+
+class Data {
+  String? credential;
+  String? urls;
+  String? username;
+
+  Data({
+    this.credential,
+    this.urls,
+    this.username,
+  });
+
+  Data.fromJson(Map<String, dynamic> json) {
+    credential = json['credential'] as String?;
+    urls = json['urls'] as String?;
+    username = json['username'] as String?;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    json['credential'] = credential;
+    json['urls'] = urls;
+    json['username'] = username;
+    return json;
+  }
+}

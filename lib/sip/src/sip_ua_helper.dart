@@ -281,6 +281,7 @@ class PitelSettings {
   int iceGatheringTimeout = 500;
 
   List<Map<String, String>> iceServers = <Map<String, String>>[
+    <String, String>{'url': 'stun:stun.tel4vn.com:3478'},
     <String, String>{'url': 'stun:stun.l.google.com:19302'},
 // turn server configuration example.
 //    {

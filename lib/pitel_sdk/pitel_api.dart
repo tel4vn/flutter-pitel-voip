@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:plugin_pitel/model/http/get_extension_info.dart';
 import 'package:plugin_pitel/model/http/get_profile.dart';
@@ -135,6 +136,22 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  @override
+  Future<TurnConfigRes> turnConfig({String api = '/server/turn'}) async {
+    try {
+      final response = await _pushNotifService.get(
+          api,
+          {
+            HttpHeaders.authorizationHeader: PushNotifService().token,
+          },
+          null);
+      final removeTDeviceTokenResponse = TurnConfigRes.fromJson(response);
+      return removeTDeviceTokenResponse;
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -180,5 +197,9 @@ abstract class PitelApi {
     required String deviceToken,
     required String domain,
     required String extension,
+  });
+
+  Future<TurnConfigRes> turnConfig({
+    String api = '/server/turn',
   });
 }
