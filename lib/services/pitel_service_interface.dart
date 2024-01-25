@@ -6,7 +6,7 @@ abstract class PitelService {
     SipInfoData sipInfoData,
     PnPushParams pnPushParams,
   );
-  bool registerSipWithoutFCM(
+  void registerSipWithoutFCM(
     PnPushParams pnPushParams,
   );
 }

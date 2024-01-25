@@ -17,7 +17,7 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
   }
 
   @override
-  bool registerSipWithoutFCM(
+  void registerSipWithoutFCM(
     PnPushParams pnPushParams,
   ) {
     return pitelClient.registerSipWithoutFCM(pnPushParams);

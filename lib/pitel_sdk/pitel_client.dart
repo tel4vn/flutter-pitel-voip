@@ -78,7 +78,7 @@ class PitelClient {
     }
   }
 
-  Future<void> registerSipWithoutFCM(PnPushParams pnPushParams) async {
+  void registerSipWithoutFCM(PnPushParams pnPushParams) async {
     final settings = PitelSettings();
 
     Map<String, String> _wsExtraHeaders = {
