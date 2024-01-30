@@ -37,6 +37,9 @@ class PitelCall implements SipUaHelperListener {
   String? get remoteIdentity => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_identity
       : "";
+  String? get localIdentity => _callIdCurrent != null
+      ? _sipuaHelper.findCall(_callIdCurrent!)?.local_identity
+      : "";
   String? get direction => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.direction
       : "";
@@ -51,8 +54,14 @@ class PitelCall implements SipUaHelperListener {
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
+  bool _isTransferCall = false;
 
+  bool get isTransferCall => _isTransferCall;
   String get outPhone => _outPhone;
+
+  void setTransferCall(bool value) {
+    _isTransferCall = value;
+  }
 
   void resetOutPhone() {
     _outPhone = "";
