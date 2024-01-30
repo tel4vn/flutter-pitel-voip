@@ -63,7 +63,7 @@ Follow the instructions to [create a certificate signing request](https://devel
 
 - **Install certificate.**
   Download the certificate and install it into the Keychain Access app(download .cer and double click to install).
-- **Export the .p12 file and send it to Tel4vn (or using test)**
+- **Export the .p12 file and config in [pitel portal](https://github.com/anhquangmobile/react-native-pitel-voip/blob/main/PORTAL_GUIDE.md)**
   ![push_img_7](assets/push_img/push_img_7.png)
 
 # Setup Pushkit & Callkit
