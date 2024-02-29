@@ -43,6 +43,9 @@ class PitelCall implements SipUaHelperListener {
   String? get direction => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.direction
       : "";
+  String? get remoteDisplayName => _callIdCurrent != null
+      ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_display_name
+      : "";
   bool get videoIsOff => _videoIsOff;
   bool get audioMuted => _audioMuted;
   String? get holdOriginator => _holdOriginator;
