@@ -58,11 +58,9 @@ class PitelCall implements SipUaHelperListener {
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
   bool _isTransferCall = false;
-  String _callerName = "";
 
   bool get isTransferCall => _isTransferCall;
   String get outPhone => _outPhone;
-  String get callerName => _callerName;
 
   void setTransferCall(bool value) {
     _isTransferCall = value;
@@ -70,11 +68,6 @@ class PitelCall implements SipUaHelperListener {
 
   void resetOutPhone() {
     _outPhone = "";
-  }
-
-  void setCallerName(String value) {
-    print('=============_pitelCall=====$value========2======');
-    _callerName = value;
   }
 
   void resetConnectivity() {

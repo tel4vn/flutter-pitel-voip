@@ -73,8 +73,6 @@ class PushNotifAndroid {
   }
 
   static void handleShowCallKit(RemoteMessage message) async {
-    final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
-    _pitelCall.setCallerName(message.data['nameCaller'] ?? '');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("NAME_CALLER", message.data['nameCaller'] ?? '');
 
