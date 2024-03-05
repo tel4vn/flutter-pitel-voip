@@ -1,15 +1,12 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'dart:developer';
 
 import 'package:eraser/eraser.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
-import 'package:plugin_pitel/services/models/pn_push_params.dart';
-import 'package:plugin_pitel/services/sip_info_data.dart';
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_connection_service.dart';
@@ -71,12 +68,16 @@ class PushNotifAndroid {
         handleShowCallKit(message);
         break;
       default:
-        handleShowCallKit(message);
         break;
     }
   }
 
-  static void handleShowCallKit(RemoteMessage message) {
+  static void handleShowCallKit(RemoteMessage message) async {
+    final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
+    _pitelCall.setCallerName(message.data['nameCaller'] ?? '');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("NAME_CALLER", message.data['nameCaller'] ?? '');
+
     AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
       uuid: message.messageId ?? '',
       nameCaller: message.data['nameCaller'] ?? '',
