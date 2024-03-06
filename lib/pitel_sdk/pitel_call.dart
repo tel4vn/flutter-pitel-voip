@@ -58,9 +58,11 @@ class PitelCall implements SipUaHelperListener {
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
   bool _isTransferCall = false;
+  bool _reconnect = false;
 
   bool get isTransferCall => _isTransferCall;
   String get outPhone => _outPhone;
+  bool get reconnect => _reconnect;
 
   void setTransferCall(bool value) {
     _isTransferCall = value;
@@ -68,6 +70,10 @@ class PitelCall implements SipUaHelperListener {
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void setReconnect() {
+    _reconnect = !_reconnect;
   }
 
   void resetConnectivity() {
@@ -484,6 +490,63 @@ class PitelCall implements SipUaHelperListener {
     isBusy = true;
   }
 
+  // void outGoingCall({
+  //   required String phoneNumber,
+  //   required VoidCallback handleRegisterCall,
+  // }) {
+  //   thr.throttle(() async {
+  //     _outPhone = phoneNumber;
+  //     final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
+  //     final PitelClient pitelClient = PitelClient.getInstance();
+
+  //     final connectivityResult = await (Connectivity().checkConnectivity());
+  //     if (connectivityResult == ConnectivityResult.none) {
+  //       _checkConnectivity = ConnectivityResult.none;
+  //       EasyLoading.showToast(
+  //         'Please check your network',
+  //         toastPosition: EasyLoadingToastPosition.center,
+  //       );
+  //       return;
+  //     }
+  //     if (connectivityResult != _checkConnectivity) {
+  //       _checkConnectivity = connectivityResult;
+  //       EasyLoading.show(status: "Connecting...");
+  //       handleRegisterCall();
+  //       return;
+  //     }
+
+  //     if (connectivityResult == ConnectivityResult.wifi) {
+  //       try {
+  //         final wifiIP = await NetworkInfo().getWifiIP();
+  //         if (wifiIP != _wifiIP) {
+  //           _wifiIP = wifiIP;
+  //           EasyLoading.show(status: "Connecting...");
+  //           handleRegisterCall();
+  //           return;
+  //         }
+  //       } catch (error) {
+  //         EasyLoading.show(status: "Connecting...");
+  //         handleRegisterCall();
+  //         return;
+  //       }
+  //     }
+
+  //     final isRegistered = pitelCall.getRegisterState();
+  //     if (isRegistered == 'Registered') {
+  //       pitelClient
+  //           .call(phoneNumber, true)
+  //           .then((value) => value.fold((succ) => "OK", (err) {
+  //                 EasyLoading.showToast(
+  //                   err.toString(),
+  //                   toastPosition: EasyLoadingToastPosition.center,
+  //                 );
+  //               }));
+  //     } else {
+  //       EasyLoading.show(status: "Connecting...");
+  //       handleRegisterCall();
+  //     }
+  //   });
+  // }
   void outGoingCall({
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
@@ -502,27 +565,12 @@ class PitelCall implements SipUaHelperListener {
         );
         return;
       }
-      if (connectivityResult != _checkConnectivity) {
-        _checkConnectivity = connectivityResult;
+
+      if (_reconnect) {
+        _reconnect = !_reconnect;
         EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
-      }
-
-      if (connectivityResult == ConnectivityResult.wifi) {
-        try {
-          final wifiIP = await NetworkInfo().getWifiIP();
-          if (wifiIP != _wifiIP) {
-            _wifiIP = wifiIP;
-            EasyLoading.show(status: "Connecting...");
-            handleRegisterCall();
-            return;
-          }
-        } catch (error) {
-          EasyLoading.show(status: "Connecting...");
-          handleRegisterCall();
-          return;
-        }
       }
 
       final isRegistered = pitelCall.getRegisterState();
