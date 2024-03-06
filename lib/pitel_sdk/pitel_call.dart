@@ -51,11 +51,17 @@ class PitelCall implements SipUaHelperListener {
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
+  bool _reconnect = false;
 
   String get outPhone => _outPhone;
+  bool get reconnect => _reconnect;
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void setReconnect() {
+    _reconnect = !_reconnect;
   }
 
   void resetConnectivity() {
@@ -482,27 +488,12 @@ class PitelCall implements SipUaHelperListener {
         );
         return;
       }
-      if (connectivityResult != _checkConnectivity) {
-        _checkConnectivity = connectivityResult;
+
+      if (_reconnect) {
+        _reconnect = !_reconnect;
         EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
-      }
-
-      if (connectivityResult == ConnectivityResult.wifi) {
-        try {
-          final wifiIP = await NetworkInfo().getWifiIP();
-          if (wifiIP != _wifiIP) {
-            _wifiIP = wifiIP;
-            EasyLoading.show(status: "Connecting...");
-            handleRegisterCall();
-            return;
-          }
-        } catch (error) {
-          EasyLoading.show(status: "Connecting...");
-          handleRegisterCall();
-          return;
-        }
       }
 
       final isRegistered = pitelCall.getRegisterState();

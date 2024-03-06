@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:plugin_pitel/flutter_pitel_voip.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_call.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
 import 'package:plugin_pitel/voip_push/voip_notif.dart';
@@ -52,6 +53,13 @@ class _PitelVoipState extends State<PitelVoip> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return AppLifecycleTracker(
+      didChangeAppState: (state) async {
+        if (state == AppState.resumed) {
+          pitelCall.setReconnect();
+        }
+      },
+      child: widget.child,
+    );
   }
 }
