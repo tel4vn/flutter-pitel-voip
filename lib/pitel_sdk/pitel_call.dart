@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming/entities/entities.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -8,6 +10,7 @@ import 'package:plugin_pitel/component/pitel_ua_helper.dart';
 import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_log.dart';
 import 'package:plugin_pitel/sip/sip_ua.dart';
+import 'package:uuid/uuid.dart';
 
 import 'pitel_client.dart';
 import 'package:throttling/throttling.dart';
@@ -496,6 +499,16 @@ class PitelCall implements SipUaHelperListener {
   // }) {
   //   thr.throttle(() async {
   //     _outPhone = phoneNumber;
+  //     var newUUID = const Uuid().v4();
+  //     CallKitParams params = CallKitParams(
+  //         id: newUUID,
+  //         nameCaller: phoneNumber,
+  //         handle: phoneNumber,
+  //         type: 1,
+  //         extra: <String, dynamic>{'userId': '1a2b3c4d'},
+  //         ios: IOSParams(handleType: 'generic'));
+
+  //     await FlutterCallkitIncoming.startCall(params);
   //     final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
   //     final PitelClient pitelClient = PitelClient.getInstance();
 
@@ -553,6 +566,7 @@ class PitelCall implements SipUaHelperListener {
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
+
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
 
