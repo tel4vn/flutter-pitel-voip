@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/entities/entities.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -493,79 +495,23 @@ class PitelCall implements SipUaHelperListener {
     isBusy = true;
   }
 
-  // void outGoingCall({
-  //   required String phoneNumber,
-  //   required VoidCallback handleRegisterCall,
-  // }) {
-  //   thr.throttle(() async {
-  //     _outPhone = phoneNumber;
-  //     var newUUID = const Uuid().v4();
-  //     CallKitParams params = CallKitParams(
-  //         id: newUUID,
-  //         nameCaller: phoneNumber,
-  //         handle: phoneNumber,
-  //         type: 1,
-  //         extra: <String, dynamic>{'userId': '1a2b3c4d'},
-  //         ios: IOSParams(handleType: 'generic'));
-
-  //     await FlutterCallkitIncoming.startCall(params);
-  //     final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
-  //     final PitelClient pitelClient = PitelClient.getInstance();
-
-  //     final connectivityResult = await (Connectivity().checkConnectivity());
-  //     if (connectivityResult == ConnectivityResult.none) {
-  //       _checkConnectivity = ConnectivityResult.none;
-  //       EasyLoading.showToast(
-  //         'Please check your network',
-  //         toastPosition: EasyLoadingToastPosition.center,
-  //       );
-  //       return;
-  //     }
-  //     if (connectivityResult != _checkConnectivity) {
-  //       _checkConnectivity = connectivityResult;
-  //       EasyLoading.show(status: "Connecting...");
-  //       handleRegisterCall();
-  //       return;
-  //     }
-
-  //     if (connectivityResult == ConnectivityResult.wifi) {
-  //       try {
-  //         final wifiIP = await NetworkInfo().getWifiIP();
-  //         if (wifiIP != _wifiIP) {
-  //           _wifiIP = wifiIP;
-  //           EasyLoading.show(status: "Connecting...");
-  //           handleRegisterCall();
-  //           return;
-  //         }
-  //       } catch (error) {
-  //         EasyLoading.show(status: "Connecting...");
-  //         handleRegisterCall();
-  //         return;
-  //       }
-  //     }
-
-  //     final isRegistered = pitelCall.getRegisterState();
-  //     if (isRegistered == 'Registered') {
-  //       pitelClient
-  //           .call(phoneNumber, true)
-  //           .then((value) => value.fold((succ) => "OK", (err) {
-  //                 EasyLoading.showToast(
-  //                   err.toString(),
-  //                   toastPosition: EasyLoadingToastPosition.center,
-  //                 );
-  //               }));
-  //     } else {
-  //       EasyLoading.show(status: "Connecting...");
-  //       handleRegisterCall();
-  //     }
-  //   });
-  // }
   void outGoingCall({
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
+      if (Platform.isIOS) {
+        var newUUID = const Uuid().v4();
+        CallKitParams params = CallKitParams(
+          id: newUUID,
+          nameCaller: phoneNumber,
+          handle: phoneNumber,
+          type: 0,
+          ios: IOSParams(handleType: 'generic'),
+        );
+        await FlutterCallkitIncoming.startCall(params);
+      }
 
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
@@ -579,12 +525,27 @@ class PitelCall implements SipUaHelperListener {
         );
         return;
       }
-
-      if (_reconnect) {
-        _reconnect = !_reconnect;
+      if (connectivityResult != _checkConnectivity) {
+        _checkConnectivity = connectivityResult;
         EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
+      }
+
+      if (connectivityResult == ConnectivityResult.wifi) {
+        try {
+          final wifiIP = await NetworkInfo().getWifiIP();
+          if (wifiIP != _wifiIP) {
+            _wifiIP = wifiIP;
+            EasyLoading.show(status: "Connecting...");
+            handleRegisterCall();
+            return;
+          }
+        } catch (error) {
+          EasyLoading.show(status: "Connecting...");
+          handleRegisterCall();
+          return;
+        }
       }
 
       final isRegistered = pitelCall.getRegisterState();
