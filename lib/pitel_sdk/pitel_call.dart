@@ -158,9 +158,6 @@ class PitelCall implements SipUaHelperListener {
     switch (pitelCallState.state) {
       case PitelCallStateEnum.CALL_INITIATION:
         print(_sipPitelHelperListener);
-        print('================_sipPitelHelperListener================');
-        print(_sipPitelHelperListener);
-        print('==================================');
         switch (call.direction) {
           case 'OUTGOING':
             for (var element in _sipPitelHelperListener) {
@@ -172,8 +169,6 @@ class PitelCall implements SipUaHelperListener {
               if (isBusy) {
                 _releaseCall(callId: call.id);
               } else {
-                print(
-                    '================register===========CALL_INITIATION=====');
                 element.onCallReceived(call.id!);
               }
             }
@@ -501,17 +496,17 @@ class PitelCall implements SipUaHelperListener {
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
-      if (Platform.isIOS) {
-        var newUUID = const Uuid().v4();
-        CallKitParams params = CallKitParams(
-          id: newUUID,
-          nameCaller: phoneNumber,
-          handle: phoneNumber,
-          type: 0,
-          ios: IOSParams(handleType: 'generic'),
-        );
-        await FlutterCallkitIncoming.startCall(params);
-      }
+      // if (Platform.isIOS) {
+      //   var newUUID = const Uuid().v4();
+      //   CallKitParams params = CallKitParams(
+      //     id: newUUID,
+      //     nameCaller: phoneNumber,
+      //     handle: phoneNumber,
+      //     type: 0,
+      //     ios: IOSParams(handleType: 'generic'),
+      //   );
+      //   await FlutterCallkitIncoming.startCall(params);
+      // }
 
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
@@ -550,9 +545,15 @@ class PitelCall implements SipUaHelperListener {
 
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
+        // if (Platform.isIOS) {
+        //   EasyLoading.show(status: "Connecting...");
+        //   await Future.delayed(const Duration(milliseconds: 500));
+        //   EasyLoading.dismiss();
+        // }
         pitelClient
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
+                  FlutterCallkitIncoming.endAllCalls();
                   EasyLoading.showToast(
                     err.toString(),
                     toastPosition: EasyLoadingToastPosition.center,
