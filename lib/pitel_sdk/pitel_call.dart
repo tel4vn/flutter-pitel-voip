@@ -51,16 +51,22 @@ class PitelCall implements SipUaHelperListener {
   String? _callIdCurrent;
   bool isBusy = false;
   String _outPhone = "";
+  String _nameCaller = "";
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
   bool _reconnect = false;
 
   String get outPhone => _outPhone;
+  String get nameCaller => _nameCaller;
   bool get reconnect => _reconnect;
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void resetNameCaller() {
+    _nameCaller = "";
   }
 
   void setReconnect() {
@@ -476,9 +482,11 @@ class PitelCall implements SipUaHelperListener {
   void outGoingCall({
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
+    String nameCaller = '',
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
+      _nameCaller = nameCaller;
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
 

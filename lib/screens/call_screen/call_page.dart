@@ -19,7 +19,6 @@ class CallPageWidget extends StatefulWidget {
     required this.txtSpeaker,
     required this.txtOutgoing,
     required this.txtIncoming,
-    required this.userName,
     required this.txtTimer,
     required this.txtWaiting,
     this.textStyle,
@@ -36,7 +35,6 @@ class CallPageWidget extends StatefulWidget {
   final String txtSpeaker;
   final String txtOutgoing;
   final String txtIncoming;
-  final String userName;
   final String txtTimer;
   final String txtWaiting;
   final TextStyle? textStyle;
@@ -254,8 +252,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
     }
 
     String nameCaller = '';
-    if (widget.userName.isNotEmpty) {
-      nameCaller = widget.userName;
+    if (pitelCall.nameCaller.isNotEmpty) {
+      nameCaller = pitelCall.nameCaller;
     } else if (direction == 'OUTGOING') {
       nameCaller = remoteIdentity ?? '';
     } else {

@@ -12,7 +12,6 @@ class CallScreen extends StatelessWidget {
   final String? txtOutgoing;
   final String? txtIncoming;
   final String? txtTimer;
-  final String? userName;
   final String? txtWaiting;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
@@ -28,7 +27,6 @@ class CallScreen extends StatelessWidget {
     this.txtSpeaker,
     this.txtOutgoing,
     this.txtIncoming,
-    this.userName,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
@@ -49,7 +47,6 @@ class CallScreen extends StatelessWidget {
           txtSpeaker: txtSpeaker ?? 'Speaker',
           txtOutgoing: txtOutgoing ?? 'Outgoing',
           txtIncoming: txtIncoming ?? 'Incoming',
-          userName: userName ?? '',
           txtTimer: txtTimer ?? '',
           textStyle: textStyle ?? const TextStyle(),
           titleTextStyle: titleTextStyle ?? const TextStyle(),
