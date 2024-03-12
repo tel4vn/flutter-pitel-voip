@@ -6,8 +6,8 @@ class SipInfoData {
   final String registerServer;
   final String outboundServer;
   final int? port;
-  final int userID;
-  final int authID;
+  final String userID;
+  final String authID;
   final String accountName;
   final String displayName;
   final String? dialPlan;
@@ -36,8 +36,8 @@ class SipInfoData {
   SipInfoData.defaultSipInfo()
       : this(
             wssUrl: "",
-            userID: 0,
-            authID: 0,
+            userID: "",
+            authID: "",
             accountName: "",
             displayName: "",
             registerServer: "",
