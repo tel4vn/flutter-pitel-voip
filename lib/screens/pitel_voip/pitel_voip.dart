@@ -53,13 +53,6 @@ class _PitelVoipState extends State<PitelVoip> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLifecycleTracker(
-      didChangeAppState: (state) async {
-        if (state == AppState.resumed) {
-          pitelCall.setReconnect();
-        }
-      },
-      child: widget.child,
-    );
+    return widget.child;
   }
 }
