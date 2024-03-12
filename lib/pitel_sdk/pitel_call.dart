@@ -59,6 +59,7 @@ class PitelCall implements SipUaHelperListener {
   String? _callIdCurrent;
   bool isBusy = false;
   String _outPhone = "";
+  String _nameCaller = "";
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
@@ -67,6 +68,7 @@ class PitelCall implements SipUaHelperListener {
 
   bool get isTransferCall => _isTransferCall;
   String get outPhone => _outPhone;
+  String get nameCaller => _nameCaller;
   bool get reconnect => _reconnect;
 
   void setTransferCall(bool value) {
@@ -75,6 +77,10 @@ class PitelCall implements SipUaHelperListener {
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void resetNameCaller() {
+    _nameCaller = "";
   }
 
   void setReconnect() {
@@ -493,9 +499,11 @@ class PitelCall implements SipUaHelperListener {
   void outGoingCall({
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
+    String nameCaller = '',
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
+      _nameCaller = nameCaller;
       // if (Platform.isIOS) {
       //   var newUUID = const Uuid().v4();
       //   CallKitParams params = CallKitParams(
