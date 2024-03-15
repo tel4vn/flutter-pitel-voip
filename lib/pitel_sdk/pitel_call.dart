@@ -504,6 +504,7 @@ class PitelCall implements SipUaHelperListener {
     thr.throttle(() async {
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
+      //! CALL WAITING
       // if (Platform.isIOS) {
       //   var newUUID = const Uuid().v4();
       //   CallKitParams params = CallKitParams(
@@ -553,6 +554,7 @@ class PitelCall implements SipUaHelperListener {
 
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
+        //! CALL WAITING
         // if (Platform.isIOS) {
         //   EasyLoading.show(status: "Connecting...");
         //   await Future.delayed(const Duration(milliseconds: 500));
