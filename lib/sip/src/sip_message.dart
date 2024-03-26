@@ -49,8 +49,8 @@ class OutgoingRequest {
     } else if (ua!.configuration!.use_preloaded_route) {
       //! sip_domain
       // setHeader('route', '<${ua!.transport!.sip_uri};sipml5-outbound;lr>');
-      setHeader('route',
-          '<sip:${ua!.configuration!.sip_domain};lr;sipml5-outbound;transport=udp>');
+      setHeader(
+          'route', '<sip:${ua!.configuration!.sip_domain};lr;transport=udp>');
     }
 
     // Via.
