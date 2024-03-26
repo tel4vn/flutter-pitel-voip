@@ -20,7 +20,6 @@ class CallPageWidget extends StatefulWidget {
     required this.txtSpeaker,
     required this.txtOutgoing,
     required this.txtIncoming,
-    required this.userName,
     required this.txtTimer,
     required this.txtWaiting,
     this.textStyle,
@@ -40,7 +39,6 @@ class CallPageWidget extends StatefulWidget {
   final String txtIncoming;
   final String txtTimer;
   final String txtWaiting;
-  final String userName;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
@@ -63,6 +61,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
   bool get voiceonly => pitelCall.isVoiceOnly();
 
   String? get remoteIdentity => pitelCall.remoteIdentity;
+  String? get remoteDisplayName => pitelCall.remoteDisplayName;
 
   String? get direction => pitelCall.direction;
   String _callId = '';
@@ -254,6 +253,15 @@ class _MyCallPageWidget extends State<CallPageWidget>
       ));
     }
 
+    String nameCaller = '';
+    if (pitelCall.nameCaller.isNotEmpty) {
+      nameCaller = pitelCall.nameCaller;
+    } else if (direction == 'OUTGOING') {
+      nameCaller = remoteIdentity ?? '';
+    } else {
+      nameCaller = remoteDisplayName ?? '';
+    }
+
     if (!voiceonly &&
         pitelCall.localStream != null &&
         pitelCall.localRenderer != null) {
@@ -275,9 +283,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
           ? VoiceHeader(
               voiceonly: voiceonly,
               height: height,
-              remoteIdentity: widget.userName.isNotEmpty
-                  ? widget.userName
-                  : remoteIdentity ?? 'Something went wrong',
+              remoteIdentity: nameCaller,
               direction: direction ?? 'Please go back',
               txtDirection: direction == 'OUTGOING'
                   ? widget.txtOutgoing

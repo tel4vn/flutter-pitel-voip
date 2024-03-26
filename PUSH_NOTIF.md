@@ -106,8 +106,24 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
   ![push_img_4](assets/push_img/push_img_4.png)
 - Download & copy file google_service.json -> replace file google_service.json in path: `android/app/google_service.json`
 
-- Go to Project Setting → Cloud Messaging → Enable Cloud Messaging API (Legacy)
-  ![push_img_3](assets/push_img/push_img_3.png)
+##### Firebase Project
+
+- Go to Project settings > Cloud Messaging and select Manage API in Google Cloud Console to open Google Cloud Console.
+  ![fcm1](assets/push_img/fcm1.png)
+- Go to API Library using the back button as shown below.
+  ![fcm2](assets/push_img/fcm2.png)
+- Search "cloud messaging" -> Select "Cloud Messaging"
+  ![fcm3](assets/push_img/fcm3.png)
+- Click Enable to start using the Cloud Messaging API.
+  ![fcm4](assets/push_img/fcm4.png)
+
+##### Service Account
+
+- Go to [sevice account](https://console.cloud.google.com/apis/credentials)
+- In tab "Credentials", scroll to "Service Accounts", click button edit with name "firebase-adminsdk".
+  ![fcm5](assets/push_img/fcm5.png)
+- Choose tab KEYS, click "Add key" -> "Create new key" and download json file.
+  ![fcm6](assets/push_img/fcm6.png)
 
 > **Note**
 > After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdk.tel4vn.com/)
@@ -217,20 +233,40 @@ Voip push Bundle Id: com.pitel.uikit.demo.voip
 cURL
 
 ```dart
-curl --location 'https://fcm.googleapis.com/fcm/send' \
+curl --location 'https://fcm.googleapis.com/v1/projects/pitel-87bff/messages:send' \
 --header 'Content-Type: application/json' \
---header 'Authorization: key=${server_key}' \
 --data '{
-    "registration_ids": [${device_token}],
-    "data":{
-        "uuid": "call_id",
-        "nameCaller": "Anh Quang",
-        "avatar": "Anh Quang",
-        "phoneNumber": "0341111111",
-        "appName": "Pitel Connnect",
-        "callType": "CALL"
-    },
-    "content_available": true,
-    "priority": "high"
+    "message": {
+        "notification": {
+            "title": "FCM Message",
+            "body": "This is an FCM Message"
+        },
+        "data": {
+            "uuid": "77712f3-9b56-4e26-96ea-382ea1206477",
+            "nameCaller": "Anh Quang",
+            "avatar": "Anh Quang",
+            "phoneNumber": "0375624006",
+            "appName": "Pitel Connnect",
+            "callType": "CALL"
+
+        },
+        "apns": {
+            "headers": {
+                "apns-priority": "10",
+
+                "sound": ""
+            },
+            "payload": {
+                "aps": {
+                    "mutable-content": 1,
+                    "content-available": 1
+                }
+            }
+        },
+        "android": {
+            "priority": "high"
+        },
+        "token": "fcm_token is here"
+    }
 }'
 ```

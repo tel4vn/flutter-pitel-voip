@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7+8 - 2024-03-26
+
+- Add name caller.
+- Update guide for fcm v1.
+
 ## 1.0.7+5 - 2024-01-20
 
 - Add loading when accept incoming call.

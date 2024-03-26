@@ -40,6 +40,9 @@ class PitelCall implements SipUaHelperListener {
   String? get direction => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.direction
       : "";
+  String? get remoteDisplayName => _callIdCurrent != null
+      ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_display_name
+      : "";
   bool get videoIsOff => _videoIsOff;
   bool get audioMuted => _audioMuted;
   String? get holdOriginator => _holdOriginator;
@@ -48,14 +51,20 @@ class PitelCall implements SipUaHelperListener {
   String? _callIdCurrent;
   bool isBusy = false;
   String _outPhone = "";
+  String _nameCaller = "";
   ConnectivityResult _checkConnectivity = ConnectivityResult.none;
   ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
 
   String get outPhone => _outPhone;
+  String get nameCaller => _nameCaller;
 
   void resetOutPhone() {
     _outPhone = "";
+  }
+
+  void resetNameCaller() {
+    _nameCaller = "";
   }
 
   void resetConnectivity() {
@@ -466,9 +475,11 @@ class PitelCall implements SipUaHelperListener {
   void outGoingCall({
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
+    String nameCaller = '',
   }) {
     thr.throttle(() async {
       _outPhone = phoneNumber;
+      _nameCaller = nameCaller;
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
 

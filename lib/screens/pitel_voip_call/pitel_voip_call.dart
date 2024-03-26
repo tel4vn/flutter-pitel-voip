@@ -72,12 +72,14 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
+      pitelCall.resetNameCaller();
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
       prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.FAILED) {
       pitelCall.resetOutPhone();
+      pitelCall.resetNameCaller();
       widget.goBack();
       prefs.setBool("ACCEPT_CALL", false);
     }

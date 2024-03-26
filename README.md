@@ -210,7 +210,7 @@ ElevatedButton(
             "outboundServer": "${Outbound Proxy}",
             "port": PORT,
             "accountName": "${UUser}",      // Example 101
-            "displayName": "${UUser}@${Domain}",
+            "displayName": "${Display Name}",
             "wssUrl": "${URL WSS}",
             "apiDomain": "${URL API}"
           });
@@ -270,12 +270,14 @@ class CallPage extends StatelessWidget {
 | titleTextStyle     | Style for display phone number text  | TextStyle | Optional |
 | timerTextStyle     | Style for timer text                 | TextStyle | Optional |
 | directionTextStyle | Style for direction text             | TextStyle | Optional |
-| userName           | Custom title text                    | String    | Optional |
 
 - Outgoing call
 
 ```dart
-pitelCall.outGoingCall(phoneNumber, handleRegisterCall);
+pitelCall.outGoingCall(
+  phoneNumber: "",
+  handleRegisterCall: (){},
+);
 ```
 
 #### Properties
@@ -284,6 +286,7 @@ pitelCall.outGoingCall(phoneNumber, handleRegisterCall);
 | ------------------ | ------------------------- | ------ | -------- |
 | phoneNumber        | phone number for call out | String | Required |
 | handleRegisterCall | re-register when call out | () {}  | Required |
+| nameCaller         | set name caller           | String | Optional |
 
 ## How to test
 
