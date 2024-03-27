@@ -16,6 +16,7 @@ import 'package:plugin_pitel/sip/src/sanity_check.dart';
 import 'package:plugin_pitel/sip/src/sip_ua_helper.dart';
 import 'package:plugin_pitel/voip_push/device_information.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiengviet/tiengviet.dart';
 
 import 'pitel_profile.dart';
 
@@ -99,7 +100,8 @@ class PitelClient {
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
-    settings.displayName = _displayName;
+    final _displayNameConvert = TiengViet.parse(_displayName);
+    settings.displayName = _displayNameConvert;
     settings.userAgent = 'Pitel Connect';
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
