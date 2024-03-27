@@ -476,6 +476,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "tiengviet",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/tiengviet-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "typed_data",
       "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/typed_data-1.3.1",
       "packageUri": "lib/",
@@ -560,7 +566,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-03-26T09:00:38.353183Z",
+  "generated": "2024-03-27T10:10:28.441428Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }
