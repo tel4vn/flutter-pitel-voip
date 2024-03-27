@@ -49,8 +49,23 @@ class OutgoingRequest {
     } else if (ua!.configuration!.use_preloaded_route) {
       //! sip_domain
       // setHeader('route', '<${ua!.transport!.sip_uri};sipml5-outbound;lr>');
-      setHeader(
-          'route', '<sip:${ua!.configuration!.sip_domain};lr;transport=udp>');
+      // setHeader(
+      //     'route', '<sip:${ua!.configuration!.sip_domain};lr;transport=tcp>');
+      var _outboundSever = '';
+      var _transport = 'udp';
+      final tempOutbound = ua!.configuration!.outbound_server as String;
+      if (tempOutbound.contains('udp://')) {
+        _outboundSever = tempOutbound.split("//")[1].replaceAll("//", "");
+        _transport = 'udp';
+      } else if (tempOutbound.contains('tcp://')) {
+        _outboundSever = tempOutbound.split("//")[1].replaceAll("//", "");
+        _transport = 'tcp';
+      } else {
+        _outboundSever = tempOutbound;
+        _transport = 'udp';
+      }
+
+      setHeader('route', '<sip:$_outboundSever;lr;transport=$_transport>');
     }
 
     // Via.

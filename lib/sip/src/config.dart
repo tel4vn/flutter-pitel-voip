@@ -23,6 +23,8 @@ class PitelSipSettings {
   dynamic contact_uri;
   //! sip_domain
   dynamic sip_domain;
+  //! outbound_server
+  dynamic outbound_server;
   String user_agent = DartSIP_C.USER_AGENT;
 
   // SIP instance id (GRUU).
@@ -127,6 +129,14 @@ class Checks {
       if (sip_domain == null) return;
       if (sip_domain is String) {
         dst!.sip_domain = sip_domain;
+      }
+    },
+    //! outbound_server
+    'outbound_server': (PitelSipSettings src, PitelSipSettings? dst) {
+      String outbound_server = src.outbound_server;
+      if (outbound_server == null) return;
+      if (outbound_server is String) {
+        dst!.outbound_server = outbound_server;
       }
     },
     'user_agent': (PitelSipSettings src, PitelSipSettings? dst) {

@@ -112,6 +112,8 @@ class PitelClient {
 
     //! sip_domain
     settings.sipDomain = '${_sipServer?.domain}:${_sipServer?.port}';
+    //! outbound_server
+    settings.outboundServer = '${_sipServer?.outboundProxy}';
 
     pitelCall.register(settings);
     return settings;

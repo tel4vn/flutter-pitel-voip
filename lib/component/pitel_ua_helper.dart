@@ -106,6 +106,8 @@ class PitelUAHelper extends EventManager {
     _settings!.password = uaSettings.password;
     //! sip_domain
     _settings!.sip_domain = uaSettings.sipDomain;
+    //! outbound_server
+    _settings!.outbound_server = uaSettings.outboundServer;
     _settings!.ha1 = uaSettings.ha1;
     _settings!.display_name = uaSettings.displayName;
     _settings!.authorization_user = uaSettings.authorizationUser;
