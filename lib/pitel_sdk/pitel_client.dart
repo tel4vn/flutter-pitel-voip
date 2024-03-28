@@ -101,6 +101,7 @@ class PitelClient {
     settings.authorizationUser = _username;
     settings.password = _password;
     final _displayNameConvert = TiengViet.parse(_displayName);
+    // final _displayNameConvert = Uri.encodeComponent(_displayName);
     settings.displayName = _displayNameConvert;
     settings.userAgent = _userAgent;
     settings.register_expires = 600;
