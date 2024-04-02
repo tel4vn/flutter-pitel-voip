@@ -39,7 +39,6 @@ dependencies:
   connectivity_plus: ^3.0.2
   flutter_easyloading: ^3.0.5
   network_info_plus: ^3.0.5
-  tiengviet: ^1.0.0
 
 dev_dependencies:
   flutter_test:
