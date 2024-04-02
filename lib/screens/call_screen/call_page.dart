@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -259,7 +260,9 @@ class _MyCallPageWidget extends State<CallPageWidget>
     } else if (direction == 'OUTGOING') {
       nameCaller = remoteIdentity ?? '';
     } else {
-      nameCaller = remoteDisplayName ?? '';
+      final base64StrDecode = base64.decode(remoteDisplayName ?? '');
+      final bytesDecode = utf8.decode(base64StrDecode);
+      nameCaller = bytesDecode;
     }
 
     if (!voiceonly &&

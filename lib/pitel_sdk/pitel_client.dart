@@ -99,7 +99,9 @@ class PitelClient {
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;
-    settings.displayName = _displayName;
+    final bytes = utf8.encode(_displayName);
+    final base64Str = base64.encode(bytes);
+    settings.displayName = base64Str;
     settings.userAgent = _userAgent;
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
