@@ -34,10 +34,10 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 flutter pub add flutter_pitel_voip
 ```
 
-- Add pubspec.yaml:
+- Or add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: ^1.0.7+7
+flutter_pitel_voip: any
 ```
 
 2. Get package
