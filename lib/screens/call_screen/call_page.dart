@@ -260,9 +260,16 @@ class _MyCallPageWidget extends State<CallPageWidget>
     } else if (direction == 'OUTGOING') {
       nameCaller = remoteIdentity ?? '';
     } else {
-      final base64StrDecode = base64.decode(remoteDisplayName ?? '');
-      final bytesDecode = utf8.decode(base64StrDecode);
-      nameCaller = bytesDecode;
+      String remoteNameRaw = remoteDisplayName ?? '';
+      if (remoteNameRaw.isNotEmpty) {
+        String splitBase64 = remoteNameRaw.contains("pitelsdkencode")
+            ? remoteNameRaw.replaceAll("pitelsdkencode", "")
+            : remoteNameRaw;
+
+        final base64StrDecode = base64.decode(splitBase64);
+        final bytesDecode = utf8.decode(base64StrDecode);
+        nameCaller = bytesDecode;
+      }
     }
 
     if (!voiceonly &&

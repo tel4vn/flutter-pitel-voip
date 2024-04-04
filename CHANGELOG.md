@@ -1,8 +1,10 @@
 # Changelog
 
-## 1.0.7+9 - 2024-03-26
+## 1.0.7+10 - 2024-04-04
 
 - Update readme.
+- Encode name caller.
+- Support Bluetooth for audio.
 
 ## 1.0.7+8 - 2024-03-26
 
