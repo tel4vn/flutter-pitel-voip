@@ -101,7 +101,7 @@ class PitelClient {
     settings.password = _password;
     final bytes = utf8.encode(_displayName);
     final base64Str = base64.encode(bytes);
-    settings.displayName = base64Str;
+    settings.displayName = "${base64Str}pitelsdkencode";
     settings.userAgent = 'Pitel Connect';
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
