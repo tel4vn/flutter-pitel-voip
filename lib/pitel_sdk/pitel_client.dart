@@ -95,7 +95,7 @@ class PitelClient {
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
     settings.contactUri =
-        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss';
+        'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss;name-caller=encode';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
     settings.password = _password;

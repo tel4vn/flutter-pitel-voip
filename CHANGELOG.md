@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7+11 - 2024-04-08
+
+- Fix encode name caller.
+
 ## 1.0.7+10 - 2024-04-04
 
 - Update readme.
