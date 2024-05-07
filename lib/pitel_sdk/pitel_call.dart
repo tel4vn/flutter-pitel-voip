@@ -505,17 +505,17 @@ class PitelCall implements SipUaHelperListener {
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
       //! CALL WAITING
-      // if (Platform.isIOS) {
-      //   var newUUID = const Uuid().v4();
-      //   CallKitParams params = CallKitParams(
-      //     id: newUUID,
-      //     nameCaller: phoneNumber,
-      //     handle: phoneNumber,
-      //     type: 0,
-      //     ios: IOSParams(handleType: 'generic'),
-      //   );
-      //   await FlutterCallkitIncoming.startCall(params);
-      // }
+      if (Platform.isIOS) {
+        var newUUID = const Uuid().v4();
+        CallKitParams params = CallKitParams(
+          id: newUUID,
+          nameCaller: phoneNumber,
+          handle: phoneNumber,
+          type: 0,
+          ios: IOSParams(handleType: 'generic'),
+        );
+        await FlutterCallkitIncoming.startCall(params);
+      }
 
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
@@ -555,11 +555,11 @@ class PitelCall implements SipUaHelperListener {
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
         //! CALL WAITING
-        // if (Platform.isIOS) {
-        //   EasyLoading.show(status: "Connecting...");
-        //   await Future.delayed(const Duration(milliseconds: 500));
-        //   EasyLoading.dismiss();
-        // }
+        if (Platform.isIOS) {
+          EasyLoading.show(status: "Connecting...");
+          await Future.delayed(const Duration(milliseconds: 500));
+          EasyLoading.dismiss();
+        }
         pitelClient
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
