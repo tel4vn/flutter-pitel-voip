@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7+12 - 2024-05-14
+
+- Add new function for initFirebase.
+
 ## 1.0.7+11 - 2024-04-08
 
 - Fix encode name caller.
