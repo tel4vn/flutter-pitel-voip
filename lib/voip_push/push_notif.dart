@@ -14,7 +14,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'android_connection_service.dart';
 
 class PushNotifAndroid {
-  static initFirebase(FirebaseOptions? options) async {
+  static initFirebase({
+    FirebaseOptions? options,
+    Function(RemoteMessage message)? onMessage,
+    Function(RemoteMessage message)? onMessageOpenedApp,
+    Function(RemoteMessage message)? onBackgroundMessage,
+  }) async {
     await Firebase.initializeApp(
       options: options,
     );
@@ -30,9 +35,22 @@ class PushNotifAndroid {
       sound: true,
     );
 
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) {
+      if (onBackgroundMessage != null) {
+        onBackgroundMessage(message);
+      }
+      return firebaseMessagingBackgroundHandler(message);
+    });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       handleNotification(message);
+      if (onMessage != null) {
+        onMessage(message);
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (onMessageOpenedApp != null) {
+        onMessageOpenedApp(message);
+      }
     });
   }
 

@@ -187,7 +187,9 @@ import "package:flutter_pitel_voip/flutter_pitel_voip.dart";
 ```dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await PushNotifAndroid.initFirebase(DefaultFirebaseOptions.currentPlatform); // add here
+  await PushNotifAndroid.initFirebase(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); // add here
 
   runApp(MyApp());
 }
