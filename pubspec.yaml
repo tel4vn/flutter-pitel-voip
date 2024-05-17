@@ -33,7 +33,7 @@ dependencies:
   shared_preferences: ^2.1.0
   eraser: ^2.0.1
   throttling: ^1.0.0
-  connectivity_plus: ^3.0.2
+  connectivity_plus: ^6.0.3
   flutter_easyloading: ^3.0.5
   network_info_plus: ^3.0.5
 
