@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:eraser/eraser.dart';
@@ -18,7 +19,6 @@ class PushNotifAndroid {
     FirebaseOptions? options,
     Function(RemoteMessage message)? onMessage,
     Function(RemoteMessage message)? onMessageOpenedApp,
-    Function(RemoteMessage message)? onBackgroundMessage,
   }) async {
     await Firebase.initializeApp(
       options: options,
@@ -35,12 +35,8 @@ class PushNotifAndroid {
       sound: true,
     );
 
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) {
-      if (onBackgroundMessage != null) {
-        onBackgroundMessage(message);
-      }
-      return firebaseMessagingBackgroundHandler(message);
-    });
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       handleNotification(message);
       if (onMessage != null) {
