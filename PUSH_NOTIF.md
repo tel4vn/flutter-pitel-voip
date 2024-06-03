@@ -63,7 +63,7 @@ Follow the instructions to [create a certificate signing request](https://devel
 
 - **Install certificate.**
   Download the certificate and install it into the Keychain Access app(download .cer and double click to install).
-- **Export the .p12 file and config in [pitel portal](https://github.com/anhquangmobile/react-native-pitel-voip/blob/main/PORTAL_GUIDE.md)**
+- \*\*Export the .p12 file.
   ![push_img_7](assets/push_img/push_img_7.png)
 
 # Setup Pushkit & Callkit
@@ -126,7 +126,9 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
   ![fcm6](assets/push_img/fcm6.png)
 
 > **Note**
-> After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdk.tel4vn.com/)
+>
+> - After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdk.tel4vn.com/)
+> - Please check [PORTAL_GUIDE.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.7/PORTAL_GUIDE.md.md) to setup your config.
 
 # Installation (your project)
 
@@ -226,17 +228,34 @@ Your app bundleId: com.pitel.uikit.demo
 Voip push Bundle Id: com.pitel.uikit.demo.voip
 ```
 
-- IOS
+### IOS
 
 ![push_img_1](assets/push_img/push_img_1.png)
 
-- Android: using above app or test from Postman
+### Android: using above app or test from Postman
+
+#### How to get access token?
+
+- Go to https://developers.google.com/oauthplayground/
+- Navigate to Step 1 (Select & authorize APIs) → Select “Firebase Cloud Messaging API v1” and click “Authorize API’s” button.
+  ![step_1](assets/push_img/gg_oauth_step_1.png)
+- You will be redirected to Authentication and needs permission for Google OAuth 2.0 Playground to view and manage the GCP services. Click “Allow” button.
+- Navigate to Step 2 (Exchange authorization code for tokens) → Click “Exchange authorization code for tokens” button.
+  This will generate “Refresh token” and “Access token”.
+  ![step_2](assets/push_img/gg_oauth_step_2.png)
+
+> Note:
+>
+> - project_id: this is your firebase project id.
+> - fcm_token: replace your fcm token, get from your device.
+> - access_token: get access token from oauth playground above.
 
 cURL
 
 ```dart
-curl --location 'https://fcm.googleapis.com/v1/projects/pitel-87bff/messages:send' \
+curl --location 'https://fcm.googleapis.com/v1/projects/${project_id}/messages:send' \
 --header 'Content-Type: application/json' \
+--header 'Authorization: Bearer ${access_token}' \
 --data '{
     "message": {
         "notification": {
@@ -268,7 +287,7 @@ curl --location 'https://fcm.googleapis.com/v1/projects/pitel-87bff/messages:sen
         "android": {
             "priority": "high"
         },
-        "token": "fcm_token is here"
+        "token": "${fcm_token}"
     }
 }'
 ```
