@@ -128,7 +128,7 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
 > **Note**
 >
 > - After complete all step Setup. Please send information to dev of Tel4vn in [here](https://portal-sdk.tel4vn.com/)
-> - Please check [PORTAL_GUIDE.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.7/PORTAL_GUIDE.md.md) to setup your config.
+> - Please check [PORTAL_GUIDE.md](https://github.com/tel4vn/flutter-pitel-voip/blob/1.0.7/PORTAL_GUIDE.md) to setup your config.
 
 # Installation (your project)
 
@@ -174,7 +174,7 @@ dependencies:
 
 Replace your file ios/Runner/AppDelegate.swift with
 
-[https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/ios/Runner/AppDelegate.swift)
+[https://github.com/tel4vn/pitel-ui-kit/blob/main/ios/Runner/AppDelegate.swift](https://github.com/tel4vn/pitel-ui-kit/blob/main/ios/Runner/AppDelegate.swift)
 
 ## **Usage**
 
@@ -197,7 +197,7 @@ void main() async {
 }
 ```
 
-- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/1.0.7/lib/firebase_options.dart).
+- Config firebase_options.dart. [example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/firebase_options.dart).
 
 - Get device push token VoIP.
 
