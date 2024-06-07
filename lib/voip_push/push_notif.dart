@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:eraser/eraser.dart';

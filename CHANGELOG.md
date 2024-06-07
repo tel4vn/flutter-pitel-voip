@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7+13 - 2024-06-07
+
+- Remove custom options onBackgroundMessage.
+- Update new documentation.
+
 ## 1.0.7+12 - 2024-05-14
 
 - Add new function for initFirebase.

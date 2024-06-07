@@ -52,8 +52,8 @@ class PitelCall implements SipUaHelperListener {
   bool isBusy = false;
   String _outPhone = "";
   String _nameCaller = "";
-  List<ConnectivityResult> _checkConnectivity = [ConnectivityResult.none];
-  List<ConnectivityResult> get checkConnectivity => _checkConnectivity;
+  ConnectivityResult _checkConnectivity = ConnectivityResult.none;
+  ConnectivityResult get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
 
   String get outPhone => _outPhone;
@@ -68,7 +68,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void resetConnectivity() {
-    _checkConnectivity = [ConnectivityResult.none];
+    _checkConnectivity = ConnectivityResult.none;
   }
 
   void setCallCurrent(String? id) {
@@ -484,8 +484,8 @@ class PitelCall implements SipUaHelperListener {
       final PitelClient pitelClient = PitelClient.getInstance();
 
       final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult.first == ConnectivityResult.none) {
-        _checkConnectivity = [ConnectivityResult.none];
+      if (connectivityResult == ConnectivityResult.none) {
+        _checkConnectivity = ConnectivityResult.none;
         EasyLoading.showToast(
           'Please check your network',
           toastPosition: EasyLoadingToastPosition.center,
@@ -498,7 +498,7 @@ class PitelCall implements SipUaHelperListener {
         handleRegisterCall();
         return;
       }
-      if (connectivityResult.first == ConnectivityResult.wifi) {
+      if (connectivityResult == ConnectivityResult.wifi) {
         try {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {
