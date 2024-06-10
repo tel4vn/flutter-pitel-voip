@@ -119,11 +119,12 @@ Using FCM (Firebase Cloud Message) to handle push notification wake up app when 
 
 ##### Service Account
 
-- Go to [sevice account](https://console.cloud.google.com/apis/credentials)
+- Go to Project settings > Cloud Messaging and select Manage API in Google Cloud Console to open Google Cloud Console.
+  ![fcm1](assets/push_img/fcm1.png)
 - In tab "Credentials", scroll to "Service Accounts", click button edit with name "firebase-adminsdk".
-  ![fcm5](assets/push_img/fcm5.png)
+  ![fcm7](assets/push_img/fcm7.png)
 - Choose tab KEYS, click "Add key" -> "Create new key" and download json file.
-  ![fcm6](assets/push_img/fcm6.png)
+  ![fcm8](assets/push_img/fcm8.png)
 
 > **Note**
 >
