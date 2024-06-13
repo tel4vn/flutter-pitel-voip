@@ -574,5 +574,11 @@ class PitelCall implements SipUaHelperListener {
         handleRegisterCall();
       }
     });
+    _dismissLoading();
+  }
+
+  void _dismissLoading() async {
+    await Future.delayed(const Duration(seconds: 10));
+    EasyLoading.dismiss();
   }
 }
