@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming/entities/entities.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
@@ -504,6 +505,19 @@ class PitelCall implements SipUaHelperListener {
     thr.throttle(() async {
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
+      final pingRes = await Ping('google.com', count: 1).stream.first;
+      if (pingRes.response != null) {
+        final Duration time = pingRes.response!.time!;
+        final miliTime = time.inMilliseconds;
+        if (miliTime > 5000) {
+          EasyLoading.showToast(
+            'Network connection is unstable. Please try again or change other network.',
+            duration: const Duration(seconds: 2),
+          );
+          return;
+        }
+      }
+
       //! CALL WAITING
       if (Platform.isIOS) {
         var newUUID = const Uuid().v4();
