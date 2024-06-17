@@ -511,7 +511,7 @@ class PitelCall implements SipUaHelperListener {
         final miliTime = time.inMilliseconds;
         if (miliTime > 5000) {
           EasyLoading.showToast(
-            'Network connection is unstable. Please try again or change other network.',
+            'Network connection is unstable. Please try again later!',
             duration: const Duration(seconds: 2),
           );
           return;
