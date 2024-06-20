@@ -4,7 +4,7 @@
 
 [![N|Solid](https://documents.tel4vn.com/img/pitel-logo.png)](https://documents.tel4vn.com/)
 
-`flutter_pitel_voip` is package support for voip call.
+`flutter_pitel_voip` is package support for voip call. Please contact [pitel](https://www.pitel.vn/) to use the service.
 
 ## Demo
 
