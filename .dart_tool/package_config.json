@@ -507,9 +507,9 @@
     },
     {
       "name": "throttling",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/throttling-1.0.0",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/throttling-2.0.1",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "typed_data",
@@ -596,7 +596,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-06-14T04:35:20.295133Z",
+  "generated": "2024-06-24T03:00:43.019791Z",
   "generator": "pub",
   "generatorVersion": "3.3.4"
 }

@@ -71,6 +71,7 @@ class PitelCall implements SipUaHelperListener {
   String get outPhone => _outPhone;
   String get nameCaller => _nameCaller;
   bool get reconnect => _reconnect;
+  final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
   void setTransferCall(bool value) {
     _isTransferCall = value;
@@ -501,22 +502,36 @@ class PitelCall implements SipUaHelperListener {
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
     String nameCaller = '',
+    String domainUrl = 'google.com',
+    bool enableLoading = true,
   }) {
     thr.throttle(() async {
+      _dismissLoading();
+      if (enableLoading) {
+        EasyLoading.show(status: "Connecting...");
+      }
+      if (!checkIsNumber.hasMatch(phoneNumber)) {
+        EasyLoading.showToast(
+          'Invalid phone number',
+          toastPosition: EasyLoadingToastPosition.center,
+        );
+        return;
+      }
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
-      final pingRes = await Ping('google.com', count: 1).stream.first;
-      if (pingRes.response != null) {
-        final Duration time = pingRes.response!.time!;
-        final miliTime = time.inMilliseconds;
-        if (miliTime > 5000) {
-          EasyLoading.showToast(
-            'Network connection is unstable. Please try again later!',
-            duration: const Duration(seconds: 2),
-          );
-          return;
-        }
-      }
+
+      // final pingRes = await Ping(domainUrl, count: 1).stream.first;
+      // if (pingRes.response != null) {
+      //   final Duration time = pingRes.response!.time!;
+      //   final miliTime = time.inMilliseconds;
+      //   if (miliTime > 5000) {
+      //     EasyLoading.showToast(
+      //       'Network connection is unstable. Please try again later!',
+      //       duration: const Duration(seconds: 2),
+      //     );
+      //     return;
+      //   }
+      // }
 
       //! CALL WAITING
       if (Platform.isIOS) {
@@ -533,7 +548,6 @@ class PitelCall implements SipUaHelperListener {
 
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
-
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
         _checkConnectivity = ConnectivityResult.none;
@@ -545,7 +559,7 @@ class PitelCall implements SipUaHelperListener {
       }
       if (connectivityResult != _checkConnectivity) {
         _checkConnectivity = connectivityResult;
-        EasyLoading.show(status: "Connecting...");
+        // EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
       }
@@ -555,12 +569,12 @@ class PitelCall implements SipUaHelperListener {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {
             _wifiIP = wifiIP;
-            EasyLoading.show(status: "Connecting...");
+            // EasyLoading.show(status: "Connecting...");
             handleRegisterCall();
             return;
           }
         } catch (error) {
-          EasyLoading.show(status: "Connecting...");
+          // EasyLoading.show(status: "Connecting...");
           handleRegisterCall();
           return;
         }
@@ -569,10 +583,10 @@ class PitelCall implements SipUaHelperListener {
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
         //! CALL WAITING
+        EasyLoading.dismiss();
         if (Platform.isIOS) {
-          EasyLoading.show(status: "Connecting...");
+          // EasyLoading.show(status: "Connecting...");
           await Future.delayed(const Duration(milliseconds: 500));
-          EasyLoading.dismiss();
         }
         pitelClient
             .call(phoneNumber, true)
@@ -584,11 +598,10 @@ class PitelCall implements SipUaHelperListener {
                   );
                 }));
       } else {
-        EasyLoading.show(status: "Connecting...");
+        // EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
       }
     });
-    _dismissLoading();
   }
 
   void _dismissLoading() async {
