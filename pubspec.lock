@@ -641,10 +641,10 @@ packages:
     dependency: "direct main"
     description:
       name: throttling
-      sha256: "0b328adb283db092373b2835574fbcdf7d0e472d24f0455717c836ef9824def9"
+      sha256: e48a4c681b1838b8bf99c1a4f822efe43bb69132f9a56091cd5b7d931c862255
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
