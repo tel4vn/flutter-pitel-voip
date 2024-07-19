@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
@@ -249,7 +250,7 @@ class PitelCall implements SipUaHelperListener {
       if (_localRenderer != null) {
         _localRenderer?.srcObject = stream;
       }
-      Helper.setSpeakerphoneOn(false);
+      // Helper.setSpeakerphoneOn(false);
       _localStream = stream;
     }
     if (event.originator == 'remote') {
@@ -295,8 +296,18 @@ class PitelCall implements SipUaHelperListener {
     }
   }
 
-  void enableSpeakerphone(bool enable) {
-    Helper.setSpeakerphoneOn(enable);
+  void enableSpeakerphone(bool enable) async {
+    // Helper.setSpeakerphoneOn(enable);
+    final res = await Helper.audiooutputs;
+    // "86de8ba5-fc2a-477e-8095-28879b477f02"
+    // "2ac5b4fb-4f87-4717-8425-971ea440ac9d"
+    print('================res=========${res.first}=======');
+    inspect(res);
+    if (enable) {
+      Helper.selectAudioOutput('speaker');
+    } else {
+      Helper.selectAudioOutput('earpiece');
+    }
   }
 
   bool toggleCamera({String? callId}) {
