@@ -249,7 +249,8 @@ class PitelCall implements SipUaHelperListener {
       if (_localRenderer != null) {
         _localRenderer?.srcObject = stream;
       }
-      Helper.setSpeakerphoneOn(false);
+      // Helper.setSpeakerphoneOn(false);
+      enableSpeakerphone(false);
       _localStream = stream;
     }
     if (event.originator == 'remote') {
@@ -295,8 +296,14 @@ class PitelCall implements SipUaHelperListener {
     }
   }
 
-  void enableSpeakerphone(bool enable) {
-    Helper.setSpeakerphoneOn(enable);
+  void enableSpeakerphone(bool enable) async {
+    // Helper.setSpeakerphoneOn(enable);
+    final audioOutput = await Helper.audiooutputs;
+    if (enable) {
+      Helper.selectAudioOutput('speaker');
+    } else {
+      Helper.selectAudioOutput('earpiece');
+    }
   }
 
   bool toggleCamera({String? callId}) {
