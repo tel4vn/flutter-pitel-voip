@@ -300,7 +300,10 @@ class PitelUAHelper extends EventManager {
         'iceServers': _uaSettings.iceServers
       },
       'mediaConstraints': <String, dynamic>{
-        'audio': true,
+        // 'audio': true,
+        'audio': {
+          "echoCancellation": true,
+        },
         'video': voiceonly
             ? false
             : <String, dynamic>{
