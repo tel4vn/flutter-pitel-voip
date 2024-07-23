@@ -213,7 +213,7 @@
     },
     {
       "name": "flutter_webrtc",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.41",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.40",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -596,7 +596,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-07-19T06:12:43.004765Z",
+  "generated": "2024-07-22T02:18:09.038353Z",
   "generator": "pub",
   "generatorVersion": "3.3.4"
 }

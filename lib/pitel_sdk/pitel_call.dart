@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
@@ -249,8 +250,9 @@ class PitelCall implements SipUaHelperListener {
       if (_localRenderer != null) {
         _localRenderer?.srcObject = stream;
       }
+      // TODO: bluetooth
       // Helper.setSpeakerphoneOn(false);
-      enableSpeakerphone(false);
+      // enableSpeakerphone(false);
       _localStream = stream;
     }
     if (event.originator == 'remote') {
@@ -299,6 +301,8 @@ class PitelCall implements SipUaHelperListener {
   void enableSpeakerphone(bool enable) async {
     // Helper.setSpeakerphoneOn(enable);
     final audioOutput = await Helper.audiooutputs;
+    inspect(audioOutput);
+
     if (enable) {
       Helper.selectAudioOutput('speaker');
     } else {
@@ -542,6 +546,7 @@ class PitelCall implements SipUaHelperListener {
 
       //! CALL WAITING
       if (Platform.isIOS) {
+        FlutterCallkitIncoming.endAllCalls();
         var newUUID = const Uuid().v4();
         CallKitParams params = CallKitParams(
           id: newUUID,
