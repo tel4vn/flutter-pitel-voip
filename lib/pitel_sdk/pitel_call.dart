@@ -191,6 +191,7 @@ class PitelCall implements SipUaHelperListener {
         break;
       case PitelCallStateEnum.STREAM:
         _handelStreams(pitelCallState);
+        Helper.selectAudioInput('2');
         for (var element in _sipPitelHelperListener) {
           element.callStateChanged(call.id!, pitelCallState);
         }
@@ -253,6 +254,7 @@ class PitelCall implements SipUaHelperListener {
       // TODO: bluetooth
       // Helper.setSpeakerphoneOn(false);
       // enableSpeakerphone(false);
+
       _localStream = stream;
     }
     if (event.originator == 'remote') {

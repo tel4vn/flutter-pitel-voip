@@ -13,8 +13,8 @@ dependencies:
   rxdart: ^0.27.3
 
   crypto: ^3.0.0
-  flutter_webrtc: 0.9.40
-  # flutter_webrtc: 0.9.41
+  # flutter_webrtc: 0.9.40
+  flutter_webrtc: 0.9.41
   intl: ^0.18.0
   logger: ^1.0.0
   parser_error: ^0.2.0

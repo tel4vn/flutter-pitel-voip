@@ -849,6 +849,8 @@ class RTCSession extends EventManager {
           // Restore the dialog into 'ua' so the ACK can reach 'this' session.
           _ua!.newDialog(dialog);
         } else {
+          // TODO:
+          print("--sendRequest---");
           sendRequest(SipMethod.BYE,
               <String, dynamic>{'extraHeaders': extraHeaders, 'body': body});
           reason_phrase = reason_phrase ?? 'Terminated by local';
