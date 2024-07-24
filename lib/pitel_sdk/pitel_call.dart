@@ -72,6 +72,10 @@ class PitelCall implements SipUaHelperListener {
   String get outPhone => _outPhone;
   String get nameCaller => _nameCaller;
   bool get reconnect => _reconnect;
+
+  String _audioSelected = 'earpiece';
+  String get audioSelected => _audioSelected;
+
   final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
   void setTransferCall(bool value) {
@@ -190,7 +194,7 @@ class PitelCall implements SipUaHelperListener {
         _holdOriginator = pitelCallState.originator;
         break;
       case PitelCallStateEnum.STREAM:
-        _handelStreams(pitelCallState);
+        _handleStreams(pitelCallState);
         for (var element in _sipPitelHelperListener) {
           element.callStateChanged(call.id!, pitelCallState);
         }
@@ -244,7 +248,7 @@ class PitelCall implements SipUaHelperListener {
     return EnumHelper.getName(_sipuaHelper.registerState.state);
   }
 
-  void _handelStreams(PitelCallState event) {
+  void _handleStreams(PitelCallState event) {
     final stream = event.stream;
     if (event.originator == 'local') {
       if (_localRenderer != null) {
@@ -255,8 +259,7 @@ class PitelCall implements SipUaHelperListener {
       } else {
         // Helper.selectAudioInput("microphone-bottom");
         // Helper.selectAudioOutput('speaker');
-        Helper.selectAudioOutput('earpiece');
-        Helper.selectAudioInput("microphone-bottom");
+        selectPreferHeadphone();
       }
 
       _localStream = stream;
@@ -305,21 +308,72 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void enableSpeakerphone(bool enable) async {
+    Helper.setSpeakerphoneOn(enable);
+  }
+
+  void setAudioPlatform() {
     if (Platform.isIOS) {
-      Helper.setSpeakerphoneOn(enable);
+      Helper.setSpeakerphoneOn(false);
     } else {
-      // final res = await Helper.audiooutputs;
-      // print('================res=========${res.first}=======');
-      // inspect(res);
-      final devices = await navigator.mediaDevices.enumerateDevices();
-      inspect(devices);
-      if (enable) {
+      selectPreferHeadphone();
+    }
+  }
+
+  void selectPreferHeadphone() async {
+    final audioOutput = await Helper.audiooutputs;
+    final preferBluetooth =
+        audioOutput.where((item) => item.deviceId == 'bluetooth');
+    if (preferBluetooth.isNotEmpty) {
+      Helper.selectAudioOutput('bluetooth');
+      Helper.selectAudioInput("bluetooth");
+      _audioSelected = 'bluetooth';
+      return;
+    }
+    final preferWiredHeadset =
+        audioOutput.where((item) => item.deviceId == 'wired-headset');
+    if (preferWiredHeadset.isNotEmpty) {
+      Helper.selectAudioOutput('wired-headset');
+      Helper.selectAudioInput("wired-headset");
+      _audioSelected = 'wired-headset';
+      return;
+    }
+
+    Helper.selectAudioOutput('earpiece');
+    Helper.selectAudioInput("microphone-bottom");
+    _audioSelected = 'earpiece';
+  }
+
+  void selectAudioRoute({
+    required String speakerSelected,
+  }) async {
+    // final devices = await navigator.mediaDevices.enumerateDevices();
+    switch (speakerSelected) {
+      case 'speaker':
         Helper.selectAudioOutput('speaker');
         Helper.selectAudioInput("microphone-back");
-      } else {
+        _audioSelected = 'speaker';
+        break;
+      case 'earpiece':
         Helper.selectAudioOutput('earpiece');
         Helper.selectAudioInput("microphone-bottom");
-      }
+        _audioSelected = 'earpiece';
+
+        break;
+      case 'bluetooth':
+        Helper.selectAudioOutput('bluetooth');
+        Helper.selectAudioInput("bluetooth");
+        _audioSelected = 'bluetooth';
+        break;
+      case 'wired-headset':
+        Helper.selectAudioOutput('wired-headset');
+        Helper.selectAudioInput("wired-headset");
+        _audioSelected = 'wired-headset';
+        break;
+      default:
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+        _audioSelected = 'earpiece';
+        break;
     }
   }
 
