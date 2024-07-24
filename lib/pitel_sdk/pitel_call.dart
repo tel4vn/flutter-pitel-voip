@@ -250,7 +250,15 @@ class PitelCall implements SipUaHelperListener {
       if (_localRenderer != null) {
         _localRenderer?.srcObject = stream;
       }
-      // Helper.setSpeakerphoneOn(false);
+      if (Platform.isIOS) {
+        Helper.setSpeakerphoneOn(false);
+      } else {
+        // Helper.selectAudioInput("microphone-bottom");
+        // Helper.selectAudioOutput('speaker');
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+      }
+
       _localStream = stream;
     }
     if (event.originator == 'remote') {
@@ -297,16 +305,21 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void enableSpeakerphone(bool enable) async {
-    // Helper.setSpeakerphoneOn(enable);
-    final res = await Helper.audiooutputs;
-    // "86de8ba5-fc2a-477e-8095-28879b477f02"
-    // "2ac5b4fb-4f87-4717-8425-971ea440ac9d"
-    print('================res=========${res.first}=======');
-    inspect(res);
-    if (enable) {
-      Helper.selectAudioOutput('speaker');
+    if (Platform.isIOS) {
+      Helper.setSpeakerphoneOn(enable);
     } else {
-      Helper.selectAudioOutput('earpiece');
+      // final res = await Helper.audiooutputs;
+      // print('================res=========${res.first}=======');
+      // inspect(res);
+      final devices = await navigator.mediaDevices.enumerateDevices();
+      inspect(devices);
+      if (enable) {
+        Helper.selectAudioOutput('speaker');
+        Helper.selectAudioInput("microphone-back");
+      } else {
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+      }
     }
   }
 
