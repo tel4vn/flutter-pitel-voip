@@ -338,15 +338,26 @@ class PitelCall implements SipUaHelperListener {
       return;
     }
 
+    final devices = await navigator.mediaDevices.enumerateDevices();
+    final audioInput =
+        devices.where((device) => device.kind == 'audioinput').toList();
+
+    final preferMicro =
+        audioInput.where((item) => item.deviceId == 'microphone-bottom');
+
+    if (preferMicro.isNotEmpty) {
+      Helper.selectAudioInput("microphone-bottom");
+    } else {
+      Helper.setSpeakerphoneOn(false);
+    }
+
     Helper.selectAudioOutput('earpiece');
-    Helper.selectAudioInput("microphone-bottom");
     _audioSelected = 'earpiece';
   }
 
   void selectAudioRoute({
     required String speakerSelected,
   }) async {
-    // final devices = await navigator.mediaDevices.enumerateDevices();
     switch (speakerSelected) {
       case 'speaker':
         Helper.selectAudioOutput('speaker');
