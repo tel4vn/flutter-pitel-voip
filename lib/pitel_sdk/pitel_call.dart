@@ -468,6 +468,43 @@ class PitelCall implements SipUaHelperListener {
     }
   }
 
+  bool attendedRefer(String target, {String? callId}) {
+    if (callId == null) {
+      if (!callCurrentIsEmpty()) {
+        Call? call = _sipuaHelper.findCall(_callIdCurrent!);
+        inspect(call);
+        if (call != null) {
+          Map<String, dynamic> options = _sipuaHelper.buildCallOptions(true);
+          Map<String, dynamic> attendedTransferReplace = {
+            "replaces": {
+              "call_id": call.id,
+              "to_tag": call.session.to_tag ?? "",
+              "from_tag": call.session.from_tag ?? "",
+            }
+          };
+          options.addAll(attendedTransferReplace);
+
+          inspect(options);
+          log(options.toString(), name: 'options');
+          call.refer(target, options);
+          return true;
+        }
+        return false;
+      } else {
+        _logger.error('You have to set callIdCurrent or pass param callId');
+        return false;
+      }
+    } else {
+      Call? call = _sipuaHelper.findCall(callId);
+      if (call != null) {
+        Map<String, dynamic> options = _sipuaHelper.buildCallOptions(true);
+        call.refer(target, options);
+        return true;
+      }
+      return false;
+    }
+  }
+
   bool toggleHold({String? callId}) {
     UnimplementedError('Hold not implement yet');
     return false;
