@@ -63,6 +63,9 @@ class PitelCall implements SipUaHelperListener {
 
   String get outPhone => _outPhone;
   String get nameCaller => _nameCaller;
+  String _audioSelected = 'earpiece';
+  String get audioSelected => _audioSelected;
+
   final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
   void resetOutPhone() {
@@ -280,6 +283,83 @@ class PitelCall implements SipUaHelperListener {
 
   void enableSpeakerphone(bool enable) {
     Helper.setSpeakerphoneOn(enable);
+  }
+
+  void setAudioPlatform() {
+    if (Platform.isIOS) {
+      Helper.setSpeakerphoneOn(false);
+    } else {
+      selectPreferHeadphone();
+    }
+  }
+
+  void selectPreferHeadphone() async {
+    final audioOutput = await Helper.audiooutputs;
+    final preferBluetooth =
+        audioOutput.where((item) => item.deviceId == 'bluetooth');
+    if (preferBluetooth.isNotEmpty) {
+      Helper.selectAudioOutput('bluetooth');
+      Helper.selectAudioInput("bluetooth");
+      _audioSelected = 'bluetooth';
+      return;
+    }
+    final preferWiredHeadset =
+        audioOutput.where((item) => item.deviceId == 'wired-headset');
+    if (preferWiredHeadset.isNotEmpty) {
+      Helper.selectAudioOutput('wired-headset');
+      Helper.selectAudioInput("wired-headset");
+      _audioSelected = 'wired-headset';
+      return;
+    }
+
+    final devices = await navigator.mediaDevices.enumerateDevices();
+    final audioInput =
+        devices.where((device) => device.kind == 'audioinput').toList();
+
+    final preferMicro =
+        audioInput.where((item) => item.deviceId == 'microphone-bottom');
+
+    if (preferMicro.isNotEmpty) {
+      Helper.selectAudioInput("microphone-bottom");
+    } else {
+      Helper.setSpeakerphoneOn(false);
+    }
+
+    Helper.selectAudioOutput('earpiece');
+    _audioSelected = 'earpiece';
+  }
+
+  void selectAudioRoute({
+    required String speakerSelected,
+  }) async {
+    switch (speakerSelected) {
+      case 'speaker':
+        Helper.selectAudioOutput('speaker');
+        Helper.selectAudioInput("microphone-back");
+        _audioSelected = 'speaker';
+        break;
+      case 'earpiece':
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+        _audioSelected = 'earpiece';
+
+        break;
+      case 'bluetooth':
+        Helper.selectAudioOutput('bluetooth');
+        Helper.selectAudioInput("bluetooth");
+        _audioSelected = 'bluetooth';
+        break;
+      case 'wired-headset':
+        Helper.selectAudioOutput('wired-headset');
+        Helper.selectAudioInput("wired-headset");
+        _audioSelected = 'wired-headset';
+        break;
+      default:
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+        _audioSelected = 'earpiece';
+        break;
+    }
   }
 
   bool toggleCamera({String? callId}) {
@@ -559,7 +639,6 @@ class PitelCall implements SipUaHelperListener {
                   );
                 }));
       } else {
-        // EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
       }
     });

@@ -6,8 +6,10 @@ import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_pitel_voip/component/button/action_button.dart';
 import 'package:flutter_pitel_voip/component/button/icon_text_button.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/utils/audio_helper.dart';
 import 'package:wakelock/wakelock.dart';
 
+import 'widgets/select_audio_modal.dart';
 import 'widgets/voice_header.dart';
 
 class CallPageWidget extends StatefulWidget {
@@ -66,6 +68,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   String? get direction => pitelCall.direction;
   String _callId = '';
+  String _audioValue = "earpiece";
+  bool? _isMicroValid = true;
 
   @override
   initState() {
@@ -76,6 +80,22 @@ class _MyCallPageWidget extends State<CallPageWidget>
     if (voiceonly) {
       _initRenderers();
     }
+    initAudioActive();
+  }
+
+  void initAudioActive() async {
+    final audioActive = await AudioHelper.audioPrefer();
+    final isMicroValid = await AudioHelper.isMicroValid();
+    setState(() {
+      _audioValue = audioActive;
+      _isMicroValid = isMicroValid;
+    });
+  }
+
+  void setAudioValue(String audioValue) {
+    setState(() {
+      _audioValue = audioValue;
+    });
   }
 
   void handleCall() {
@@ -135,8 +155,13 @@ class _MyCallPageWidget extends State<CallPageWidget>
   var basicActions = <Widget>[];
 
   List<Widget> _renderAdvanceAction() {
+    final width = MediaQuery.of(context).size.width / 3 - 32;
+    final height = MediaQuery.of(context).size.width / 3 - 60;
+
     return <Widget>[
       IconTextButton(
+        width: width,
+        height: height,
         textDisplay: pitelCall.audioMuted ? widget.txtUnMute : widget.txtMute,
         textStyle: widget.textStyle,
         icon: pitelCall.audioMuted ? Icons.mic_off : Icons.mic,
@@ -148,15 +173,34 @@ class _MyCallPageWidget extends State<CallPageWidget>
         },
       ),
       IconTextButton(
-          textDisplay: widget.txtSpeaker,
-          textStyle: widget.textStyle,
-          icon: _speakerOn ? Icons.volume_up : Icons.volume_off,
-          onPressed: () {
-            setState(() {
-              isStartTimer = false;
-            });
+        width: width,
+        height: height,
+        textDisplay: Platform.isAndroid && _isMicroValid == true
+            ? AudioHelper.audioOutputText(_audioValue)
+            : 'Speaker',
+        icon: Platform.isAndroid && _isMicroValid == true
+            ? AudioHelper.audioOutputIcon(_audioValue)
+            : AudioHelper.audioOutputIconIOS(_speakerOn),
+        onPressed: () async {
+          setState(() {
+            isStartTimer = false;
+          });
+          if (Platform.isIOS) {
             _toggleSpeaker();
-          }),
+          } else {
+            _isMicroValid == true
+                ? showDialog(
+                    context: context,
+                    builder: (context) {
+                      return SelectAudioModal(
+                        setAudioValue: setAudioValue,
+                      );
+                    },
+                  )
+                : _toggleSpeaker();
+          }
+        },
+      ),
     ];
   }
 
