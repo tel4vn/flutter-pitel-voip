@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
@@ -10,6 +14,7 @@ import 'package:flutter_pitel_voip/sip/sip_ua.dart';
 import 'package:throttling/throttling.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 import 'pitel_client.dart';
 
@@ -58,6 +63,7 @@ class PitelCall implements SipUaHelperListener {
 
   String get outPhone => _outPhone;
   String get nameCaller => _nameCaller;
+  final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
   void resetOutPhone() {
     _outPhone = "";
@@ -476,13 +482,38 @@ class PitelCall implements SipUaHelperListener {
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
     String nameCaller = '',
+    String domainUrl = 'google.com',
+    bool enableLoading = true,
   }) {
     thr.throttle(() async {
+      _dismissLoading();
+      if (enableLoading) {
+        EasyLoading.show(status: "Connecting...");
+      }
+      if (!checkIsNumber.hasMatch(phoneNumber)) {
+        EasyLoading.showToast(
+          'Invalid phone number',
+          toastPosition: EasyLoadingToastPosition.center,
+        );
+        return;
+      }
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
+
+      if (Platform.isIOS) {
+        var newUUID = const Uuid().v4();
+        CallKitParams params = CallKitParams(
+          id: newUUID,
+          nameCaller: phoneNumber,
+          handle: phoneNumber,
+          type: 0,
+          ios: IOSParams(handleType: 'generic'),
+        );
+        await FlutterCallkitIncoming.startCall(params);
+      }
+
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
-
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult.first == ConnectivityResult.none) {
         _checkConnectivity = [ConnectivityResult.none];
@@ -494,39 +525,48 @@ class PitelCall implements SipUaHelperListener {
       }
       if (connectivityResult != _checkConnectivity) {
         _checkConnectivity = connectivityResult;
-        EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
       }
+
       if (connectivityResult.first == ConnectivityResult.wifi) {
         try {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {
             _wifiIP = wifiIP;
-            EasyLoading.show(status: "Connecting...");
             handleRegisterCall();
             return;
           }
         } catch (error) {
-          EasyLoading.show(status: "Connecting...");
           handleRegisterCall();
           return;
         }
       }
+
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
+        EasyLoading.dismiss();
+        if (Platform.isIOS) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
         pitelClient
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
+                  FlutterCallkitIncoming.endAllCalls();
                   EasyLoading.showToast(
                     err.toString(),
                     toastPosition: EasyLoadingToastPosition.center,
                   );
                 }));
       } else {
-        EasyLoading.show(status: "Connecting...");
+        // EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
       }
     });
+  }
+
+  void _dismissLoading() async {
+    await Future.delayed(const Duration(seconds: 10));
+    EasyLoading.dismiss();
   }
 }
