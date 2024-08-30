@@ -24,12 +24,12 @@ dependencies:
   sdp_transform: ^0.3.2
   uuid: ^3.0.2
   dartz: ^0.10.1
-  flutter_callkit_incoming:
-    git:
-      url: https://github.com/anhquangmobile/flutter_callkit_incoming.git
-      ref: main
   # flutter_callkit_incoming:
-  #   path: ../../../custom_libs/flutter_callkit_incoming
+  #   git:
+  #     url: https://github.com/anhquangmobile/flutter_callkit_incoming.git
+  #     ref: main
+  flutter_callkit_incoming:
+    path: ../../../custom_libs/flutter_callkit_incoming
   firebase_core: ^2.9.0
   firebase_messaging: ^14.4.0
   device_info_plus: ^8.2.0

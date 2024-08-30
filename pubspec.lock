@@ -225,12 +225,10 @@ packages:
   flutter_callkit_incoming:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: f8da05d0237da0a94128cd1949a22a48a5bcecbf
-      url: "https://github.com/anhquangmobile/flutter_callkit_incoming.git"
-    source: git
-    version: "1.0.3+4"
+      path: "../../../custom_libs/flutter_callkit_incoming"
+      relative: true
+    source: path
+    version: "1.0.3+5"
   flutter_easyloading:
     dependency: "direct main"
     description:
