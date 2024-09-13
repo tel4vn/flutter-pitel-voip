@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8 - 2024-09-09
+
+- Support audio output selected for android device.
+
 ## 1.0.7+13 - 2024-06-07
 
 - Remove custom options onBackgroundMessage.

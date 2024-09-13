@@ -267,15 +267,14 @@ curl --location 'https://fcm.googleapis.com/v1/projects/${project_id}/messages:s
             "uuid": "77712f3-9b56-4e26-96ea-382ea1206477",
             "nameCaller": "Anh Quang",
             "avatar": "Anh Quang",
-            "phoneNumber": "0375624006",
+            "phoneNumber": "101",
             "appName": "Pitel Connnect",
             "callType": "CALL"
 
         },
         "apns": {
             "headers": {
-                "apns-priority": "10",
-
+                "apns-priority": "1",
                 "sound": ""
             },
             "payload": {
