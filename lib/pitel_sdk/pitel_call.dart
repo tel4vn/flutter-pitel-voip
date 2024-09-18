@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
@@ -10,6 +14,7 @@ import 'package:flutter_pitel_voip/sip/sip_ua.dart';
 import 'package:throttling/throttling.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 import 'pitel_client.dart';
 
@@ -52,12 +57,16 @@ class PitelCall implements SipUaHelperListener {
   bool isBusy = false;
   String _outPhone = "";
   String _nameCaller = "";
-  ConnectivityResult _checkConnectivity = ConnectivityResult.none;
-  ConnectivityResult get checkConnectivity => _checkConnectivity;
+  List<ConnectivityResult> _checkConnectivity = [ConnectivityResult.none];
+  List<ConnectivityResult> get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
 
   String get outPhone => _outPhone;
   String get nameCaller => _nameCaller;
+  String _audioSelected = 'earpiece';
+  String get audioSelected => _audioSelected;
+
+  final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
   void resetOutPhone() {
     _outPhone = "";
@@ -68,7 +77,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void resetConnectivity() {
-    _checkConnectivity = ConnectivityResult.none;
+    _checkConnectivity = [ConnectivityResult.none];
   }
 
   void setCallCurrent(String? id) {
@@ -276,6 +285,83 @@ class PitelCall implements SipUaHelperListener {
     Helper.setSpeakerphoneOn(enable);
   }
 
+  void setAudioPlatform() {
+    if (Platform.isIOS) {
+      Helper.setSpeakerphoneOn(false);
+    } else {
+      selectPreferHeadphone();
+    }
+  }
+
+  void selectPreferHeadphone() async {
+    final audioOutput = await Helper.audiooutputs;
+    final preferBluetooth =
+        audioOutput.where((item) => item.deviceId == 'bluetooth');
+    if (preferBluetooth.isNotEmpty) {
+      Helper.selectAudioOutput('bluetooth');
+      Helper.selectAudioInput("bluetooth");
+      _audioSelected = 'bluetooth';
+      return;
+    }
+    final preferWiredHeadset =
+        audioOutput.where((item) => item.deviceId == 'wired-headset');
+    if (preferWiredHeadset.isNotEmpty) {
+      Helper.selectAudioOutput('wired-headset');
+      Helper.selectAudioInput("wired-headset");
+      _audioSelected = 'wired-headset';
+      return;
+    }
+
+    final devices = await navigator.mediaDevices.enumerateDevices();
+    final audioInput =
+        devices.where((device) => device.kind == 'audioinput').toList();
+
+    final preferMicro =
+        audioInput.where((item) => item.deviceId == 'microphone-bottom');
+
+    if (preferMicro.isNotEmpty) {
+      Helper.selectAudioInput("microphone-bottom");
+    } else {
+      Helper.setSpeakerphoneOn(false);
+    }
+
+    Helper.selectAudioOutput('earpiece');
+    _audioSelected = 'earpiece';
+  }
+
+  void selectAudioRoute({
+    required String speakerSelected,
+  }) async {
+    switch (speakerSelected) {
+      case 'speaker':
+        Helper.selectAudioOutput('speaker');
+        Helper.selectAudioInput("microphone-back");
+        _audioSelected = 'speaker';
+        break;
+      case 'earpiece':
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+        _audioSelected = 'earpiece';
+
+        break;
+      case 'bluetooth':
+        Helper.selectAudioOutput('bluetooth');
+        Helper.selectAudioInput("bluetooth");
+        _audioSelected = 'bluetooth';
+        break;
+      case 'wired-headset':
+        Helper.selectAudioOutput('wired-headset');
+        Helper.selectAudioInput("wired-headset");
+        _audioSelected = 'wired-headset';
+        break;
+      default:
+        Helper.selectAudioOutput('earpiece');
+        Helper.selectAudioInput("microphone-bottom");
+        _audioSelected = 'earpiece';
+        break;
+    }
+  }
+
   bool toggleCamera({String? callId}) {
     if (callId == null) {
       if (!callCurrentIsEmpty()) {
@@ -476,16 +562,41 @@ class PitelCall implements SipUaHelperListener {
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
     String nameCaller = '',
+    String domainUrl = 'google.com',
+    bool enableLoading = true,
   }) {
     thr.throttle(() async {
+      _dismissLoading();
+      if (enableLoading) {
+        EasyLoading.show(status: "Connecting...");
+      }
+      if (!checkIsNumber.hasMatch(phoneNumber)) {
+        EasyLoading.showToast(
+          'Invalid phone number',
+          toastPosition: EasyLoadingToastPosition.center,
+        );
+        return;
+      }
       _outPhone = phoneNumber;
       _nameCaller = nameCaller;
+
+      if (Platform.isIOS) {
+        var newUUID = const Uuid().v4();
+        CallKitParams params = CallKitParams(
+          id: newUUID,
+          nameCaller: phoneNumber,
+          handle: phoneNumber,
+          type: 0,
+          ios: IOSParams(handleType: 'generic'),
+        );
+        await FlutterCallkitIncoming.startCall(params);
+      }
+
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
-
       final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
-        _checkConnectivity = ConnectivityResult.none;
+      if (connectivityResult.first == ConnectivityResult.none) {
+        _checkConnectivity = [ConnectivityResult.none];
         EasyLoading.showToast(
           'Please check your network',
           toastPosition: EasyLoadingToastPosition.center,
@@ -494,39 +605,47 @@ class PitelCall implements SipUaHelperListener {
       }
       if (connectivityResult != _checkConnectivity) {
         _checkConnectivity = connectivityResult;
-        EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
         return;
       }
-      if (connectivityResult == ConnectivityResult.wifi) {
+
+      if (connectivityResult.first == ConnectivityResult.wifi) {
         try {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {
             _wifiIP = wifiIP;
-            EasyLoading.show(status: "Connecting...");
             handleRegisterCall();
             return;
           }
         } catch (error) {
-          EasyLoading.show(status: "Connecting...");
           handleRegisterCall();
           return;
         }
       }
+
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
+        EasyLoading.dismiss();
+        if (Platform.isIOS) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
         pitelClient
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
+                  FlutterCallkitIncoming.endAllCalls();
                   EasyLoading.showToast(
                     err.toString(),
                     toastPosition: EasyLoadingToastPosition.center,
                   );
                 }));
       } else {
-        EasyLoading.show(status: "Connecting...");
         handleRegisterCall();
       }
     });
+  }
+
+  void _dismissLoading() async {
+    await Future.delayed(const Duration(seconds: 10));
+    EasyLoading.dismiss();
   }
 }
