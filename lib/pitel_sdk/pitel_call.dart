@@ -630,6 +630,7 @@ class PitelCall implements SipUaHelperListener {
     String nameCaller = '',
     String domainUrl = 'google.com',
     bool enableLoading = true,
+    bool enableStartCall = true,
   }) {
     thr.throttle(() async {
       _dismissLoading();
@@ -658,9 +659,8 @@ class PitelCall implements SipUaHelperListener {
       //     return;
       //   }
       // }
-
       //! CALL WAITING
-      if (Platform.isIOS) {
+      if (Platform.isIOS && enableStartCall) {
         var newUUID = const Uuid().v4();
         CallKitParams params = CallKitParams(
           id: newUUID,

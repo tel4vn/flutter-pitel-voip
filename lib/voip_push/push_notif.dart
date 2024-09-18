@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:eraser/eraser.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,18 +51,35 @@ class PushNotifAndroid {
   }
 
   @pragma('vm:entry-point')
+  static Future<void> _registerToCallkitEvent() async {
+    FlutterCallkitIncoming.onEvent.listen((event) async {
+      final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
+      if (event!.event == Event.ACTION_CALL_CALLBACK) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("CALL_BACK_PHONE_NUMBER", "101" ?? '');
+      }
+    });
+  }
+
+  @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     handleNotification(message);
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
+    // if (Platform.isAndroid) {
+    //   _registerToCallkitEvent();
+    // }
     switch (message.data['callType']) {
       case "RE_REGISTER":
         await registerWhenReceiveNotif();
         break;
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
+        if (Platform.isAndroid) {
+          handleShowMissedCall(message);
+        }
         FlutterCallkitIncoming.endAllCalls();
         Eraser.clearAllAppNotifications();
         break;
@@ -77,6 +96,20 @@ class PushNotifAndroid {
     prefs.setString("NAME_CALLER", message.data['nameCaller'] ?? '');
 
     AndroidConnectionService.showCallkitIncoming(CallkitParamsModel(
+      uuid: message.messageId ?? '',
+      nameCaller: message.data['nameCaller'] ?? '',
+      avatar: message.data['avatar'] ?? '',
+      phoneNumber: message.data['phoneNumber'] ?? '',
+      appName: message.data['appName'] ?? '',
+      backgroundColor: message.data['backgroundColor'] ?? '#0955fa',
+    ));
+  }
+
+  static void handleShowMissedCall(RemoteMessage message) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("NAME_CALLER", message.data['nameCaller'] ?? '');
+
+    AndroidConnectionService.showMissedCall(CallkitParamsModel(
       uuid: message.messageId ?? '',
       nameCaller: message.data['nameCaller'] ?? '',
       avatar: message.data['avatar'] ?? '',

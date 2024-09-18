@@ -10,6 +10,8 @@ class VoipNotifService {
     Function(CallEvent event)? onCallDecline,
     Function(CallEvent event)? onIncomingCall,
     Function(CallEvent event)? onCallTimeOut,
+    Function(CallEvent event)? onCallStart,
+    Function(CallEvent event)? onCallBack,
     Function? swipeInLockscreen,
     Function? onCallEnd,
   }) async {
@@ -22,8 +24,9 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_START:
-            // TODO: started an outgoing call
-            // TODO: show screen calling in Flutter
+            if (onCallStart != null) {
+              onCallStart(event);
+            }
             break;
           case Event.ACTION_CALL_ACCEPT:
             if (onCallAccept != null) {
@@ -46,7 +49,9 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_CALLBACK:
-            // TODO: only Android - click action `Call back` from missed call notification
+            if (onCallBack != null) {
+              onCallBack(event);
+            }
             break;
           case Event.ACTION_CALL_TOGGLE_HOLD:
             // TODO: only iOS
