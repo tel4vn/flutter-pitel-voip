@@ -37,8 +37,8 @@ class AndroidConnectionService {
       android: AndroidParams(
         isCustomNotification: true,
         isShowLogo: false,
-        isShowCallback: true,
-        isShowMissedCallNotification: true,
+        isShowCallback: false,
+        isShowMissedCallNotification: false,
         ringtonePath: 'system_ringtone_default',
         backgroundColor: callKitParams.backgroundColor ?? '#0955fa',
         backgroundUrl: 'assets/test.png',
@@ -55,12 +55,15 @@ class AndroidConnectionService {
       id: callKitParams.uuid,
       nameCaller: callKitParams.nameCaller,
       appName: callKitParams.appName,
-      avatar: callKitParams.avatar,
+      // avatar: callKitParams.avatar,
       handle: callKitParams.phoneNumber,
       type: 1,
       textMissedCall: 'Missed call',
-      textCallback: 'Call back',
-      extra: <String, dynamic>{'userId': '1a2b3c4d'},
+      // textCallback: 'Call back',
+      android: const AndroidParams(
+        isShowLogo: false,
+        isShowCallback: false,
+      ),
     );
     await FlutterCallkitIncoming.showMissCallNotification(params);
   }

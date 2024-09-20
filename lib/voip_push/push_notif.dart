@@ -14,10 +14,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'android_connection_service.dart';
 
 class PushNotifAndroid {
-  static initFirebase(FirebaseOptions? options) async {
-    await Firebase.initializeApp(
-      options: options,
-    );
+  static initFirebase({
+    FirebaseOptions? options,
+    Function(RemoteMessage message)? onMessage,
+    Function(RemoteMessage message)? onMessageOpenedApp,
+    Function(RemoteMessage? message)? getInitialMessage,
+  }) async {
+    await Firebase.initializeApp();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     await messaging.requestPermission(
@@ -32,7 +35,26 @@ class PushNotifAndroid {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('================2================');
       handleNotification(message);
+      if (onMessage != null) {
+        onMessage(message);
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('================1================');
+      if (onMessageOpenedApp != null) {
+        onMessageOpenedApp(message);
+      }
+    });
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      print('================3================');
+
+      if (getInitialMessage != null) {
+        getInitialMessage(message);
+      }
     });
   }
 
@@ -50,24 +72,27 @@ class PushNotifAndroid {
     return deviceToken;
   }
 
-  @pragma('vm:entry-point')
-  static Future<void> _registerToCallkitEvent() async {
-    FlutterCallkitIncoming.onEvent.listen((event) async {
-      final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
-      if (event!.event == Event.ACTION_CALL_CALLBACK) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString("CALL_BACK_PHONE_NUMBER", "101" ?? '');
-      }
-    });
-  }
+  // TODO: v2 - callback
+  // @pragma('vm:entry-point')
+  // static Future<void> _registerToCallkitEvent() async {
+  //   FlutterCallkitIncoming.onEvent.listen((event) async {
+  //     final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
+  //     if (event!.event == Event.ACTION_CALL_CALLBACK) {
+  //       final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //       prefs.setString("CALL_BACK_PHONE_NUMBER", "101" ?? '');
+  //     }
+  //   });
+  // }
 
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
+    print('================4================');
     handleNotification(message);
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
+    // TODO: v2 - callback
     // if (Platform.isAndroid) {
     //   _registerToCallkitEvent();
     // }
