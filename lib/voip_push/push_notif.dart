@@ -33,16 +33,22 @@ class PushNotifAndroid {
       sound: true,
     );
 
+    // iOS: show notification in foreground
+    // await FirebaseMessaging.instance
+    //     .setForegroundNotificationPresentationOptions(
+    //   alert: true, // Required to display a heads up notification
+    //   badge: true,
+    //   sound: true,
+    // );
+
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('================2================');
       handleNotification(message);
       if (onMessage != null) {
         onMessage(message);
       }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('================1================');
       if (onMessageOpenedApp != null) {
         onMessageOpenedApp(message);
       }
@@ -50,8 +56,6 @@ class PushNotifAndroid {
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-      print('================3================');
-
       if (getInitialMessage != null) {
         getInitialMessage(message);
       }
@@ -84,10 +88,25 @@ class PushNotifAndroid {
   //   });
   // }
 
+  static void _setCountNotif() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final countNotif = prefs.getInt("NOTIF_COUNT");
+
+    if (countNotif == null) {
+      await prefs.setInt("NOTIF_COUNT", 1);
+    } else {
+      // FlutterAppBadger.updateBadgeCount(countNotifInt);
+      await prefs.setInt("NOTIF_COUNT", countNotif + 1);
+    }
+    // Future.delayed(const Duration(seconds: 1));
+    // await logicNotif.getCountNotif();
+  }
+
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    print('================4================');
+    // _setCountNotif();
+
     handleNotification(message);
   }
 
@@ -102,9 +121,9 @@ class PushNotifAndroid {
         break;
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
-        if (Platform.isAndroid) {
-          handleShowMissedCall(message);
-        }
+        // if (Platform.isAndroid) {
+        //   handleShowMissedCall(message);
+        // }
         FlutterCallkitIncoming.endAllCalls();
         Eraser.clearAllAppNotifications();
         break;
