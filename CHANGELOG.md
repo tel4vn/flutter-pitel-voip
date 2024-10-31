@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8+1 - 2024-10-31
+
+- Update flutter_webrtc to version 0.11.5.
+
 ## 1.0.8 - 2024-09-09
 
 - Support audio output selected for android device.

@@ -100,10 +100,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 </array>
 ```
 
-- Make sure platform ios `12.0` in `Podfile`
+- Make sure platform ios `13.0` in `Podfile`
 
 ```
-platform :ios, '12.0'
+platform :ios, '13.0'
 ```
 
 5. Pushkit/ Push notification - Received VoIP and Wake app from Terminated State.
