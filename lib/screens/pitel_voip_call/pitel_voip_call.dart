@@ -100,20 +100,20 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     //! Back up
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? acceptCall = prefs.getBool("ACCEPT_CALL");
-    if (Platform.isIOS && acceptCall != null && acceptCall) {
-      pitelCall.answer(callId: callId);
-      widget.goToCall();
-    }
-    if (Platform.isAndroid) {
-      widget.goToCall();
-    }
-    //! Back up
-    // if (Platform.isIOS) {
-    //   pitelCall.answer();
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final bool? acceptCall = prefs.getBool("ACCEPT_CALL");
+    // if (Platform.isIOS && acceptCall != null && acceptCall) {
+    //   pitelCall.answer(callId: callId);
+    //   widget.goToCall();
     // }
-    // widget.goToCall();
+    // if (Platform.isAndroid) {
+    //   widget.goToCall();
+    // }
+    //! Back up
+    if (Platform.isIOS) {
+      pitelCall.answer();
+    }
+    widget.goToCall();
   }
 
   @override
