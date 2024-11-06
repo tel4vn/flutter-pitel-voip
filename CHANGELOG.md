@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8+2 - 2024-11-06
+
+- Update new documentation.
+
 ## 1.0.8+1 - 2024-10-31
 
 - Update flutter_webrtc to version 0.11.5.

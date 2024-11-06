@@ -130,7 +130,7 @@ dependencies {
 
 ## Example
 
-Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/1.0.7)
+Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/main)
 
 ## Usage
 
