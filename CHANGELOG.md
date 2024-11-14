@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8+3 - 2024-11-14
+
+- Remove code no use.
+
 ## 1.0.8+2 - 2024-11-06
 
 - Update new documentation.
