@@ -75,13 +75,11 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       pitelCall.resetNameCaller();
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
-      prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.FAILED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
       widget.goBack();
-      prefs.setBool("ACCEPT_CALL", false);
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
@@ -99,16 +97,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
-    //! Back up
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final bool? acceptCall = prefs.getBool("ACCEPT_CALL");
-    // if (Platform.isIOS && acceptCall != null && acceptCall) {
-    //   pitelCall.answer(callId: callId);
-    //   widget.goToCall();
-    // }
-    // if (Platform.isAndroid) {
-    //   widget.goToCall();
-    // }
     //! Back up
     if (Platform.isIOS) {
       pitelCall.answer();
