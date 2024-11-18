@@ -12,12 +12,15 @@ class CallScreen extends StatelessWidget {
   final String? txtSpeaker;
   final String? txtOutgoing;
   final String? txtIncoming;
+  final String? txtHoldCall;
+  final String? txtUnHoldCall;
   final String? txtTimer;
   final String? txtWaiting;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
+  final bool showHoldCall;
 
   const CallScreen({
     Key? key,
@@ -29,12 +32,15 @@ class CallScreen extends StatelessWidget {
     this.txtSpeaker,
     this.txtOutgoing,
     this.txtIncoming,
+    this.txtHoldCall,
+    this.txtUnHoldCall,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
     this.directionTextStyle,
     this.txtTimer,
     this.txtWaiting,
+    this.showHoldCall = false,
   }) : super(key: key);
 
   @override
@@ -49,6 +55,9 @@ class CallScreen extends StatelessWidget {
           txtSpeaker: txtSpeaker ?? 'Speaker',
           txtOutgoing: txtOutgoing ?? 'Outgoing',
           txtIncoming: txtIncoming ?? 'Incoming',
+          txtHoldCall: txtHoldCall ?? 'Hold',
+          txtUnHoldCall: txtUnHoldCall ?? 'Unhold',
+          showHoldCall: showHoldCall,
           textStyle: textStyle ?? const TextStyle(),
           titleTextStyle: titleTextStyle ?? const TextStyle(),
           timerTextStyle: timerTextStyle ?? const TextStyle(),

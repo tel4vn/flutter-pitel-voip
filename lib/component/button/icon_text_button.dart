@@ -7,6 +7,7 @@ class IconTextButton extends StatelessWidget {
   final TextStyle? textStyle;
   final double width;
   final double height;
+  final Color? color;
 
   const IconTextButton({
     Key? key,
@@ -16,6 +17,7 @@ class IconTextButton extends StatelessWidget {
     required this.width,
     required this.height,
     this.textStyle,
+    this.color = const Color(0xFF000000),
   }) : super(key: key);
 
   @override
@@ -28,7 +30,7 @@ class IconTextButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            color: const Color(0xFF000000),
+            color: color,
             icon: Icon(icon),
             onPressed: onPressed,
           ),
