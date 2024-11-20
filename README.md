@@ -270,6 +270,7 @@ class CallPage extends StatelessWidget {
 | titleTextStyle     | Style for display phone number text  | TextStyle | Optional |
 | timerTextStyle     | Style for timer text                 | TextStyle | Optional |
 | directionTextStyle | Style for direction text             | TextStyle | Optional |
+| showHoldCall       | Show action button hold call         | bool      | Optional |
 
 - Outgoing call
 

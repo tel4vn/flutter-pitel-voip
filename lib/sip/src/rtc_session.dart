@@ -1140,7 +1140,8 @@ class RTCSession extends EventManager {
     return true;
   }
 
-  bool renegotiate([Map<String, dynamic>? options, Function? done]) {
+  Future<bool> renegotiate(
+      [Map<String, dynamic>? options, Function? done]) async {
     logger.debug('renegotiate()');
 
     options = options ?? <String, dynamic>{};
@@ -1181,6 +1182,7 @@ class RTCSession extends EventManager {
         'extraHeaders': options['extraHeaders']
       });
     } else {
+      await Future.delayed(Duration(seconds: 3));
       _sendReinvite(<String, dynamic>{
         'eventHandlers': handlers,
         'rtcOfferConstraints': rtcOfferConstraints,
@@ -1981,7 +1983,7 @@ class RTCSession extends EventManager {
     if (_status == C.statusTerminated) {
       throw exceptions.InvalidStateError('terminated');
     }
-
+    print('================_remoteHold=========$_remoteHold====$hold===');
     if (_remoteHold == true && hold == false) {
       _remoteHold = false;
       _onunhold('remote');
@@ -2856,6 +2858,7 @@ class RTCSession extends EventManager {
         if (_sessionTimers.refreshMethod == SipMethod.UPDATE) {
           _sendUpdate();
         } else {
+          print('================here=========1=======');
           _sendReinvite();
         }
       }, expires! * 500); // Half the given interval (as the RFC states).

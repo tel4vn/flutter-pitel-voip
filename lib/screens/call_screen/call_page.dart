@@ -159,6 +159,9 @@ class _MyCallPageWidget extends State<CallPageWidget>
   }
 
   void _toggleHoldCall() {
+    setState(() {
+      isStartTimer = false;
+    });
     pitelCall.toggleHold();
   }
 
@@ -215,11 +218,11 @@ class _MyCallPageWidget extends State<CallPageWidget>
         IconTextButton(
           width: width,
           height: height,
-          color: pitelCall.holdCall ? Color(0xFF000000) : Color(0xFF7C7B7B),
+          color: pitelCall.isHoldCall ? Color(0xFF000000) : Color(0xFF7C7B7B),
           textDisplay:
               pitelCall.holdCall ? widget.txtUnHoldCall : widget.txtHoldCall,
           textStyle: widget.textStyle,
-          icon: Icons.pause,
+          icon: pitelCall.holdCall ? Icons.phone : Icons.pause,
           onPressed: _toggleHoldCall,
         ),
     ];
