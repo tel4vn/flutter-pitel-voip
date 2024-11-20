@@ -73,6 +73,7 @@ class PitelCall implements SipUaHelperListener {
 
   void setIsHoldCall(bool value) {
     _isHoldCall = value;
+    _holdCall = false;
   }
 
   void resetOutPhone() {
@@ -180,9 +181,9 @@ class PitelCall implements SipUaHelperListener {
       case PitelCallStateEnum.UNHOLD:
         _holdCall = pitelCallState.state == PitelCallStateEnum.HOLD;
         _holdOriginator = pitelCallState.originator;
-        for (var element in _sipPitelHelperListener) {
-          element.callStateChanged(call.id!, pitelCallState);
-        }
+        // for (var element in _sipPitelHelperListener) {
+        //   element.callStateChanged(call.id!, pitelCallState);
+        // }
         break;
       case PitelCallStateEnum.STREAM:
         _handelStreams(pitelCallState);
@@ -594,8 +595,8 @@ class PitelCall implements SipUaHelperListener {
         var newUUID = const Uuid().v4();
         CallKitParams params = CallKitParams(
           id: newUUID,
-          nameCaller: phoneNumber,
-          handle: phoneNumber,
+          nameCaller: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
+          handle: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
           type: 0,
           ios: IOSParams(handleType: 'generic'),
         );

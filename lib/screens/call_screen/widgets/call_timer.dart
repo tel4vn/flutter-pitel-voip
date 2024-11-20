@@ -39,6 +39,9 @@ class _CallTimerState extends State<CallTimer> {
   }
 
   void _startTimer() {
+    if (_timer != null) {
+      _cancelTimer();
+    }
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       final duration = Duration(seconds: timer.tick);
       if (mounted) {
@@ -55,12 +58,17 @@ class _CallTimerState extends State<CallTimer> {
 
   @override
   void dispose() {
+    _cancelTimer();
+    super.dispose();
+  }
+
+  void _cancelTimer() {
     if (_timer != null) {
-      if (_timer!.isActive) {
-        _timer?.cancel();
+      if (_timer!.isActive == true) {
+        _timeLabel = '00:00';
+        _timer!.cancel();
       }
     }
-    super.dispose();
   }
 
   @override
