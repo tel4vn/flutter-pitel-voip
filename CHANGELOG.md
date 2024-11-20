@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.8+4 - 2024-11-19
+
+- Feature hold call.
+- Fix RECEIVER_EXPORTED on Android 14.
+
 ## 1.0.8+3 - 2024-11-14
 
 - Remove code no use.

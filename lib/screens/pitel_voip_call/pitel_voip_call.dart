@@ -73,18 +73,21 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
+      pitelCall.setIsHoldCall(false);
       FlutterCallkitIncoming.endAllCalls();
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.FAILED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
+      pitelCall.setIsHoldCall(false);
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.STREAM) {
       pitelCall.enableSpeakerphone(false);
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
+      pitelCall.setIsHoldCall(true);
       if (Platform.isAndroid) {
         Eraser.clearAllAppNotifications();
       }

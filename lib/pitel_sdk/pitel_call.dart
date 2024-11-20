@@ -30,8 +30,9 @@ class PitelCall implements SipUaHelperListener {
   final Map<String, PitelCallState> _states = {};
   final PitelUAHelper _sipuaHelper = PitelUAHelper();
   bool _audioMuted = false;
+  bool _isHoldCall = false;
   bool _videoIsOff = false;
-  bool hold = false;
+  bool _holdCall = false;
   String? _holdOriginator;
   bool _isListen = false;
 
@@ -50,6 +51,8 @@ class PitelCall implements SipUaHelperListener {
       : "";
   bool get videoIsOff => _videoIsOff;
   bool get audioMuted => _audioMuted;
+  bool get holdCall => _holdCall;
+  bool get isHoldCall => _isHoldCall;
   String? get holdOriginator => _holdOriginator;
   bool get isConnected => _sipuaHelper.connected;
   bool get isHaveCall => _callIdCurrent?.isNotEmpty ?? false;
@@ -67,6 +70,11 @@ class PitelCall implements SipUaHelperListener {
   String get audioSelected => _audioSelected;
 
   final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
+
+  void setIsHoldCall(bool value) {
+    _isHoldCall = value;
+    _holdCall = false;
+  }
 
   void resetOutPhone() {
     _outPhone = "";
@@ -171,8 +179,11 @@ class PitelCall implements SipUaHelperListener {
         break;
       case PitelCallStateEnum.HOLD:
       case PitelCallStateEnum.UNHOLD:
-        hold = pitelCallState.state == PitelCallStateEnum.HOLD;
+        _holdCall = pitelCallState.state == PitelCallStateEnum.HOLD;
         _holdOriginator = pitelCallState.originator;
+        // for (var element in _sipPitelHelperListener) {
+        //   element.callStateChanged(call.id!, pitelCallState);
+        // }
         break;
       case PitelCallStateEnum.STREAM:
         _handelStreams(pitelCallState);
@@ -440,34 +451,34 @@ class PitelCall implements SipUaHelperListener {
   }
 
   bool toggleHold({String? callId}) {
-    UnimplementedError('Hold not implement yet');
-    return false;
-    // if (callId == null) {
-    //   if (!callCurrentIsEmpty()) {
-    //     if (_calls[_callIdCurrent] != null) {
-    //       if (hold) {
-    //         _calls[_callIdCurrent]!.unhold();
-    //       } else {
-    //         _calls[_callIdCurrent]!.hold();
-    //       }
-    //       return true;
-    //     }
-    //     return false;
-    //   } else {
-    //     _logger.error('You have to set callIdCurrent or pass param callId');
-    //     return false;
-    //   }
-    // } else {
-    //   if (_calls[callId] != null) {
-    //     if (hold) {
-    //       _calls[callId]!.unhold();
-    //     } else {
-    //       _calls[callId]!.hold();
-    //     }
-    //     return true;
-    //   }
-    //   return false;
-    // }
+    if (callId == null) {
+      if (!callCurrentIsEmpty()) {
+        Call? call = _sipuaHelper.findCall(_callIdCurrent!);
+        if (call != null) {
+          if (_holdCall) {
+            call.unhold();
+          } else {
+            call.hold();
+          }
+          return true;
+        }
+        return false;
+      } else {
+        _logger.error('You have to set callIdCurrent or pass param callId');
+        return false;
+      }
+    } else {
+      Call? call = _sipuaHelper.findCall(callId);
+      if (call != null) {
+        if (_holdCall) {
+          call.unhold();
+        } else {
+          call.hold();
+        }
+        return true;
+      }
+      return false;
+    }
   }
 
   Future<bool> call(String dest, [bool voiceonly = true]) async {

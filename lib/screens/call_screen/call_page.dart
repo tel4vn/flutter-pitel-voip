@@ -23,12 +23,15 @@ class CallPageWidget extends StatefulWidget {
     required this.txtSpeaker,
     required this.txtOutgoing,
     required this.txtIncoming,
+    required this.txtHoldCall,
+    required this.txtUnHoldCall,
     required this.txtTimer,
     required this.txtWaiting,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
     this.directionTextStyle,
+    this.showHoldCall = false,
   }) : super(key: key);
 
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -40,12 +43,15 @@ class CallPageWidget extends StatefulWidget {
   final String txtSpeaker;
   final String txtOutgoing;
   final String txtIncoming;
+  final String txtHoldCall;
+  final String txtUnHoldCall;
   final String txtTimer;
   final String txtWaiting;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
+  final bool showHoldCall;
 
   @override
   State<CallPageWidget> createState() => _MyCallPageWidget();
@@ -152,6 +158,13 @@ class _MyCallPageWidget extends State<CallPageWidget>
     }
   }
 
+  void _toggleHoldCall() {
+    setState(() {
+      isStartTimer = false;
+    });
+    pitelCall.toggleHold();
+  }
+
   var basicActions = <Widget>[];
 
   List<Widget> _renderAdvanceAction() {
@@ -201,6 +214,17 @@ class _MyCallPageWidget extends State<CallPageWidget>
           }
         },
       ),
+      if (widget.showHoldCall)
+        IconTextButton(
+          width: width,
+          height: height,
+          color: pitelCall.isHoldCall ? Color(0xFF000000) : Color(0xFF7C7B7B),
+          textDisplay:
+              pitelCall.holdCall ? widget.txtUnHoldCall : widget.txtHoldCall,
+          textStyle: widget.textStyle,
+          icon: pitelCall.holdCall ? Icons.phone : Icons.pause,
+          onPressed: _toggleHoldCall,
+        ),
     ];
   }
 
@@ -255,17 +279,22 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
     if (advanceActions.isNotEmpty) {
       actionWidgets.add(Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.white.withOpacity(0.6),
         ),
         margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: advanceActions,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: advanceActions.length > 2
+            ? Wrap(
+                runSpacing: 16,
+                children: advanceActions,
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: advanceActions,
+              ),
       ));
     }
     final height = MediaQuery.of(context).size.height;
