@@ -1146,7 +1146,8 @@ class RTCSession extends EventManager {
     return true;
   }
 
-  bool renegotiate([Map<String, dynamic>? options, Function? done]) {
+  Future<bool> renegotiate(
+      [Map<String, dynamic>? options, Function? done]) async {
     logger.debug('renegotiate()');
 
     options = options ?? <String, dynamic>{};
@@ -1187,6 +1188,7 @@ class RTCSession extends EventManager {
         'extraHeaders': options['extraHeaders']
       });
     } else {
+      await Future.delayed(const Duration(seconds: 3));
       _sendReinvite(<String, dynamic>{
         'eventHandlers': handlers,
         'rtcOfferConstraints': rtcOfferConstraints,
@@ -1642,7 +1644,7 @@ class RTCSession extends EventManager {
   Future<RTCSessionDescription> _createLocalDescription(
       String type, Map<String, dynamic>? constraints) async {
     logger.debug('createLocalDescription()');
-    _iceGatheringState = RTCIceGatheringState.RTCIceGatheringStateNew;
+    _iceGatheringState ??= RTCIceGatheringState.RTCIceGatheringStateNew;
     Completer<RTCSessionDescription> completer =
         Completer<RTCSessionDescription>();
 
