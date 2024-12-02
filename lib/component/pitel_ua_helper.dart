@@ -367,15 +367,19 @@ class PitelUAHelper extends EventManager {
   }
 
   void _notifyTransportStateListeners(PitelTransportState state) {
-    _sipUaHelperListeners.forEach((SipUaHelperListener listener) {
+    // Copy to prevent concurrent modification exception
+    List<SipUaHelperListener> listeners = _sipUaHelperListeners.toList();
+    for (SipUaHelperListener listener in listeners) {
       listener.transportStateChanged(state);
-    });
+    }
   }
 
   void _notifyRegsistrationStateListeners(RegistrationState state) {
-    _sipUaHelperListeners.forEach((SipUaHelperListener listener) {
+    // Copy to prevent concurrent modification exception
+    List<SipUaHelperListener> listeners = _sipUaHelperListeners.toList();
+    for (SipUaHelperListener listener in listeners) {
       listener.registrationStateChanged(state);
-    });
+    }
   }
 
   void _notifyCallStateListeners(CallEvent event, PitelCallState state) {
