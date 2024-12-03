@@ -673,8 +673,8 @@ class PitelCall implements SipUaHelperListener {
         var newUUID = const Uuid().v4();
         CallKitParams params = CallKitParams(
           id: newUUID,
-          nameCaller: phoneNumber,
-          handle: phoneNumber,
+          nameCaller: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
+          handle: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
           type: 0,
           ios: IOSParams(handleType: 'generic'),
         );
