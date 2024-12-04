@@ -147,9 +147,11 @@ class PitelUAHelper extends EventManager {
       });
 
       _ua!.on(EventRegistered(), (EventRegistered event) {
+        print('================5================');
         logger.debug('registered => ' + event.cause.toString());
         _registerState = RegistrationState(
             state: RegistrationStateEnum.REGISTERED, cause: event.cause);
+        print('================6=======$_registerState=========');
         _notifyRegsistrationStateListeners(_registerState);
       });
 
@@ -359,6 +361,7 @@ class PitelUAHelper extends EventManager {
       <SipUaHelperListener>{};
 
   void addSipUaHelperListener(SipUaHelperListener listener) {
+    print('=======debug=========4================');
     _sipUaHelperListeners.add(listener);
   }
 
@@ -376,8 +379,11 @@ class PitelUAHelper extends EventManager {
 
   void _notifyRegsistrationStateListeners(RegistrationState state) {
     // Copy to prevent concurrent modification exception
+    print('=====debug===========7================');
     List<SipUaHelperListener> listeners = _sipUaHelperListeners.toList();
+    print('=======debug=========8======${listeners.length}==========');
     for (SipUaHelperListener listener in listeners) {
+      print('======debug==========9======${state.state.toString()}==========');
       listener.registrationStateChanged(state);
     }
   }
