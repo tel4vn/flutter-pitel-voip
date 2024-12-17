@@ -136,14 +136,10 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void addListener(SipPitelHelperListener listener) {
-    inspect(listener);
-    print('=======debug=========1================');
     if (!_sipPitelHelperListener.contains(listener)) {
-      print('=======debug=========2================');
       _sipPitelHelperListener.add(listener);
     }
     if (!_isListen) {
-      print('=======debug=========3================');
       _isListen = true;
       _sipuaHelper.addSipUaHelperListener(this);
     }
