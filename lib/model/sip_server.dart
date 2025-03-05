@@ -2,7 +2,7 @@ class SipServer {
   int id;
   String domain;
   int port;
-  String outboundProxy;
+  String? outboundProxy;
   String wss;
   int transport;
   String createdAt;
@@ -13,7 +13,7 @@ class SipServer {
     required this.id,
     required this.domain,
     required this.port,
-    required this.outboundProxy,
+    this.outboundProxy,
     required this.wss,
     required this.transport,
     required this.createdAt,

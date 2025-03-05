@@ -4,7 +4,7 @@ import 'package:plugin_pitel/model/sip_server.dart';
 class SipInfoData {
   final String authPass;
   final String registerServer;
-  final String outboundServer;
+  final String? outboundServer;
   final int? port;
   final String userID;
   final String authID;
@@ -21,7 +21,7 @@ class SipInfoData {
   SipInfoData({
     required this.authPass,
     required this.registerServer,
-    required this.outboundServer,
+    this.outboundServer,
     this.port,
     required this.userID,
     required this.authID,

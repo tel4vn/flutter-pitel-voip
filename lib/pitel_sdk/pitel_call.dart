@@ -674,7 +674,7 @@ class PitelCall implements SipUaHelperListener {
         CallKitParams params = CallKitParams(
           id: newUUID,
           nameCaller: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
-          handle: nameCaller.isNotEmpty ? nameCaller : phoneNumber,
+          handle: phoneNumber,
           type: 0,
           ios: IOSParams(handleType: 'generic'),
         );

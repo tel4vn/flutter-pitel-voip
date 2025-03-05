@@ -290,6 +290,9 @@ class PitelClient {
     required String extension,
     required String appMode,
     required String fcmToken,
+    String deviceName = '',
+    String deviceModel = '',
+    String deviceBrand = '',
   }) async {
     try {
       final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
@@ -304,9 +307,13 @@ class PitelClient {
         extension: extension,
         appMode: appMode,
         fcmToken: fcmToken,
+        deviceName: deviceName,
+        deviceModel: deviceModel,
+        deviceBrand: deviceBrand,
       );
       return response;
     } catch (err) {
+      inspect(err);
       return null;
     }
   }
