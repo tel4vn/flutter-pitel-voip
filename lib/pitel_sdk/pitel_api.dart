@@ -107,6 +107,9 @@ class _PitelAPIImplement implements PitelApi {
       extension: extension,
       appMode: appMode,
       fcmToken: fcmToken,
+      deviceName: deviceName,
+      deviceModel: deviceModel,
+      deviceBrand: deviceBrand,
     );
 
     try {

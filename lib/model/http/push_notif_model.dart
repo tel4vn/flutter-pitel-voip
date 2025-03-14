@@ -6,6 +6,9 @@ class RegisterDeviceTokenReq {
   String platform;
   String appMode;
   String fcmToken;
+  String deviceName;
+  String deviceModel;
+  String deviceBrand;
 
   RegisterDeviceTokenReq({
     required this.deviceToken,
@@ -15,6 +18,9 @@ class RegisterDeviceTokenReq {
     required this.platform,
     required this.appMode,
     required this.fcmToken,
+    required this.deviceName,
+    required this.deviceModel,
+    required this.deviceBrand,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +32,9 @@ class RegisterDeviceTokenReq {
       "extension": extension,
       "app_mode": appMode,
       "fcm_token": fcmToken,
+      "device_name": deviceName,
+      "device_model": deviceModel,
+      "device_brand": deviceBrand,
     };
   }
 
@@ -38,6 +47,9 @@ class RegisterDeviceTokenReq {
       extension: map['extension'] as String,
       appMode: map['app_mode'] as String,
       fcmToken: map['fcm_token'] as String,
+      deviceName: map['device_name'] as String,
+      deviceModel: map['device_model'] as String,
+      deviceBrand: map['device_brand'] as String,
     );
   }
 }
