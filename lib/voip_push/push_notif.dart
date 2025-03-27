@@ -108,6 +108,11 @@ class PushNotifAndroid {
     // _setCountNotif();
 
     handleNotification(message);
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (message.data["type"] == "force-logout") {
+      await prefs.setBool("HAS_FORCE_LOGOUT", true);
+    }
   }
 
   static Future<void> handleNotification(RemoteMessage message) async {
