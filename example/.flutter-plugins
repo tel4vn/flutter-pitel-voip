@@ -9,7 +9,6 @@ flutter_foreground_plugin=/Users/anhquangdev/.pub-cache/git/flutter_foreground_s
 flutter_local_notifications=/Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.7.0/
 flutter_webrtc=/Users/anhquangdev/.pub-cache/hosted/pub.dev/flutter_webrtc-0.9.7/
 path_provider=/Users/anhquangdev/.pub-cache/hosted/pub.dev/path_provider-2.0.11/
-path_provider_android=/Users/anhquangdev/.pub-cache/hosted/pub.dev/path_provider_android-2.0.17/
 path_provider_ios=/Users/anhquangdev/.pub-cache/hosted/pub.dev/path_provider_ios-2.0.11/
 path_provider_linux=/Users/anhquangdev/.pub-cache/hosted/pub.dev/path_provider_linux-2.1.7/
 path_provider_macos=/Users/anhquangdev/.pub-cache/hosted/pub.dev/path_provider_macos-2.0.6/
