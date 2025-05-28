@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_connection_service.dart';
 
+@pragma('vm:entry-point')
 class PushNotifAndroid {
   static initFirebase({
     FirebaseOptions? options,

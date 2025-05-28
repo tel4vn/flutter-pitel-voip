@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.9+1 - 2025-05-1928
+
+- Update SDK for support AGP 8.6.1.
+- Support flutter sdk lasted version.
+
 ## 1.0.8+4 - 2024-11-19
 
 - Feature hold call.
