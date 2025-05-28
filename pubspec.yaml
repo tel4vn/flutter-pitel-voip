@@ -1,10 +1,9 @@
 name: flutter_pitel_voip
 description: flutter_pitel_voip is package support for voice-over-IP (VoIP) call. Support VoIP call between 2 extension or outgoing call mobile phone number.
-version: 1.0.8+5
+version: 1.0.9+1
 homepage: https://github.com/tel4vn/flutter-pitel-voip
 repository: https://github.com/tel4vn/flutter-pitel-voip
 issue_tracker: https://github.com/tel4vn/flutter-pitel-voip/issues
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -26,9 +25,7 @@ dependencies:
   sdp_transform: ^0.3.2
   uuid: ^3.0.2
   dartz: ^0.10.1
-  # flutter_callkit_incoming_timer: ^1.0.3+10
-  flutter_callkit_incoming_timer:
-    path: ../../../custom_libs/flutter_callkit_incoming_timer
+  flutter_callkit_incoming_timer: ^1.0.3+11
   firebase_core: ^3.13.1
   firebase_messaging: ^15.2.6
   device_info_plus: ^11.4.0
@@ -44,9 +41,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
-
-# dependency_overrides:
-#   flutter_webrtc: ^0.9.18
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

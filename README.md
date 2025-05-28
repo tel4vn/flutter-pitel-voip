@@ -78,7 +78,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
  </manifest>
@@ -211,8 +210,7 @@ ElevatedButton(
             "port": PORT,
             "accountName": "${UUser}",      // Example 101
             "displayName": "${Display Name}",
-            "wssUrl": "${URL WSS}",
-            "apiDomain": "${URL API}"
+            "wssUrl": "${URL WSS}"
           });
 
           final pitelClient = PitelServiceImpl();
