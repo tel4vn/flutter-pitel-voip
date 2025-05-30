@@ -6,8 +6,7 @@ import 'package:eraser/eraser.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_callkit_incoming/entities/call_event.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

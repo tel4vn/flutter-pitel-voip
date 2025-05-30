@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/entities/entities.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -66,8 +66,8 @@ class PitelCall implements SipUaHelperListener {
   bool isBusy = false;
   String _outPhone = "";
   String _nameCaller = "";
-  ConnectivityResult _checkConnectivity = ConnectivityResult.none;
-  ConnectivityResult get checkConnectivity => _checkConnectivity;
+  List<ConnectivityResult> _checkConnectivity = [ConnectivityResult.none];
+  List<ConnectivityResult> get checkConnectivity => _checkConnectivity;
   String? _wifiIP;
   bool _isTransferCall = false;
   bool _reconnect = false;
@@ -104,7 +104,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   void resetConnectivity() {
-    _checkConnectivity = ConnectivityResult.none;
+    _checkConnectivity = [ConnectivityResult.none];
   }
 
   void setCallCurrent(String? id) {
@@ -684,8 +684,8 @@ class PitelCall implements SipUaHelperListener {
       final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
       final PitelClient pitelClient = PitelClient.getInstance();
       final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
-        _checkConnectivity = ConnectivityResult.none;
+      if (connectivityResult.first == ConnectivityResult.none) {
+        _checkConnectivity = [ConnectivityResult.none];
         EasyLoading.showToast(
           'Please check your network',
           toastPosition: EasyLoadingToastPosition.center,
@@ -699,7 +699,7 @@ class PitelCall implements SipUaHelperListener {
         return;
       }
 
-      if (connectivityResult == ConnectivityResult.wifi) {
+      if (connectivityResult.first == ConnectivityResult.wifi) {
         try {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {

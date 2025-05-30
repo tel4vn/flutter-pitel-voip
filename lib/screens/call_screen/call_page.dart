@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:plugin_pitel/component/button/action_button.dart';
 import 'package:plugin_pitel/component/button/icon_text_button.dart';
 import 'package:plugin_pitel/flutter_pitel_voip.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widgets/voice_header.dart';
 
@@ -80,7 +80,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   void handleCall() {
     if (Platform.isAndroid) {
-      Wakelock.enable();
+      WakelockPlus.enable();
       if (direction != 'OUTGOING') {
         pitelCall.answer();
       }
@@ -118,7 +118,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   void _handleHangup() {
     if (Platform.isAndroid) {
-      Wakelock.disable();
+      WakelockPlus.disable();
     }
     pitelCall.hangup(callId: _callId);
   }
