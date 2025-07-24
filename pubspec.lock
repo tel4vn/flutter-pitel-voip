@@ -210,10 +210,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_callkit_incoming_timer
-      sha256: "86904e89373dbe58680772bead0a2e34515f1206b6c3d22fbce69bb29cd19aca"
+      sha256: "4c321fcd454a698a1298af88d70c5965e7f0ea2b46c8c51e158f209f0606667c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3+11"
+    version: "1.0.3+12"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -230,6 +230,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  flutter_show_when_locked:
+    dependency: "direct main"
+    description:
+      name: flutter_show_when_locked
+      sha256: c2c8c7a013a05de4e8e9e3740d98589ce3fb1cda7b8c22bd4e9db096b8096e79
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   flutter_spinkit:
     dependency: transitive
     description:

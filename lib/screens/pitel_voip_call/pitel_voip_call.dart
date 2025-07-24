@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PitelVoipCall extends StatefulWidget {
@@ -75,6 +76,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       pitelCall.resetNameCaller();
       pitelCall.setIsHoldCall(false);
       FlutterCallkitIncoming.endAllCalls();
+      if (Platform.isAndroid) {
+        await FlutterShowWhenLocked().hide();
+      }
       widget.goBack();
     }
     if (state.state == PitelCallStateEnum.FAILED) {
