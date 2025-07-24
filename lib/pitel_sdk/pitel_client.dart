@@ -107,8 +107,9 @@ class PitelClient {
     settings.dtmfMode = DtmfMode.RFC2833;
     if (turn != null) {
       Map turnDecode = jsonDecode(jsonEncode(turn.data));
-      Map<String, String> turnLast =
-          turnDecode.map((key, value) => MapEntry(key, value.toString()));
+      Map<String, String> turnLast = turnDecode.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
       settings.iceServers.add(turnLast);
     }
     //! sip_domain
@@ -168,8 +169,11 @@ class PitelClient {
     pitelCall.unregister();
   }
 
-  Future<bool> login(String username, String password,
-      {String? fcmToken}) async {
+  Future<bool> login(
+    String username,
+    String password, {
+    String? fcmToken,
+  }) async {
     _logger.info('login $username $password');
     final loginSuccess = await _login(username, password);
     _logger.info('login $loginSuccess');
@@ -223,9 +227,10 @@ class PitelClient {
   Future<bool> _getSipInfo() async {
     try {
       final pitelToken = await _pitelApi.getSipInfo(
-          token: _token,
-          apiKey: PitelConfigure.apiKey,
-          sipUsername: profileUser.sipAccount.sipUserName);
+        token: _token,
+        apiKey: PitelConfigure.apiKey,
+        sipUsername: profileUser.sipAccount.sipUserName,
+      );
       _pitelToken = pitelToken;
       _logger.info('pitelToken $_pitelToken');
       return true;
@@ -238,8 +243,9 @@ class PitelClient {
   Future<bool> _getExtensionInfo() async {
     try {
       final sipResponse = await _pitelApi.getExtensionInfo(
-          pitelToken: _pitelToken,
-          sipUsername: profileUser.sipAccount.sipUserName);
+        pitelToken: _pitelToken,
+        sipUsername: profileUser.sipAccount.sipUserName,
+      );
       if (sipResponse.enabled) {
         _logger.info('sipServer ${sipResponse.sipServer.toString()}');
         _sipServer = sipResponse.sipServer;
@@ -297,12 +303,11 @@ class PitelClient {
     required String extension,
     required String appMode,
     required String fcmToken,
+    String deviceName = '',
+    String deviceModel = '',
+    String deviceBrand = '',
   }) async {
     try {
-      final isRealDevice = await DeviceInformation.checkIsPhysicalDevice();
-      if (!isRealDevice) {
-        return null;
-      }
       final response = await _pitelApi.registerDeviceToken(
         deviceToken: deviceToken,
         platform: platform,
@@ -311,6 +316,9 @@ class PitelClient {
         extension: extension,
         appMode: appMode,
         fcmToken: fcmToken,
+        deviceName: deviceName,
+        deviceModel: deviceModel,
+        deviceBrand: deviceBrand,
       );
       return response;
     } catch (err) {
