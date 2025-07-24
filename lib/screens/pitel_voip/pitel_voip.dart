@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
 import 'package:flutter_pitel_voip/voip_push/voip_notif.dart';
+import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 
 class PitelVoip extends StatefulWidget {
   final VoidCallback handleRegister;
@@ -27,13 +28,17 @@ class _PitelVoipState extends State<PitelVoip> {
 
   final PitelCall pitelCall = PitelClient.getInstance().pitelCall;
   bool isCall = false;
+  bool firstShowLock = false;
 
   @override
   void initState() {
     super.initState();
     VoipNotifService.listenerEvent(
       callback: (event) {},
-      onCallAccept: () {
+      onCallAccept: () async {
+        if (firstShowLock && Platform.isAndroid) {
+          await FlutterShowWhenLocked().show();
+        }
         EasyLoading.show(status: "Connecting...");
         widget.handleRegisterCall();
       },
@@ -48,6 +53,10 @@ class _PitelVoipState extends State<PitelVoip> {
 
   void initRegister() async {
     if (Platform.isAndroid) {
+      await FlutterShowWhenLocked().show();
+      setState(() {
+        firstShowLock = true;
+      });
       widget.handleRegister();
     }
   }
