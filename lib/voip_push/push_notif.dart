@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_connection_service.dart';
 
+@pragma('vm:entry-point')
 class PushNotifAndroid {
   static initFirebase({
     FirebaseOptions? options,
@@ -19,7 +20,7 @@ class PushNotifAndroid {
     Function(RemoteMessage message)? onMessageOpenedApp,
     Function(RemoteMessage? message)? getInitialMessage,
   }) async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(options: options);
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     await messaging.requestPermission(
