@@ -2,6 +2,7 @@
 
 > **Warning**
 > IOS only working on real device, not on simulator (Callkit framework not working on simulator)
+> Please renew voip push notification certificate (iOS) once a year on Apple Developer and upload the certificate file to the [portal sdk](https://portal-sdk.tel4vn.com/).
 
 ## Pitel Connect Flow
 
