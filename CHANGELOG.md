@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.10+1
+## 1.0.10+2
 
 - Support full screen intent android 13+.
 - By pass lock screen.

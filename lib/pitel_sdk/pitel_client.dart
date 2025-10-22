@@ -346,7 +346,7 @@ class PitelClient {
   Future<void> logoutExtension(SipInfoData sipInfoData) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("HAS_DEVICE_TOKEN");
-    pitelCall.unregister();
+    // pitelCall.unregister();
 
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     await removeDeviceToken(
