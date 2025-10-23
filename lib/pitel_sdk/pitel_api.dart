@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/get_profile.dart';
 import 'package:flutter_pitel_voip/model/http/get_sip_info.dart';
@@ -158,6 +159,29 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  // Delete Aor
+  @override
+  Future<DeleteAorExtRes> deleteExtRegisterAor({
+    String api = '/pn/tenant/contact/action',
+    required String contact,
+    required String aor,
+    required String tenantName,
+  }) async {
+    final request = DeleteAorExtReq(
+      contact: contact,
+      aor: aor,
+      tenantName: tenantName,
+    );
+
+    try {
+      final response = await _pushNotifService.post(api, null, request.toMap());
+      final deleteAorExtResponse = DeleteAorExtRes.fromMap(response);
+      return deleteAorExtResponse;
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -209,5 +233,12 @@ abstract class PitelApi {
 
   Future<TurnConfigRes> turnConfig({
     String api = '/server/turn',
+  });
+
+  Future<DeleteAorExtRes> deleteExtRegisterAor({
+    String api = '/pn/tenant/contact/action',
+    required String contact,
+    required String aor,
+    required String tenantName,
   });
 }

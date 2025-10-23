@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pitel_voip/config/pitel_config.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/model/pitel_error.dart';
@@ -343,17 +344,57 @@ class PitelClient {
     }
   }
 
-  Future<void> logoutExtension(SipInfoData sipInfoData) async {
+  Future<DeleteAorExtRes?> deleteExtRegisterAor({
+    required SipInfoData sipInfoData,
+    required PnPushParams pnPushParams,
+  }) async {
+    final contactUri =
+        'sip:${sipInfoData.authID}@${sipInfoData.registerServer}:${sipInfoData.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss;name-caller=encode';
+    final aor = '${sipInfoData.authID}@${sipInfoData.registerServer}';
+    final tenantName = sipInfoData.registerServer;
+    try {
+      final response = await _pitelApi.deleteExtRegisterAor(
+        contact: contactUri,
+        aor: aor,
+        tenantName: tenantName,
+      );
+      return response;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  Future<String> logoutExtension({
+    required SipInfoData sipInfoData,
+    required PushNotifParams pushNotifParams,
+  }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("HAS_DEVICE_TOKEN");
     // pitelCall.unregister();
 
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+    final fcmToken = await PushVoipNotif.getFCMToken();
+
+    final pnPushParams = PnPushParams(
+      pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
+      pnParam: Platform.isAndroid
+          ? pushNotifParams.bundleId
+          : '${pushNotifParams.teamId}.${pushNotifParams.bundleId}.voip',
+      pnPrid: deviceTokenRes,
+      fcmToken: fcmToken,
+    );
+
+    await deleteExtRegisterAor(
+      sipInfoData: sipInfoData,
+      pnPushParams: pnPushParams,
+    );
+
     await removeDeviceToken(
       deviceToken: deviceTokenRes,
       domain: sipInfoData.registerServer,
       extension: sipInfoData.accountName.toString(),
     );
+    return 'UNREGISTER';
   }
 
   // turn config
