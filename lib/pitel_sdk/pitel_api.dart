@@ -147,12 +147,8 @@ class _PitelAPIImplement implements PitelApi {
   @override
   Future<TurnConfigRes> turnConfig({String api = '/server/turn'}) async {
     try {
-      final response = await _pushNotifService.get(
-          api,
-          {
-            HttpHeaders.authorizationHeader: PushNotifService().token,
-          },
-          null);
+      final response = await _pushNotifService.get(api,
+          {HttpHeaders.authorizationHeader: PushNotifService().token}, null);
       final removeTDeviceTokenResponse = TurnConfigRes.fromJson(response);
       return removeTDeviceTokenResponse;
     } catch (err) {
@@ -175,7 +171,10 @@ class _PitelAPIImplement implements PitelApi {
     );
 
     try {
-      final response = await _pushNotifService.post(api, null, request.toMap());
+      final response = await _pushNotifService.post(
+          api,
+          {HttpHeaders.authorizationHeader: PushNotifService().token},
+          request.toMap());
       final deleteAorExtResponse = DeleteAorExtRes.fromMap(response);
       return deleteAorExtResponse;
     } catch (err) {

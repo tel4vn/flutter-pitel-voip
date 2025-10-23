@@ -349,8 +349,8 @@ class PitelClient {
     required PnPushParams pnPushParams,
   }) async {
     final contactUri =
-        'sip:${sipInfoData.authID}@${sipInfoData.registerServer}:${sipInfoData.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss;name-caller=encode';
-    final aor = '${sipInfoData.authID}@${sipInfoData.registerServer}';
+        'sip:${sipInfoData.accountName}@${sipInfoData.registerServer}:${sipInfoData.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss;name-caller=encode';
+    final aor = '${sipInfoData.accountName}@${sipInfoData.registerServer}';
     final tenantName = sipInfoData.registerServer;
     try {
       final response = await _pitelApi.deleteExtRegisterAor(
