@@ -83,6 +83,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
  </manifest>
 ```
 
+- In file `android/app/proguard-rules.pro`. Proguard Rules: The following rule needs to be added in the proguard-rules.pro to avoid obfuscated keys:
+
+```
+# KEEP plugin Android classes
+-keep class com.hiennv.flutter_callkit_incoming.** { *; }
+
+# Keep Gson classes & TypeToken if plugin uses Gson
+-keep class com.google.gson.** { *; }
+-keepclassmembers class com.google.gson.reflect.TypeToken { *; }
+```
+
 #### IOS
 
 - Request permission in file `Info.plist`
