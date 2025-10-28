@@ -23,7 +23,7 @@ dependencies:
   sdp_transform: ^0.3.2
   uuid: ^3.0.2
   dartz: ^0.10.1
-  flutter_callkit_incoming_timer: ^1.0.3+11
+  flutter_callkit_incoming_timer: ^1.0.3+12
   firebase_core: ^3.13.1
   firebase_messaging: ^15.2.6
   device_info_plus: ^11.4.0
