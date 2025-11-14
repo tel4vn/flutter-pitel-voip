@@ -80,8 +80,21 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
  </manifest>
 ```
+
+- Request full screen intent permission (Android 14+)
+
+For Android 14 (API level 34) and above, you need to request the full screen intent permission to show incoming call notifications when the app is locked or in the background:
+
+```dart
+import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
+// Request permission in your app initialization or before making/receiving calls
+await FlutterCallkitIncoming.requestFullIntentPermission();
+```
+
+This permission allows the app to launch a full-screen intent for incoming calls, ensuring users can see and answer calls even when the device is locked.
 
 - In file `android/app/proguard-rules.pro`. Proguard Rules: The following rule needs to be added in the proguard-rules.pro to avoid obfuscated keys:
 

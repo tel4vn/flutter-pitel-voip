@@ -47,18 +47,25 @@ class _PitelVoipState extends State<PitelVoip> {
         pitelCall.hangup();
       },
     );
-    //! WARNING
-    initRegister();
+
+    // Delay initRegister to not block initial frame rendering
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initRegister();
+    });
   }
 
   void initRegister() async {
+    final stopwatch = Stopwatch()..start();
     if (Platform.isAndroid) {
       await FlutterShowWhenLocked().show();
-      setState(() {
-        firstShowLock = true;
-      });
+      if (mounted) {
+        setState(() {
+          firstShowLock = true;
+        });
+      }
       widget.handleRegister();
     }
+    stopwatch.stop();
   }
 
   @override
