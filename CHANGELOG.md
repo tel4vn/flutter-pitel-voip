@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.10+6
+
+- Upgrade AGP.
+- Support flutter 3.38.1
+- Upgrade package logger: ^2.6.2
+
 ## 1.0.10+2
 
 - Support full screen intent android 13+.

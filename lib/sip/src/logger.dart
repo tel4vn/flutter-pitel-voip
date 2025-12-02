@@ -13,25 +13,25 @@ class Log extends Logger {
 
   factory Log.d(String message, [dynamic error, StackTrace? stackTrace]) {
     autoInit();
-    _self!.d(message, error, stackTrace);
+    _self!.d(message, error: error, stackTrace: stackTrace);
     return _self!;
   }
 
   factory Log.i(String message, [dynamic error, StackTrace? stackTrace]) {
     autoInit();
-    _self!.i(message, error, stackTrace);
+    _self!.i(message, error: error, stackTrace: stackTrace);
     return _self!;
   }
 
   factory Log.w(String message, [dynamic error, StackTrace? stackTrace]) {
     autoInit();
-    _self!.w(message, error, stackTrace);
+    _self!.w(message, error: error, stackTrace: stackTrace);
     return _self!;
   }
 
   factory Log.e(String message, [dynamic error, StackTrace? stackTrace]) {
     autoInit();
-    _self!.e(message, error, stackTrace);
+    _self!.e(message, error: error, stackTrace: stackTrace);
     return _self!;
   }
 
@@ -62,11 +62,11 @@ class Log extends Logger {
 
   static void autoInit() {
     if (_self == null) {
-      init('.');
+      initialize('.');
     }
   }
 
-  static void init(String currentWorkingDirectory) {
+  static void initialize(String currentWorkingDirectory) {
     _self = Log._internal(currentWorkingDirectory);
 
     StackTraceNJ frames = StackTraceNJ();
