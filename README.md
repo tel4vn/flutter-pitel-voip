@@ -221,20 +221,20 @@ Widget build(BuildContext context) {
 Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 button to fill data to register extension.
 
 ```dart
-ElevatedButton(
+      ElevatedButton(
         onPressed: () asyns {
           final PushNotifParams pushNotifParams = PushNotifParams(
-            teamId: '${apple_team_id}',
-            bundleId: '${bundle_id}',
+            teamId: '${APPLE_TEAM_ID}',
+            bundleId: '${BUNDLE_ID}',
           );
           final sipInfoData = SipInfoData.fromJson({
+            "accountName": "${Extension}",      // Example 101
             "authPass": "${Password}",
             "registerServer": "${Domain}",
-            "outboundServer": "${Outbound Proxy}",
-            "port": PORT,
-            "accountName": "${UUser}",      // Example 101
-            "displayName": "${Display Name}",
-            "wssUrl": "${URL WSS}"
+            "outboundServer": "${Domain}",
+            "port": PORT,                       // Default 50061
+            "displayName": "${Display Name}",   // John, Kate
+            "wssUrl": "${WSS Mobile}"
           });
 
           final pitelClient = PitelServiceImpl();
@@ -243,13 +243,26 @@ ElevatedButton(
           // Example riverpod
           // ref.read(pitelSettingProvider.notifier).state = pitelSettingRes;
         },
-        child: const Text("Register"),),
+        child: const Text("Register"),
+      ),
 ```
+
+| Prop           | Description            | Type   | Default  |
+| -------------- | ---------------------- | ------ | -------- |
+| accountName    | Extension number       | String | Required |
+| authPass       | Extension password     | String | Required |
+| registerServer | Sip domain             | String | Required |
+| outboundServer | Sip domain             | String | Required |
+| port           | Port                   | String | Required |
+| displayName    | Extension display name | String | Required |
 
 - Logout extension
 
 ```dart
-pitelClient.logoutExtension(sipInfoData);
+await pitelClient.logoutExtension(
+  sipInfoData: sipInfoData,
+  pushNotifParams: pushNotifParams,
+);
 ```
 
 - In file `call_screen.dart`
