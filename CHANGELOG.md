@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.10+7
+
+- Improve content-length handling in SIP message parsing.
+- Simplify display name assignment and clean up debug logs in RTCSession.
+
 ## 1.0.10+6
 
 - Upgrade AGP.
