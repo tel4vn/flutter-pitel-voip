@@ -39,18 +39,16 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     implements SipPitelHelperListener {
   PitelCall get pitelCall => widget._pitelCall;
   PitelClient pitelClient = PitelClient.getInstance();
-  String state = '';
 
   @override
   initState() {
     super.initState();
-    state = pitelCall.getRegisterState();
     _bindEventListeners();
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
+  void dispose() {
+    super.dispose();
     _removeEventListeners();
   }
 
@@ -69,8 +67,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
@@ -92,6 +88,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       pitelCall.setIsHoldCall(true);
+      if (pitelCall.direction == 'INCOMING') {
+        widget.goToCall();
+      }
       if (Platform.isAndroid) {
         Eraser.clearAllAppNotifications();
       }
@@ -104,49 +103,37 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
-    //! Back up
     if (Platform.isIOS) {
       pitelCall.answer();
     }
-    widget.goToCall();
   }
 
   @override
   void onCallInitiated(String callId) {
     pitelCall.setCallCurrent(callId);
-    widget.goToCall();
-  }
-
-  void goToBack() {
-    pitelClient.release();
-    widget.goBack();
+    if (mounted) {
+      widget.goToCall();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: widget.child,
-    );
+    return widget.child;
   }
 
   // STATUS: check register status
   @override
   void registrationStateChanged(PitelRegistrationState state) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     switch (state.state) {
       case PitelRegistrationStateEnum.registrationFailed:
         pitelCall.resetOutPhone();
         break;
       case PitelRegistrationStateEnum.none:
       case PitelRegistrationStateEnum.unregistered:
-        prefs.setString("REGISTER_STATE", "UNREGISTERED");
         widget.onRegisterState("UNREGISTERED");
-        //! WARNING
         // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
-        EasyLoading.dismiss();
         if (pitelCall.outPhone.isNotEmpty) {
           pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
@@ -160,9 +147,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         if (Platform.isIOS) {
           FlutterCallkitIncoming.startIncomingCall();
         }
-        prefs.setString("REGISTER_STATE", "REGISTERED");
         widget.onRegisterState("REGISTERED");
         _registerExtSuccess();
+        await EasyLoading.dismiss();
         break;
     }
   }
