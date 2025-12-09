@@ -106,9 +106,10 @@ IncomingMessage? parseMessage(String data, PitelUA? ua) {
 
     if (headerContentLength > 0) {
       List<int> actualContent = utf8.encode(data.substring(bodyStart));
-      if (headerContentLength != actualContent.length)
+      if (headerContentLength != actualContent.length) {
         logger.w(
             '${message.method} received with content-length: $headerContentLength but actual length is: ${actualContent.length}');
+      }
       List<int> encodedBody = utf8.encode(data.substring(bodyStart));
       List<int> content = encodedBody.sublist(0, actualContent.length);
       message.body = utf8.decode(content);
