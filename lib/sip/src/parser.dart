@@ -79,17 +79,38 @@ IncomingMessage? parseMessage(String data, PitelUA? ua) {
    * If there are additional bytes in the transport packet
    * beyond the end of the body, they MUST be discarded.
    */
-  if (message.hasHeader('content-length')) {
-    dynamic contentLength = message.getHeader('content-length');
+  // if (message.hasHeader('content-length')) {
+  //   dynamic contentLength = message.getHeader('content-length');
 
-    if (contentLength is String) {
-      contentLength = int.tryParse(contentLength) ?? 0;
+  //   if (contentLength is String) {
+  //     contentLength = int.tryParse(contentLength) ?? 0;
+  //   }
+  //   contentLength ??= 0;
+  //   if (contentLength > 0) {
+  //     List<int> encoded = utf8.encode(data);
+  //     List<int> content =
+  //         encoded.sublist(bodyStart, bodyStart + contentLength as int);
+  //     message.body = utf8.decode(content);
+  //   }
+  // } else {
+  //   message.body = data.substring(bodyStart);
+  // }
+
+  if (message.hasHeader('content-length')) {
+    dynamic headerContentLength = message.getHeader('content-length');
+
+    if (headerContentLength is String) {
+      headerContentLength = int.tryParse(headerContentLength) ?? 0;
     }
-    contentLength ??= 0;
-    if (contentLength > 0) {
-      List<int> encoded = utf8.encode(data);
-      List<int> content =
-          encoded.sublist(bodyStart, bodyStart + contentLength as int);
+    headerContentLength ??= 0;
+
+    if (headerContentLength > 0) {
+      List<int> actualContent = utf8.encode(data.substring(bodyStart));
+      if (headerContentLength != actualContent.length)
+        logger.w(
+            '${message.method} received with content-length: $headerContentLength but actual length is: ${actualContent.length}');
+      List<int> encodedBody = utf8.encode(data.substring(bodyStart));
+      List<int> content = encodedBody.sublist(0, actualContent.length);
       message.body = utf8.decode(content);
     }
   } else {

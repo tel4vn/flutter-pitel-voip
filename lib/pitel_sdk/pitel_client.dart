@@ -101,10 +101,14 @@ class PitelClient {
     settings.password = _password;
     final bytes = utf8.encode(_displayName);
     final base64Str = base64.encode(bytes);
-    settings.displayName = "${base64Str}pitelsdkencode";
+    // settings.displayName = "${base64Str}pitelsdkencode";
+    settings.displayName = "Quỳnh Hương";
+    // settings.displayName = "Quynh Huong";
     settings.userAgent = _userAgent;
     settings.register_expires = 600;
     settings.dtmfMode = DtmfMode.RFC2833;
+
+    print('===============_displayName==========$_displayName===1====');
     if (turn != null) {
       Map turnDecode = jsonDecode(jsonEncode(turn.data));
       Map<String, String> turnLast =

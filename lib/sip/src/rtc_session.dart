@@ -2315,6 +2315,8 @@ class RTCSession extends EventManager {
   /// Reception of Response for Initial INVITE
   void _receiveInviteResponse(IncomingResponse? response) async {
     logger.debug('receiveInviteResponse()');
+    inspect(response);
+    logger.error("response===: ${response.toString()}");
 
     /// Handle 2XX retransmissions and responses from forked requests.
     if (_dialog != null &&
@@ -2444,13 +2446,33 @@ class RTCSession extends EventManager {
       }
 
       try {
+        inspect(answer);
+        log('================DEBUG START================');
+        log('response.body (SDP from server): ${response.body}');
+        log('response.body == null: ${response.body == null}');
+        log('response.body.isEmpty: ${response.body?.isEmpty}');
+        log('answer.sdp: ${answer.sdp}');
+        log('answer.type: ${answer.type}');
+        log('_connection signalingState: ${_connection?.signalingState}');
+        log('_connection != null: ${_connection != null}');
+        inspect(_connection);
+        log('================DEBUG END================');
+
         await _connection!.setRemoteDescription(answer);
         // Handle Session Timers.
         _handleSessionTimersInIncomingResponse(response);
         _accepted('remote', response);
         OutgoingRequest ack = sendRequest(SipMethod.ACK);
         _confirmed('local', ack);
-      } catch (error) {
+      } catch (error, stackTrace) {
+        log('================ERROR DETAILS================');
+        log('Error: ${error.toString()}');
+        log('Error type: ${error.runtimeType}');
+        log('Stack trace: $stackTrace');
+        log('response.body when error: ${response.body}');
+        log('answer.sdp when error: ${answer.sdp}');
+        log('================ERROR END================');
+
         _acceptAndTerminate(response, 488, 'Not Acceptable Here');
         _failed('remote', null, null, response, 488,
             DartSIP_C.CausesType.BAD_MEDIA_DESCRIPTION, 'Not Acceptable Here');
