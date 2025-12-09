@@ -11,17 +11,19 @@ import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/model/pitel_error.dart';
 import 'package:flutter_pitel_voip/model/sip_server.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_api.dart';
-import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
-import 'package:flutter_pitel_voip/services/models/pn_push_params.dart';
-import 'package:flutter_pitel_voip/sip/src/sip_ua_helper.dart';
-import 'package:flutter_pitel_voip/voip_push/device_information.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pitel_profile.dart';
 
+/// The main client class for Pitel VoIP SDK.
+///
+/// This class provides methods to manage SIP registration, authentication,
+/// and VoIP call operations. Use [getInstance] to access the singleton instance.
 class PitelClient {
   static PitelClient? _pitelClient;
+
+  /// Returns the singleton instance of [PitelClient].
   static PitelClient getInstance() {
     _pitelClient ??= PitelClient();
     return _pitelClient!;
@@ -43,7 +45,7 @@ class PitelClient {
   final PitelLog _logger = PitelLog(tag: 'PitelClient');
   final PitelCall pitelCall = PitelCall();
 
-  final String wssTest = 'wss://sbc03.tel4vn.com:7444';
+  final String wssTest = 'wss://wss.test.com:7444';
   final String domainTest = 'pi0003.tel4vn.com';
   final int portTest = 5060;
   final String usernameTest = '103';
@@ -51,6 +53,9 @@ class PitelClient {
 
   final bool isTest = false;
 
+  /// Registers the SIP account with optional FCM token for push notifications.
+  ///
+  /// Returns `true` if registration is successful, `false` otherwise.
   bool _registerSip({String? fcmToken}) {
     if (_sipServer != null) {
       final settings = PitelSettings();
@@ -81,6 +86,12 @@ class PitelClient {
     }
   }
 
+  /// Registers SIP account with custom push notification parameters.
+  ///
+  /// This method configures SIP settings without using FCM token directly,
+  /// instead using custom [PnPushParams] for push notification configuration.
+  ///
+  /// Returns a [Future] that completes with [PitelSettings] object.
   Future<PitelSettings> registerSipWithoutFCM(PnPushParams pnPushParams) async {
     final settings = PitelSettings();
     Map<String, String> _wsExtraHeaders = {

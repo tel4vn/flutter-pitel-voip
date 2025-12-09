@@ -114,6 +114,12 @@ class _MyCallPageWidget extends State<CallPageWidget>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    FlutterCallkitIncoming.endAllCalls();
+  }
+
+  @override
   deactivate() {
     super.deactivate();
     _handleHangup();
@@ -433,15 +439,19 @@ class _MyCallPageWidget extends State<CallPageWidget>
         break;
       case PitelCallStateEnum.CONNECTING:
       case PitelCallStateEnum.PROGRESS:
+        setState(() {
+          _callId = callId;
+        });
+        break;
       case PitelCallStateEnum.CONFIRMED:
         setState(() {
           _callId = callId;
+          isStartTimer = true;
         });
         break;
       case PitelCallStateEnum.ACCEPTED:
         setState(() {
           _callId = callId;
-          isStartTimer = true;
         });
         break;
       case PitelCallStateEnum.NONE:

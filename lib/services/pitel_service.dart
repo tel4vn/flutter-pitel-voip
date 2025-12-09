@@ -3,21 +3,33 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 
+/// Implementation of [PitelService] interface.
+///
+/// This class provides concrete implementations for Pitel VoIP service operations
+/// and listens to SIP helper events.
 class PitelServiceImpl implements PitelService, SipPitelHelperListener {
   final pitelClient = PitelClient.getInstance();
 
   SipInfoData? sipInfoData;
 
+  /// Creates an instance of [PitelServiceImpl] and registers as a listener.
   PitelServiceImpl() {
     pitelClient.pitelCall.addListener(this);
   }
 
   @override
+
+  /// Registers SIP account using custom push notification parameters.
   Future<PitelSettings> registerSipWithoutFCM(PnPushParams pnPushParams) {
     return pitelClient.registerSipWithoutFCM(pnPushParams);
   }
 
   @override
+
+  /// Configures SIP extension information with push notification settings.
+  ///
+  /// Takes [sipInfoData] for SIP account details and [pushNotifParams] for
+  /// push notification configuration. Returns configured [PitelSettings].
   Future<PitelSettings> setExtensionInfo(
     SipInfoData sipInfoData,
     PushNotifParams pushNotifParams,
