@@ -20,6 +20,10 @@ import 'pitel_client.dart';
 
 final thr = Throttling(duration: const Duration(milliseconds: 2000));
 
+/// Manages VoIP call operations including audio/video handling, call states,
+/// and media stream management.
+///
+/// This class implements [SipUaHelperListener] to handle SIP user agent events.
 class PitelCall implements SipUaHelperListener {
   final PitelLog _logger = PitelLog(tag: 'PitelCall');
   PitelRTCVideoRenderer? _localRenderer;
@@ -36,10 +40,19 @@ class PitelCall implements SipUaHelperListener {
   String? _holdOriginator;
   bool _isListen = false;
 
+  /// Returns the local media stream for the current call.
   MediaStream? get localStream => _localStream;
+
+  /// Returns the remote media stream for the current call.
   MediaStream? get remoteStream => _remoteStream;
+
+  /// Returns the local video renderer.
   PitelRTCVideoRenderer? get localRenderer => _localRenderer;
+
+  /// Returns the remote video renderer.
   PitelRTCVideoRenderer? get remoteRenderer => _remoteRenderer;
+
+  /// Returns the remote party's SIP identity.
   String? get remoteIdentity => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_identity
       : "";
@@ -49,12 +62,26 @@ class PitelCall implements SipUaHelperListener {
   String? get remoteDisplayName => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_display_name
       : "";
+
+  /// Returns `true` if video is turned off.
   bool get videoIsOff => _videoIsOff;
+
+  /// Returns `true` if audio is muted.
   bool get audioMuted => _audioMuted;
+
+  /// Returns `true` if call is on hold.
   bool get holdCall => _holdCall;
+
+  /// Returns `true` if call is being held.
   bool get isHoldCall => _isHoldCall;
+
+  /// Returns the originator of the hold action.
   String? get holdOriginator => _holdOriginator;
+
+  /// Returns `true` if SIP UA is connected.
   bool get isConnected => _sipuaHelper.connected;
+
+  /// Returns `true` if there is an active call.
   bool get isHaveCall => _callIdCurrent?.isNotEmpty ?? false;
   String? _callIdCurrent;
   bool isBusy = false;
@@ -71,32 +98,39 @@ class PitelCall implements SipUaHelperListener {
 
   final checkIsNumber = RegExp(r'^[+,*]?\d+[#]?$');
 
+  /// Sets the hold call state.
   void setIsHoldCall(bool value) {
     _isHoldCall = value;
     _holdCall = false;
   }
 
+  /// Resets the outgoing phone number.
   void resetOutPhone() {
     _outPhone = "";
   }
 
+  /// Resets the caller's name.
   void resetNameCaller() {
     _nameCaller = "";
   }
 
+  /// Resets the connectivity status.
   void resetConnectivity() {
     _checkConnectivity = [ConnectivityResult.none];
   }
 
+  /// Sets the current call ID.
   void setCallCurrent(String? id) {
     _callIdCurrent = id;
   }
 
+  /// Initializes the local video renderer.
   Future<void> initializeLocal() async {
     _localRenderer ??= PitelRTCVideoRenderer();
     await _localRenderer?.initialize();
   }
 
+  /// Initializes the remote video renderer.
   Future<void> initializeRemote() async {
     _remoteRenderer ??= PitelRTCVideoRenderer();
     await _remoteRenderer?.initialize();
