@@ -6,7 +6,6 @@ import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -155,11 +154,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   }
 
   void _registerExtSuccess() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final hasDeviceToken = prefs.getBool("HAS_DEVICE_TOKEN");
-    if (hasDeviceToken == true) return;
-    prefs.setBool("HAS_DEVICE_TOKEN", true);
-
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     final fcmToken = await PushVoipNotif.getFCMToken();
     final appModeStatus = widget.appMode.isNotEmpty

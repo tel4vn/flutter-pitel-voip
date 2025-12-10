@@ -12,7 +12,7 @@ import 'package:flutter_pitel_voip/model/pitel_error.dart';
 import 'package:flutter_pitel_voip/model/sip_server.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_api.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_pitel_voip/version.dart';
 
 import 'pitel_profile.dart';
 
@@ -134,7 +134,7 @@ class PitelClient {
     final String userAgentInit = extensionResponse.sipServer.userAgent ?? '';
     final String userAgentConvert = userAgentInit.isNotEmpty
         ? userAgentInit
-        : 'Flutter SDK: Pitel Connect v1.0.6';
+        : 'Flutter Pitel VoIP v${kPackageVersion}';
 
     _sipServer = extensionResponse.sipServer;
     _username = extensionResponse.username;
@@ -377,10 +377,6 @@ class PitelClient {
     required SipInfoData sipInfoData,
     required PushNotifParams pushNotifParams,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("HAS_DEVICE_TOKEN");
-    // pitelCall.unregister();
-
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     final fcmToken = await PushVoipNotif.getFCMToken();
 

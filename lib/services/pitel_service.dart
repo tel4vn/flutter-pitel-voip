@@ -34,13 +34,6 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     SipInfoData sipInfoData,
     PushNotifParams pushNotifParams,
   ) async {
-    //! WARNING: solution 2
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final sipInfoEncode = jsonEncode(sipInfoData);
-    // final pnPushParamsEncode = jsonEncode(pnPushParams);
-    // await prefs.setString("SIP_INFO_DATA", sipInfoEncode);
-    // await prefs.setString("PN_PUSH_PARAMS", pnPushParamsEncode);
-
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     final fcmToken = await PushVoipNotif.getFCMToken();
 

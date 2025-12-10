@@ -2858,7 +2858,6 @@ class RTCSession extends EventManager {
         if (_sessionTimers.refreshMethod == SipMethod.UPDATE) {
           _sendUpdate();
         } else {
-          print('================here=========1=======');
           _sendReinvite();
         }
       }, expires! * 500); // Half the given interval (as the RFC states).
