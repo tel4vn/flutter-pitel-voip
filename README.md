@@ -259,7 +259,10 @@ Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 b
 - Logout extension
 
 ```dart
-pitelClient.logoutExtension(sipInfoData);
+await pitelClient.logoutExtension(
+  sipInfoData: sipInfoData,
+  pushNotifParams: pushNotifParams,
+);
 ```
 
 - In file `call_screen.dart`
