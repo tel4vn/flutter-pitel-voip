@@ -24,6 +24,11 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 - Turn on/off micro
 - Turn on/of speaker
 
+## Summary
+
+- [Config Pushkit](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md).
+- [Portal Guide](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PORTAL_GUIDE.md).
+
 ## Installation
 
 1. Install Packages
@@ -326,14 +331,14 @@ pitelCall.outGoingCall(
 
 ## How to test
 
-Using tryit to test voip call connection & conversation
+Using tryit to test voip call connection & conversation. Login 1 extension in tryit, 1 extension in mobile app to test voip call connection & conversation
 Link: https://tryit.jssip.net/
 Setting:
 
 1. Access to link https://tryit.jssip.net/
 2. Enter extension: example 102
 3. Click Setting icon
-4. Enter information to input field
+4. Enter your information to input field. Note: please use WSS Web (don't use WSS Mobile) to login tryit.
    ![tryit](assets/images/pitel_img_3.png)
 5. Save
 6. Click icon -> to connect
