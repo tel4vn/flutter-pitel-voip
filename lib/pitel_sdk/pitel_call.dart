@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_pitel_voip/sip/src/enum_helper.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
 import 'package:flutter_pitel_voip/component/pitel_rtc_video_renderer.dart';
@@ -32,7 +33,9 @@ class PitelCall implements SipUaHelperListener {
   MediaStream? _remoteStream;
   final List<SipPitelHelperListener> _sipPitelHelperListener = [];
   final Map<String, PitelCallState> _states = {};
-  final PitelUAHelper _sipuaHelper = PitelUAHelper();
+  // TODO: 3
+  // final PitelUAHelper _sipuaHelper = PitelUAHelper();
+  final SIPUAHelper _sipuaHelper = SIPUAHelper();
   bool _audioMuted = false;
   bool _isHoldCall = false;
   bool _videoIsOff = false;
@@ -57,7 +60,7 @@ class PitelCall implements SipUaHelperListener {
       ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_identity
       : "";
   String? get direction => _callIdCurrent != null
-      ? _sipuaHelper.findCall(_callIdCurrent!)?.direction
+      ? _sipuaHelper.findCall(_callIdCurrent!)?.direction.toString()
       : "";
   String? get remoteDisplayName => _callIdCurrent != null
       ? _sipuaHelper.findCall(_callIdCurrent!)?.remote_display_name
@@ -195,12 +198,14 @@ class PitelCall implements SipUaHelperListener {
     switch (pitelCallState.state) {
       case PitelCallStateEnum.CALL_INITIATION:
         switch (call.direction) {
-          case 'OUTGOING':
+          // case 'OUTGOING':
+          case Direction.outgoing:
             for (var element in _sipPitelHelperListener) {
               element.onCallInitiated(call.id!);
             }
             break;
-          case 'INCOMING':
+          // case 'INCOMING':
+          case Direction.incoming:
             for (var element in _sipPitelHelperListener) {
               if (isBusy) {
                 _releaseCall(callId: call.id);
@@ -209,12 +214,16 @@ class PitelCall implements SipUaHelperListener {
               }
             }
             break;
+          case null:
+            // TODO: Handle this case.
+            break;
         }
         break;
       case PitelCallStateEnum.HOLD:
       case PitelCallStateEnum.UNHOLD:
         _holdCall = pitelCallState.state == PitelCallStateEnum.HOLD;
-        _holdOriginator = pitelCallState.originator;
+        // TODO: 3
+        _holdOriginator = pitelCallState.originator.toString();
         // for (var element in _sipPitelHelperListener) {
         //   element.callStateChanged(call.id!, pitelCallState);
         // }
@@ -226,15 +235,15 @@ class PitelCall implements SipUaHelperListener {
         }
         break;
       case PitelCallStateEnum.MUTED:
-        if (pitelCallState.audio) _audioMuted = true;
-        if (pitelCallState.video) _videoIsOff = true;
+        if (pitelCallState.audio == true) _audioMuted = true;
+        if (pitelCallState.video == true) _videoIsOff = true;
         for (var element in _sipPitelHelperListener) {
           element.callStateChanged(call.id!, pitelCallState);
         }
         break;
       case PitelCallStateEnum.UNMUTED:
-        if (pitelCallState.audio) _audioMuted = false;
-        if (pitelCallState.video) _videoIsOff = false;
+        if (pitelCallState.audio == true) _audioMuted = false;
+        if (pitelCallState.video == true) _videoIsOff = false;
         for (var element in _sipPitelHelperListener) {
           element.callStateChanged(call.id!, pitelCallState);
         }
@@ -516,7 +525,7 @@ class PitelCall implements SipUaHelperListener {
   }
 
   Future<bool> call(String dest, [bool voiceonly = true]) async {
-    return _sipuaHelper.call(dest, voiceonly: voiceonly);
+    return _sipuaHelper.call(dest, voiceOnly: voiceonly);
   }
 
   bool hangup({String? callId}) {
@@ -568,7 +577,11 @@ class PitelCall implements SipUaHelperListener {
   void onNewMessage(SIPMessageRequest msg) {
     for (var element in _sipPitelHelperListener) {
       final message = PitelSIPMessageRequest(
-          msg.message!, msg.originator ?? "", msg.request);
+          // TODO: 3
+          // msg.message!, msg.originator ?? "", msg.request);
+          msg.message!,
+          msg.originator!,
+          msg.request);
       element.onNewMessage(message);
     }
   }
@@ -692,5 +705,15 @@ class PitelCall implements SipUaHelperListener {
   void _dismissLoading() async {
     await Future.delayed(const Duration(seconds: 10));
     EasyLoading.dismiss();
+  }
+
+  @override
+  void onNewNotify(Notify ntf) {
+    // TODO: implement onNewNotify
+  }
+
+  @override
+  void onNewReinvite(ReInvite event) {
+    // TODO: implement onNewReinvite
   }
 }

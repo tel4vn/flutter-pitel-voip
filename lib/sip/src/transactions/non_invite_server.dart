@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter_pitel_voip/sip/src/sip_message.dart';
+
 import '../event_manager/internal_events.dart';
 import '../logger.dart';
-import '../sip_message.dart';
+import '../socket_transport.dart';
 import '../timers.dart';
-import '../transport.dart';
 import '../ua.dart';
 import 'transaction_base.dart';
 
 class NonInviteServerTransaction extends TransactionBase {
   NonInviteServerTransaction(
-      PitelUA ua, Transport? transport, IncomingRequest request) {
+      UA ua, SocketTransport? transport, IncomingRequest request) {
     id = request.via_branch;
     this.ua = ua;
     this.transport = transport;
@@ -31,9 +32,9 @@ class NonInviteServerTransaction extends TransactionBase {
   }
 
   void timer_J() {
-    logger.debug('Timer J expired for transaction $id');
+    logger.d('Timer J expired for transaction $id');
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
   }
 
   @override
@@ -41,11 +42,11 @@ class NonInviteServerTransaction extends TransactionBase {
     if (transportError == null) {
       transportError = true;
 
-      logger.debug('transport error occurred, deleting transaction $id');
+      logger.d('transport error occurred, deleting transaction $id');
 
       clearTimeout(J);
       stateChanged(TransactionState.TERMINATED);
-      ua!.destroyTransaction(this);
+      ua.destroyTransaction(this);
     }
   }
 

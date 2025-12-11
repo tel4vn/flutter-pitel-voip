@@ -1,11 +1,10 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import '../logger.dart';
 import 'events.dart';
 
 export 'call_events.dart';
 export 'events.dart';
 export 'message_events.dart';
+export 'options_events.dart';
 export 'refer_events.dart';
 export 'register_events.dart';
 export 'transport_events.dart';
@@ -70,16 +69,16 @@ class EventManager {
       targets.remove(listener);
       targets.add(listener);
     } catch (e, s) {
-      logger.error(e.toString(), null, s);
+      logger.e(e.toString(), error: e, stackTrace: s);
     }
   }
 
   /// add all event handlers from an other instance of EventManager to this one.
   void addAllEventHandlers(EventManager other) {
     other.listeners.forEach((Type runtimeType, List<dynamic> otherListeners) {
-      otherListeners.forEach((dynamic otherListener) {
+      for (dynamic otherListener in otherListeners) {
         _addListener(runtimeType, otherListener);
-      });
+      }
     });
   }
 
@@ -89,9 +88,9 @@ class EventManager {
     if (targets == null) {
       return;
     }
-    //    logger.warn("removing $eventType on $listener");
+    //    logger.w("removing $eventType on $listener");
     if (!targets.remove(listener)) {
-      logger.warn('Failed to remove any listeners for EventType $eventType');
+      logger.w('Failed to remove any listeners for EventType $eventType');
     }
   }
 
@@ -104,14 +103,14 @@ class EventManager {
       // avoid concurrent modification
       List<dynamic> copy = List<dynamic>.from(targets);
 
-      copy.forEach((dynamic target) {
+      for (dynamic target in copy) {
         try {
-          //   logger.warn("invoking $event on $target");
+          //   logger.w("invoking $event on $target");
           target(event);
         } catch (e, s) {
-          logger.error(e.toString(), null, s);
+          logger.e(e.toString(), error: e, stackTrace: s);
         }
-      });
+      }
     }
   }
 }

@@ -2,9 +2,9 @@ import 'constants.dart' as DartSIP_C;
 import 'constants.dart';
 import 'logger.dart';
 import 'sip_message.dart';
+import 'socket_transport.dart';
 import 'transactions/invite_server.dart';
 import 'transactions/non_invite_server.dart';
-import 'transport.dart';
 import 'ua.dart';
 import 'utils.dart' as Utils;
 
@@ -27,10 +27,10 @@ const List<bool Function()> responses = <bool Function()>[
 
 // local variables.
 late IncomingMessage message;
-late PitelUA ua;
-late Transport transport;
+late UA ua;
+late SocketTransport transport;
 
-bool sanityCheck(IncomingMessage m, PitelUA u, Transport t) {
+bool sanityCheck(IncomingMessage m, UA u, SocketTransport t) {
   message = m;
   ua = u;
   transport = t;
@@ -91,7 +91,7 @@ bool rfc3261_8_2_2_1() {
 
 bool rfc3261_16_3_4() {
   if (message.to_tag == null) {
-    if (message.call_id!.substring(0, 5) == ua.configuration!.jssip_id) {
+    if (message.call_id!.substring(0, 5) == ua.configuration.jssip_id) {
       reply(482);
 
       return false;
@@ -101,7 +101,7 @@ bool rfc3261_16_3_4() {
 }
 
 bool rfc3261_18_3_request() {
-  int len = Utils.strUtf8Length(message.body!);
+  int len = Utils.str_utf8_length(message.body!);
   dynamic contentLength = message.getHeader('content-length');
 
   if (contentLength != null && contentLength is String) {
@@ -181,7 +181,7 @@ bool rfc3261_8_2_2_2() {
 // Sanity Check functions for responses.
 bool rfc3261_8_1_3_3() {
   if (message.getHeaders('via').length > 1) {
-    logger.debug(
+    logger.d(
         'more than one Via header field present in the response, dropping the response');
 
     return false;
@@ -190,7 +190,7 @@ bool rfc3261_8_1_3_3() {
 }
 
 bool rfc3261_18_3_response() {
-  int len = Utils.strUtf8Length(message.body!);
+  int len = Utils.str_utf8_length(message.body!);
   // ignore: always_specify_types
   var contentLength = message.getHeader('content-length');
 
@@ -201,7 +201,7 @@ bool rfc3261_18_3_response() {
   }
 
   if (len < contentLength) {
-    logger.debug(
+    logger.d(
         'message body length is lower than the value in Content-Length header field, dropping the response');
 
     return false;
@@ -222,8 +222,8 @@ bool minimumHeaders() {
 
   for (String header in mandatoryHeaders) {
     if (!message.hasHeader(header)) {
-      logger.debug(
-          'missing mandatory header field : $header, dropping the response');
+      logger
+          .d('missing mandatory header field : $header, dropping the response');
 
       return false;
     }

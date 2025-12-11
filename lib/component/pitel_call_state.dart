@@ -22,19 +22,20 @@ enum PitelRegistrationStateEnum {
 extension RegistrationStateEnumExt on RegistrationStateEnum {
   PitelRegistrationStateEnum convertToPitelRegistrationStateEnum() {
     switch (this) {
-      case RegistrationStateEnum.none:
+      case RegistrationStateEnum.NONE:
         return PitelRegistrationStateEnum.none;
-      case RegistrationStateEnum.registered:
-        return PitelRegistrationStateEnum.registered;
-      case RegistrationStateEnum.registrationFailed:
+      case RegistrationStateEnum.REGISTRATION_FAILED:
         return PitelRegistrationStateEnum.registrationFailed;
-      case RegistrationStateEnum.unregistered:
+      case RegistrationStateEnum.REGISTERED:
+        return PitelRegistrationStateEnum.registered;
+      case RegistrationStateEnum.UNREGISTERED:
         return PitelRegistrationStateEnum.unregistered;
     }
   }
 }
 
 class PitelSIPMessageRequest extends SIPMessageRequest {
-  PitelSIPMessageRequest(Message message, String originator, dynamic request)
+  PitelSIPMessageRequest(
+      Message message, Originator originator, dynamic request)
       : super(message, originator, request);
 }

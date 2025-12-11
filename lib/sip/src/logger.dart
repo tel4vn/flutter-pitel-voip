@@ -1,90 +1,33 @@
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
-import 'enum_helper.dart';
 import 'stack_trace_nj.dart';
 
-final Log logger = Log();
+Logger logger = Log();
 
 class Log extends Logger {
-  Log();
-  Log._internal(String currentWorkingDirectory)
-      : super(printer: MyLogPrinter(currentWorkingDirectory));
-
-  factory Log.d(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    _self!.d(message, error: error, stackTrace: stackTrace);
-    return _self!;
-  }
-
-  factory Log.i(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    _self!.i(message, error: error, stackTrace: stackTrace);
-    return _self!;
-  }
-
-  factory Log.w(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    _self!.w(message, error: error, stackTrace: stackTrace);
-    return _self!;
-  }
-
-  factory Log.e(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    _self!.e(message, error: error, stackTrace: stackTrace);
-    return _self!;
-  }
-
-  static Log? _self;
-  static late String _localPath;
-  static Level _loggingLevel = Level.debug;
-  static set loggingLevel(Level loggingLevel) => _loggingLevel = loggingLevel;
-
-  void debug(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    Log.d(message, error, stackTrace);
-  }
-
-  void info(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    Log.i(message, error, stackTrace);
-  }
-
-  void warn(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    Log.w(message, error, stackTrace);
-  }
-
-  void error(String message, [dynamic error, StackTrace? stackTrace]) {
-    autoInit();
-    Log.e(message, error, stackTrace);
-  }
-
-  static void autoInit() {
-    if (_self == null) {
-      initialize('.');
-    }
-  }
-
-  static void initialize(String currentWorkingDirectory) {
-    _self = Log._internal(currentWorkingDirectory);
-
+  Log() : super(printer: MyLogPrinter('.')) {
     StackTraceNJ frames = StackTraceNJ();
 
-    if (frames.frames != null)
+    if (frames.frames != null) {
       for (Stackframe frame in frames.frames!) {
         _localPath = frame.sourceFile.path
             .substring(frame.sourceFile.path.lastIndexOf('/'));
         break;
       }
+    }
   }
+
+  static late String _localPath;
+  static Level _loggingLevel = Level.debug;
+  static set loggingLevel(Level loggingLevel) => _loggingLevel = loggingLevel;
 }
 
 class MyLogPrinter extends LogPrinter {
   MyLogPrinter(this.currentWorkingDirectory);
 
   static final Map<Level, AnsiColor> levelColors = <Level, AnsiColor>{
-    Level.verbose: AnsiColor.fg(AnsiColor.grey(0.5)),
+    Level.trace: AnsiColor.fg(AnsiColor.grey(0.5)),
     Level.debug: AnsiColor.none(),
     Level.info: AnsiColor.fg(12),
     Level.warning: AnsiColor.fg(208),
@@ -97,8 +40,7 @@ class MyLogPrinter extends LogPrinter {
 
   @override
   List<String> log(LogEvent event) {
-    if (EnumHelper.getIndexOf(Level.values, Log._loggingLevel) >
-        EnumHelper.getIndexOf(Level.values, event.level)) {
+    if (Log._loggingLevel.index > event.level.index) {
       // don't log events where the log level is set higher
       return <String>[];
     }
@@ -111,7 +53,7 @@ class MyLogPrinter extends LogPrinter {
     StackTraceNJ frames = StackTraceNJ();
     int i = 0;
     int depth = 0;
-    if (frames.frames != null)
+    if (frames.frames != null) {
       for (Stackframe frame in frames.frames!) {
         i++;
         String path2 = frame.sourceFile.path;
@@ -120,6 +62,7 @@ class MyLogPrinter extends LogPrinter {
           break;
         }
       }
+    }
 
     print(color(
         '[$formattedDate] ${event.level} ${StackTraceNJ(skipFrames: depth).formatStackTrace(methodCount: 1)} ::: ${event.message}'));
@@ -185,7 +128,7 @@ class AnsiColor {
 
   String call(String msg) {
     if (color) {
-      return '${this}$msg$ansiDefault';
+      return '$msg$ansiDefault';
     } else {
       return msg;
     }

@@ -6,12 +6,13 @@ import 'package:crypto/crypto.dart';
 import 'package:random_string/random_string.dart';
 import 'package:uuid/uuid.dart';
 
-import 'constants.dart' as dart_sip_c;
+import 'constants.dart' as DartSIP_C;
 import 'grammar.dart';
 import 'uri.dart';
 
-const JsonDecoder decoder = JsonDecoder();
-const JsonEncoder encoder = JsonEncoder();
+final JsonDecoder decoder = JsonDecoder();
+final JsonEncoder encoder = JsonEncoder();
+final DartMath.Random _random = DartMath.Random();
 
 bool test100(String statusCode) {
   return statusCode.contains(RegExp(r'^100$'));
@@ -26,52 +27,11 @@ bool test2XX(String statusCode) {
 }
 
 class Math {
-  static final DartMath.Random _random = DartMath.Random();
-  static num floor(num n) {
-    return n.floor();
-  }
-
-  static num abs(num n) {
-    return n.abs();
-  }
-
   static double randomDouble() => _random.nextDouble();
   static int random() => _random.nextInt(0x7FFFFFFF);
-  static num pow(num a, num b) {
-    return DartMath.pow(a, b);
-  }
 }
 
-int strUtf8Length(String string) => unescape(encodeURIComponent(string)).length;
-
-// Used by 'hasMethods'.
-bool isFunction(dynamic fn) {
-  if (fn != null) {
-    return fn is Function;
-  } else {
-    return false;
-  }
-}
-
-bool isString(dynamic str) {
-  if (str != null) {
-    return str is String;
-  } else {
-    return false;
-  }
-}
-
-bool isNaN(dynamic input) {
-  return input.isNaN;
-}
-
-int? parseInt(String input, int radix) {
-  return int.tryParse(input, radix: radix);
-}
-
-double? parseFloat(String input) {
-  return double.tryParse(input);
-}
+int str_utf8_length(String string) => Uri.encodeComponent(string).length;
 
 String decodeURIComponent(String str) {
   try {
@@ -81,28 +41,12 @@ String decodeURIComponent(String str) {
   }
 }
 
-String encodeURIComponent(String str) {
-  return Uri.encodeComponent(str);
-}
-
-String unescape(String str) {
-  // TODO(cloudwebrtc):  ???
-  return str;
-}
-
 bool isDecimal(dynamic input) =>
     input != null &&
-    ((input is num && !isNaN(input)) ||
+    (input is num && !input.isNaN ||
         (input is! num &&
-            (parseFloat(input) != null || parseInt(input, 10) != null)));
-
-bool isEmpty(dynamic value) {
-  return value == null ||
-      value == '' ||
-      value == null ||
-      (value is List && value.isEmpty) ||
-      (value is num && isNaN(value));
-}
+            (double.tryParse(input) != null ||
+                int.tryParse(input, radix: 10) != null)));
 
 // Used by 'newTag'.
 String createRandomToken(int size, {int base = 32}) {
@@ -111,10 +55,9 @@ String createRandomToken(int size, {int base = 32}) {
 
 String newTag() => createRandomToken(10);
 
-String newUUID() => const Uuid().v4();
+String newUUID() => Uuid().v4();
 
 dynamic hostType(String host) {
-  // ignore: unnecessary_null_comparison
   if (host == null) {
     return null;
   } else {
@@ -125,21 +68,25 @@ dynamic hostType(String host) {
   }
 }
 
-/// Hex-escape a SIP URI user.
-/// Don't hex-escape ':' (%3A), '+' (%2B), '?' (%3F"), '/' (%2F).
-///
-/// Used by 'normalizeTarget'.
-String escapeUser(String user) => encodeURIComponent(decodeURIComponent(user))
+/**
+* Hex-escape a SIP URI user.
+* Don't hex-escape ':' (%3A), '+' (%2B), '?' (%3F"), '/' (%2F).
+*
+* Used by 'normalizeTarget'.
+*/
+String escapeUser(String user) => Uri.encodeComponent(decodeURIComponent(user))
     .replaceAll(RegExp(r'%3A', caseSensitive: false), ':')
     .replaceAll(RegExp(r'%2B', caseSensitive: false), '+')
     .replaceAll(RegExp(r'%3F', caseSensitive: false), '?')
     .replaceAll(RegExp(r'%2F', caseSensitive: false), '/');
 
-/// Normalize SIP URI.
-/// NOTE: It does not allow a SIP URI without username.
-/// Accepts 'sip', 'sips' and 'tel' URIs and convert them into 'sip'.
-/// Detects the domain part (if given) and properly hex-escapes the user portion.
-/// If the user portion has only 'tel' number symbols the user portion is clean of 'tel' visual separators.
+/**
+* Normalize SIP URI.
+* NOTE: It does not allow a SIP URI without username.
+* Accepts 'sip', 'sips' and 'tel' URIs and convert them into 'sip'.
+* Detects the domain part (if given) and properly hex-escapes the user portion.
+* If the user portion has only 'tel' number symbols the user portion is clean of 'tel' visual separators.
+*/
 URI? normalizeTarget(dynamic target, [String? domain]) {
   // If no target is given then raise an error.
   if (target == null) {
@@ -183,7 +130,7 @@ URI? normalizeTarget(dynamic target, [String? domain]) {
     }
 
     // Build the complete SIP URI.
-    target = dart_sip_c.SIP + ':' + escapeUser(targetUser) + '@' + targetDomain;
+    target = '${DartSIP_C.SIP}:${escapeUser(targetUser)}@$targetDomain';
 
     // Finally parse the resulting URI.
     return URI.parse(target);
@@ -220,8 +167,8 @@ String headerize(String str) {
 }
 
 String sipErrorCause(dynamic statusCode) {
-  String reason = dart_sip_c.CausesType.SIP_FAILURE_CODE;
-  dart_sip_c.SIP_ERROR_CAUSES.forEach((String key, List<int> value) {
+  String reason = DartSIP_C.Causes.SIP_FAILURE_CODE;
+  DartSIP_C.SIP_ERROR_CAUSES.forEach((String key, List<int> value) {
     if (value.contains(statusCode)) {
       reason = key;
     }
@@ -233,7 +180,6 @@ String calculateMD5(String string) {
   return md5.convert(utf8.encode(string)).toString();
 }
 
-List<dynamic> cloneArray(List<dynamic> array) {
-  // ignore: unnecessary_type_check
-  return (array is List) ? array.sublist(0) : <dynamic>[];
+List<dynamic> cloneArray(List<dynamic>? array) {
+  return (array != null) ? array.sublist(0) : <dynamic>[];
 }

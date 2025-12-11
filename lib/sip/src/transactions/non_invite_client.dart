@@ -4,16 +4,16 @@ import '../event_manager/event_manager.dart';
 import '../event_manager/internal_events.dart';
 import '../logger.dart';
 import '../sip_message.dart';
+import '../socket_transport.dart';
 import '../timers.dart';
-import '../transport.dart';
 import '../ua.dart';
 import '../utils.dart';
 import 'transaction_base.dart';
 
 class NonInviteClientTransaction extends TransactionBase {
-  NonInviteClientTransaction(PitelUA ua, Transport transport,
+  NonInviteClientTransaction(UA ua, SocketTransport transport,
       OutgoingRequest request, EventManager eventHandlers) {
-    id = 'z9hG4bK${Math.floor(Math.random())}';
+    id = 'z9hG4bK${Math.random().floor()}';
     this.ua = ua;
     this.transport = transport;
     this.request = request;
@@ -21,7 +21,7 @@ class NonInviteClientTransaction extends TransactionBase {
 
     String via = 'SIP/2.0/${transport.via_transport}';
 
-    via += ' ${ua.configuration!.via_host};branch=$id';
+    via += ' ${ua.configuration.via_host};branch=$id';
 
     request.setHeader('via', via);
 
@@ -50,24 +50,24 @@ class NonInviteClientTransaction extends TransactionBase {
 
   @override
   void onTransportError() {
-    logger.debug('transport error occurred, deleting transaction $id');
+    logger.d('transport error occurred, deleting transaction $id');
     clearTimeout(F);
     clearTimeout(K);
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
     _eventHandlers.emit(EventOnTransportError());
   }
 
   void timer_F() {
-    logger.debug('Timer F expired for transaction $id');
+    logger.d('Timer F expired for transaction $id');
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
     _eventHandlers.emit(EventOnRequestTimeout());
   }
 
   void timer_K() {
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
   }
 
   @override

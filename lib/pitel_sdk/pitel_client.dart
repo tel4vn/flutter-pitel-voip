@@ -124,6 +124,7 @@ class PitelClient {
     }
     //! sip_domain
     settings.sipDomain = '${_sipServer?.domain}:${_sipServer?.port}';
+    settings.transportType = TransportType.WS;
 
     pitelCall.register(settings);
     return settings;

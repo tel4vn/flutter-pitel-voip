@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'constants.dart';
 import 'logger.dart';
 import 'utils.dart' as utils;
@@ -59,8 +57,7 @@ class DigestAuthentication {
         return _ha1;
 
       default:
-        logger
-            .error('get() | cannot get ' + parameter.toString() + ' parameter');
+        logger.e('get() | cannot get $parameter parameter');
 
         return null;
     }
@@ -81,7 +78,7 @@ class DigestAuthentication {
 
     if (_algorithm != null) {
       if (_algorithm != 'MD5') {
-        logger.error(
+        logger.e(
             'authenticate() | challenge with Digest algorithm different than "MD5", authentication aborted');
 
         return false;
@@ -91,14 +88,14 @@ class DigestAuthentication {
     }
 
     if (_nonce == null) {
-      logger.error(
+      logger.e(
           'authenticate() | challenge without Digest nonce, authentication aborted');
 
       return false;
     }
 
     if (_realm == null) {
-      logger.error(
+      logger.e(
           'authenticate() | challenge without Digest realm, authentication aborted');
 
       return false;
@@ -108,7 +105,7 @@ class DigestAuthentication {
     if (_credentials.password == null) {
       // If ha1 is not provided we cannot authenticate.
       if (_credentials.ha1 == null) {
-        logger.error(
+        logger.e(
             'authenticate() | no plain SIP password nor ha1 provided, authentication aborted');
 
         return false;
@@ -116,7 +113,7 @@ class DigestAuthentication {
 
       // If the realm does not match the stored realm we cannot authenticate.
       if (_credentials.realm != _realm) {
-        logger.error(
+        logger.e(
             'authenticate() | no plain SIP password, and stored "realm" does not match the given "realm", cannot authenticate [stored:"${_credentials.realm}", given:"$_realm"]');
 
         return false;
@@ -131,7 +128,7 @@ class DigestAuthentication {
         _qop = 'auth';
       } else {
         // Otherwise 'qop' is present but does not contain 'auth' or 'auth-int', so abort here.
-        logger.error(
+        logger.e(
             'authenticate() | challenge without Digest qop different than "auth" or "auth-int", authentication aborted');
 
         return false;
@@ -177,7 +174,7 @@ class DigestAuthentication {
       a2 = '${SipMethodHelper.getName(_method)}:$_uri';
       ha2 = utils.calculateMD5(a2);
 
-      logger.debug('authenticate() | using qop=auth [a2:$a2]');
+      logger.d('authenticate() | using qop=auth [a2:$a2]');
 
       // Response = MD5(HA1:nonce:nonceCount:credentialsNonce:qop:HA2).
       _response =
@@ -188,7 +185,7 @@ class DigestAuthentication {
           '${SipMethodHelper.getName(_method)}:$_uri:${utils.calculateMD5(body ?? '')}';
       ha2 = utils.calculateMD5(a2);
 
-      logger.debug('authenticate() | using qop=auth-int [a2:$a2]');
+      logger.d('authenticate() | using qop=auth-int [a2:$a2]');
 
       // Response = MD5(HA1:nonce:nonceCount:credentialsNonce:qop:HA2).
       _response =
@@ -198,13 +195,13 @@ class DigestAuthentication {
       a2 = '${SipMethodHelper.getName(_method)}:$_uri';
       ha2 = utils.calculateMD5(a2);
 
-      logger.debug('authenticate() | using qop=null [a2:$a2]');
+      logger.d('authenticate() | using qop=null [a2:$a2]');
 
       // Response = MD5(HA1:nonce:HA2).
       _response = utils.calculateMD5('$_ha1:$_nonce:$ha2');
     }
 
-    logger.debug('authenticate() | response generated');
+    logger.d('authenticate() | response generated');
 
     return true;
   }

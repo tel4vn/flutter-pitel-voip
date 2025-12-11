@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:flutter_pitel_voip/sip/src/event_manager/event_manager.dart';
-
 import '../constants.dart';
+import '../event_manager/event_manager.dart';
 import '../event_manager/internal_events.dart';
 import '../logger.dart';
 import '../sip_message.dart';
+import '../socket_transport.dart';
 import '../timers.dart';
-import '../transport.dart';
 import '../ua.dart';
 import '../utils.dart';
 import 'transaction_base.dart';
 
 class InviteClientTransaction extends TransactionBase {
-  InviteClientTransaction(PitelUA ua, Transport transport,
+  InviteClientTransaction(UA ua, SocketTransport transport,
       OutgoingRequest request, EventManager eventHandlers) {
-    id = 'z9hG4bK${Math.floor(Math.random() * 10000000)}';
+    id = 'z9hG4bK${(Math.random() * 10000000).floor()}';
     this.ua = ua;
     this.transport = transport;
     this.request = request;
@@ -24,11 +23,11 @@ class InviteClientTransaction extends TransactionBase {
 
     String via = 'SIP/2.0/${transport.via_transport}';
 
-    via += ' ${ua.configuration!.via_host};branch=$id';
+    via += ' ${ua.configuration.via_host};branch=$id';
 
     this.request.setHeader('via', via);
 
-    this.ua!.newTransaction(this);
+    this.ua.newTransaction(this);
   }
   late EventManager _eventHandlers;
 
@@ -58,40 +57,40 @@ class InviteClientTransaction extends TransactionBase {
     clearTimeout(M);
 
     if (state != TransactionState.ACCEPTED) {
-      logger.debug('transport error occurred, deleting transaction $id');
+      logger.d('transport error occurred, deleting transaction $id');
       _eventHandlers.emit(EventOnTransportError());
     }
 
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
   }
 
   // RFC 6026 7.2.
   void timer_M() {
-    logger.debug('Timer M expired for transaction $id');
+    logger.d('Timer M expired for transaction $id');
 
     if (state == TransactionState.ACCEPTED) {
       clearTimeout(B);
       stateChanged(TransactionState.TERMINATED);
-      ua!.destroyTransaction(this);
+      ua.destroyTransaction(this);
     }
   }
 
   // RFC 3261 17.1.1.
   void timer_B() {
-    logger.debug('Timer B expired for transaction $id');
+    logger.d('Timer B expired for transaction $id');
     if (state == TransactionState.CALLING) {
       stateChanged(TransactionState.TERMINATED);
-      ua!.destroyTransaction(this);
+      ua.destroyTransaction(this);
       _eventHandlers.emit(EventOnRequestTimeout());
     }
   }
 
   void timer_D() {
-    logger.debug('Timer D expired for transaction $id');
+    logger.d('Timer D expired for transaction $id');
     clearTimeout(B);
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
   }
 
   void sendACK(IncomingMessage response) {

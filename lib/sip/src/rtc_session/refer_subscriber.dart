@@ -18,7 +18,7 @@ class ReferSubscriber extends EventManager {
   int? get id => _id;
 
   void sendRefer(URI target, Map<String, dynamic> options) {
-    logger.debug('sendRefer()');
+    logger.d('sendRefer()');
 
     List<dynamic> extraHeaders = Utils.cloneArray(options['extraHeaders']);
     EventManager eventHandlers = options['eventHandlers'] ?? EventManager();
@@ -34,19 +34,18 @@ class ReferSubscriber extends EventManager {
       replaces = options['replaces'].call_id;
       replaces += ';to-tag=${options['replaces'].to_tag}';
       replaces += ';from-tag=${options['replaces'].from_tag}';
-      replaces = Utils.encodeURIComponent(replaces);
+      replaces = Uri.encodeComponent(replaces);
     }
 
     // Refer-To header field.
-    String referTo = 'Refer-To: <$target' +
-        (replaces.isNotEmpty ? '?Replaces=$replaces' : '') +
-        '>';
+    String referTo =
+        'Refer-To: <$target${replaces.isNotEmpty ? '?Replaces=$replaces' : ''}>';
 
     extraHeaders.add(referTo);
 
     // Referred-By header field.
     String referredBy =
-        'Referred-By: <${_session.ua!.configuration!.uri.scheme}:${_session.ua!.configuration!.uri.user}@${_session.ua!.configuration!.uri.host}>';
+        'Referred-By: <${_session.ua.configuration.uri!.scheme}:${_session.ua.configuration.uri!.user}@${_session.ua.configuration.uri!.host}>';
 
     extraHeaders.add(referredBy);
     extraHeaders.add('Contact: ${_session.contact}');
@@ -78,7 +77,7 @@ class ReferSubscriber extends EventManager {
   }
 
   void receiveNotify(IncomingRequest request) {
-    logger.debug('receiveNotify()');
+    logger.d('receiveNotify()');
 
     if (request.body == null) {
       return;
@@ -88,8 +87,8 @@ class ReferSubscriber extends EventManager {
     dynamic parsed = Grammar.parse(status_line, 'Status_Line');
 
     if (parsed == -1) {
-      logger.debug(
-          'receiveNotify() | error parsing NOTIFY body: "${request.body}"');
+      logger
+          .d('receiveNotify() | error parsing NOTIFY body: "${request.body}"');
       return;
     }
 
@@ -110,17 +109,17 @@ class ReferSubscriber extends EventManager {
   }
 
   void _requestSucceeded(IncomingMessage? response) {
-    logger.debug('REFER succeeded');
+    logger.d('REFER succeeded');
 
-    logger.debug('emit "requestSucceeded"');
+    logger.d('emit "requestSucceeded"');
 
     emit(EventReferRequestSucceeded(response: response));
   }
 
   void _requestFailed(IncomingMessage? response, dynamic cause) {
-    logger.debug('REFER failed');
+    logger.d('REFER failed');
 
-    logger.debug('emit "requestFailed"');
+    logger.d('emit "requestFailed"');
 
     emit(EventReferRequestFailed(response: response, cause: cause));
   }

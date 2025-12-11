@@ -1,17 +1,17 @@
-// ignore_for_file: library_prefixes
-
 import 'constants.dart' as DartSIP_C;
 import 'grammar.dart';
 import 'utils.dart' as utils;
 import 'utils.dart';
 
-/// -param {String} [scheme]
-/// -param {String} [user]
-/// -param {String} host
-/// -param {String} [port]
-/// -param {Object} [parameters]
-/// -param {Object} [headers]
-///
+/**
+ * -param {String} [scheme]
+ * -param {String} [user]
+ * -param {String} host
+ * -param {String} [port]
+ * -param {Object} [parameters]
+ * -param {Object} [headers]
+ *
+ */
 class URI {
   URI(String? scheme, this.user, String? host,
       [int? port,
@@ -36,9 +36,10 @@ class URI {
       });
     }
   }
-
-  /// Parse the given string and returns a DartSIP.URI instance or null if
-  /// it is an invalid URI.
+  /**
+    * Parse the given string and returns a DartSIP.URI instance or null if
+    * it is an invalid URI.
+    */
   static dynamic parse(String uri) {
     try {
       return Grammar.parse(uri, 'SIP_URI');
@@ -68,11 +69,11 @@ class URI {
   int? get port => _port;
 
   set port(int? value) {
-    _port = (value == 0
+    _port = value == 0
         ? value
         : (value != null)
-            ? utils.parseInt(value.toString(), 10)
-            : null)!;
+            ? int.tryParse(value.toString(), radix: 10)
+            : null;
   }
 
   void setParam(String? key, dynamic value) {
@@ -187,14 +188,14 @@ class URI {
     return uri;
   }
 
-  String toAor({bool showPort = false}) {
+  String toAor({bool show_port = false}) {
     String aor = '$_scheme:';
 
     if (user != null) {
       aor += '${utils.escapeUser(user!)}@';
     }
     aor += _host;
-    if (showPort && (_port != null || _port == 0)) {
+    if (show_port && (_port != null || _port == 0)) {
       aor += ':$_port';
     }
 

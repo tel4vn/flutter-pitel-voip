@@ -1,277 +1,297 @@
 import '../sip_ua.dart';
-import 'constants.dart' as dart_sip_c;
+import 'constants.dart' as DartSIP_C;
 import 'constants.dart';
-import 'exceptions.dart' as exceptions;
+import 'exceptions.dart' as Exceptions;
 import 'grammar.dart';
 import 'logger.dart';
-// ignore: library_prefixes
-import 'socket.dart' as Socket;
-import 'transports/websocket_interface.dart';
-import 'uri.dart';
-import 'utils.dart' as utils;
+import 'transports/socket_interface.dart';
+import 'transports/web_socket.dart';
+import 'utils.dart' as Utils;
 
 // Default settings.
-class PitelSipSettings {
+class Settings {
   // SIP authentication.
-  String? authorizationUser;
+  String? authorization_user;
   String? password;
   String? realm;
   String? ha1;
 
   // SIP account.
-  String? displayName;
-  dynamic uri;
-  dynamic contactUri;
-  //! sip_domain
-  dynamic sipDomain;
-  String userAgent = dart_sip_c.USER_AGENT;
+  String? display_name;
+  URI? uri;
+  URI? contact_uri;
+  String user_agent = DartSIP_C.USER_AGENT;
 
   // SIP instance id (GRUU).
-  String? instanceId;
+  String? instance_id = null;
 
   // Preloaded SIP Route header field.
-  bool usePreloadedRoute = true;
+  bool use_preloaded_route = false;
 
   // Session parameters.
-  bool sessionTimers = true;
-  SipMethod sessionTimersRefreshMethod = SipMethod.UPDATE;
-  int noAnswerTimeout = 60;
+  bool session_timers = true;
+  SipMethod session_timers_refresh_method = SipMethod.UPDATE;
+  int no_answer_timeout = 60;
 
   // Registration parameters.
   bool? register = true;
-  int? registerExpires = 600;
-  dynamic registrarServer;
-  Map<String, dynamic>? registerExtraContactUriParams;
+  int? register_expires = 600;
+  dynamic registrar_server;
+  List<String>? register_extra_headers;
+  Map<String, dynamic>? register_extra_contact_uri_params;
 
   // Dtmf mode
-  DtmfMode dtmfMode = DtmfMode.INFO;
+  DtmfMode dtmf_mode = DtmfMode.INFO;
+
+  TransportType? transportType;
 
   // Connection options.
-  List<WebSocketInterface>? sockets = <WebSocketInterface>[];
-  // ignore: non_constant_identifier_names
+  List<SIPUASocketInterface>? sockets = <SIPUASocketInterface>[];
   int connection_recovery_max_interval = 30;
-  // ignore: non_constant_identifier_names
   int connection_recovery_min_interval = 2;
 
   /*
    * Host address.
    * Value to be set in Via sent_by and host part of Contact FQDN.
   */
-  // ignore: non_constant_identifier_names
-  String? via_host = '${utils.createRandomToken(12)}.invalid';
+  String? via_host = '${Utils.createRandomToken(12)}.invalid';
 
   // DartSIP ID
-  // ignore: non_constant_identifier_names
   String? jssip_id;
 
-  // ignore: non_constant_identifier_names
   String? hostport_params;
 
   /// ICE Gathering Timeout (in millisecond).
-  // ignore: non_constant_identifier_names
   int ice_gathering_timeout = 500;
+
+  /// Call statistics in the log
+  bool log_call_statistics = false;
+
+  bool terminateOnAudioMediaPortZero = false;
+
+  /// Sip Message Delay (in millisecond) ( default 0 ).
+  int sip_message_delay = 0;
+
+  // TODO: 3
+  dynamic sipDomain;
 }
 
 // Configuration checks.
 class Checks {
-  Map<String, Null Function(PitelSipSettings src, PitelSipSettings? dst)>
-      mandatory =
-      <String, Null Function(PitelSipSettings src, PitelSipSettings? dst)>{
-    'sockets': (PitelSipSettings src, PitelSipSettings? dst) {
-      List<WebSocketInterface>? sockets = src.sockets;
+  Map<String, Null Function(Settings src, Settings? dst)> mandatory =
+      <String, Null Function(Settings src, Settings? dst)>{
+    'sockets': (Settings src, Settings? dst) {
+      List<SIPUASocketInterface>? sockets = src.sockets;
+
       /* Allow defining sockets parameter as:
        *  Socket: socket
        *  List of Socket: [socket1, socket2]
        *  List of Objects: [{socket: socket1, weight:1}, {socket: Socket2, weight:0}]
        *  List of Objects and Socket: [{socket: socket1}, socket2]
        */
-      List<WebSocketInterface> copy = <WebSocketInterface>[];
+      List<SIPUASocketInterface> copy = <SIPUASocketInterface>[];
       if (sockets is List && sockets!.isNotEmpty) {
-        for (WebSocketInterface socket in sockets) {
-          if (Socket.isSocket(socket)) {
-            copy.add(socket);
-          }
+        for (SIPUASocketInterface socket in sockets) {
+          copy.add(socket);
         }
       } else {
-        throw exceptions.ConfigurationError('sockets', sockets);
+        throw Exceptions.ConfigurationError('sockets', sockets);
       }
 
       dst!.sockets = copy;
     },
-    'uri': (PitelSipSettings src, PitelSipSettings? dst) {
-      dynamic uri = src.uri;
+    'uri': (Settings src, Settings? dst) {
       if (src.uri == null && dst!.uri == null) {
-        throw exceptions.ConfigurationError('uri', null);
+        throw Exceptions.ConfigurationError('uri', null);
       }
-      if (!uri.contains(RegExp(r'^sip:', caseSensitive: false))) {
-        uri = '${dart_sip_c.SIP}:$uri';
+      URI uri = src.uri!;
+      if (!uri.toString().contains(RegExp(r'^sip:', caseSensitive: false))) {
+        uri.scheme = DartSIP_C.SIP;
       }
-      dynamic parsed = URI.parse(uri);
-      if (parsed == null) {
-        throw exceptions.ConfigurationError('uri', parsed);
-      } else if (parsed.user == null) {
-        throw exceptions.ConfigurationError('uri', parsed);
-      } else {
-        dst!.uri = parsed;
+      dst!.uri = uri;
+    },
+    'transport_type': (Settings src, Settings? dst) {
+      dynamic transportType = src.transportType;
+      if (src.transportType == null && dst!.transportType == null) {
+        throw Exceptions.ConfigurationError('transport type', null);
       }
+      dst!.transportType = transportType;
     }
   };
-  Map<String, Null Function(PitelSipSettings src, PitelSipSettings? dst)>
-      optional =
-      <String, Null Function(PitelSipSettings src, PitelSipSettings? dst)>{
-    'authorization_user': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? authorizationUser = src.authorizationUser;
-      if (authorizationUser == null) return;
-      if (Grammar.parse('"$authorizationUser"', 'quoted_string') == -1) {
+  Map<String, Null Function(Settings src, Settings? dst)> optional =
+      <String, Null Function(Settings src, Settings? dst)>{
+    'authorization_user': (Settings src, Settings? dst) {
+      String? authorization_user = src.authorization_user;
+      if (authorization_user == null) return;
+      if (Grammar.parse('"$authorization_user"', 'quoted_string') == -1) {
         return;
       } else {
-        dst!.authorizationUser = authorizationUser;
+        dst!.authorization_user = authorization_user;
       }
     },
+    'user_agent': (Settings src, Settings? dst) {
+      String user_agent = src.user_agent;
+      if (user_agent == null) return;
+      dst!.user_agent = user_agent;
+    },
     //! sip_domain
-    'sip_domain': (PitelSipSettings src, PitelSipSettings? dst) {
+    'sip_domain': (Settings src, Settings? dst) {
       String sipDomain = src.sipDomain;
       dst!.sipDomain = sipDomain;
     },
-    'user_agent': (PitelSipSettings src, PitelSipSettings? dst) {
-      String userAgent = src.userAgent;
-      dst!.userAgent = userAgent;
-    },
-    'connection_recovery_max_interval':
-        (PitelSipSettings src, PitelSipSettings? dst) {
-      int connectionRecoveryMaxInterval = src.connection_recovery_max_interval;
-      if (connectionRecoveryMaxInterval > 0) {
-        dst!.connection_recovery_max_interval = connectionRecoveryMaxInterval;
+    'connection_recovery_max_interval': (Settings src, Settings? dst) {
+      int connection_recovery_max_interval =
+          src.connection_recovery_max_interval;
+      if (connection_recovery_max_interval == null) return;
+      if (connection_recovery_max_interval > 0) {
+        dst!.connection_recovery_max_interval =
+            connection_recovery_max_interval;
       }
     },
-    'connection_recovery_min_interval':
-        (PitelSipSettings src, PitelSipSettings? dst) {
-      int connectionRecoveryMinInterval = src.connection_recovery_min_interval;
-      if (connectionRecoveryMinInterval > 0) {
-        dst!.connection_recovery_min_interval = connectionRecoveryMinInterval;
+    'connection_recovery_min_interval': (Settings src, Settings? dst) {
+      int connection_recovery_min_interval =
+          src.connection_recovery_min_interval;
+      if (connection_recovery_min_interval == null) return;
+      if (connection_recovery_min_interval > 0) {
+        dst!.connection_recovery_min_interval =
+            connection_recovery_min_interval;
       }
     },
-    'contact_uri': (PitelSipSettings src, PitelSipSettings? dst) {
-      dynamic contactUri = src.contactUri;
-      if (contactUri == null) return;
-      if (contactUri is String) {
-        dynamic uri = Grammar.parse(contactUri, 'SIP_URI');
+    'contact_uri': (Settings src, Settings? dst) {
+      dynamic contact_uri = src.contact_uri;
+      if (contact_uri == null) return;
+      if (contact_uri is String) {
+        dynamic uri = Grammar.parse(contact_uri, 'SIP_URI');
         if (uri != -1) {
-          dst!.contactUri = uri;
+          dst!.contact_uri = uri;
         }
       }
     },
-    'display_name': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? displayName = src.displayName;
-      if (displayName == null) return;
-      dst!.displayName = displayName;
+    'display_name': (Settings src, Settings? dst) {
+      String? display_name = src.display_name;
+      if (display_name == null) return;
+      dst!.display_name = display_name;
     },
-    'instance_id': (PitelSipSettings src, PitelSipSettings? dst) {
-      String? instanceId = src.instanceId;
-      if (instanceId == null) return;
-      if (instanceId.contains(RegExp(r'^uuid:', caseSensitive: false))) {
-        instanceId = instanceId.substring(5);
+    'instance_id': (Settings src, Settings? dst) {
+      String? instance_id = src.instance_id;
+      if (instance_id == null) return;
+      if (instance_id.contains(RegExp(r'^uuid:', caseSensitive: false))) {
+        instance_id = instance_id.substring(5);
       }
-      if (Grammar.parse(instanceId, 'uuid') == -1) {
+      if (Grammar.parse(instance_id, 'uuid') == -1) {
         return;
       } else {
-        dst!.instanceId = instanceId;
+        dst!.instance_id = instance_id;
       }
     },
-    'no_answer_timeout': (PitelSipSettings src, PitelSipSettings? dst) {
-      int noAnswerTimeout = src.noAnswerTimeout;
-      if (noAnswerTimeout > 0) {
-        dst!.noAnswerTimeout = noAnswerTimeout;
+    'no_answer_timeout': (Settings src, Settings? dst) {
+      int no_answer_timeout = src.no_answer_timeout;
+      if (no_answer_timeout == null) return;
+      if (no_answer_timeout > 0) {
+        dst!.no_answer_timeout = no_answer_timeout;
       }
     },
-    'session_timers': (PitelSipSettings src, PitelSipSettings? dst) {
-      bool sessionTimers = src.sessionTimers;
-      dst!.sessionTimers = sessionTimers;
+    'session_timers': (Settings src, Settings? dst) {
+      bool session_timers = src.session_timers;
+      if (session_timers == null) return;
+      dst!.session_timers = session_timers;
     },
-    'session_timers_refresh_method':
-        (PitelSipSettings src, PitelSipSettings? dst) {
-      SipMethod method = src.sessionTimersRefreshMethod;
+    'session_timers_refresh_method': (Settings src, Settings? dst) {
+      SipMethod method = src.session_timers_refresh_method;
       if (method == SipMethod.INVITE || method == SipMethod.UPDATE) {
-        dst!.sessionTimersRefreshMethod = method;
+        dst!.session_timers_refresh_method = method;
       }
     },
-    'password': (PitelSipSettings src, PitelSipSettings? dst) {
+    'password': (Settings src, Settings? dst) {
       String? password = src.password;
       if (password == null) return;
       dst!.password = password.toString();
     },
-    'realm': (PitelSipSettings src, PitelSipSettings? dst) {
+    'realm': (Settings src, Settings? dst) {
       String? realm = src.realm;
       if (realm == null) return;
       dst!.realm = realm.toString();
     },
-    'ha1': (PitelSipSettings src, PitelSipSettings? dst) {
+    'ha1': (Settings src, Settings? dst) {
       String? ha1 = src.ha1;
       if (ha1 == null) return;
       dst!.ha1 = ha1.toString();
     },
-    'register': (PitelSipSettings src, PitelSipSettings? dst) {
+    'register': (Settings src, Settings? dst) {
       bool? register = src.register;
       if (register == null) return;
       dst!.register = register;
     },
-    'register_expires': (PitelSipSettings src, PitelSipSettings? dst) {
-      int? registerExpires = src.registerExpires;
-      if (registerExpires == null) return;
-      if (registerExpires > 0) {
-        dst!.registerExpires = registerExpires;
+    'register_expires': (Settings src, Settings? dst) {
+      int? register_expires = src.register_expires;
+      if (register_expires == null) return;
+      if (register_expires > 0) {
+        dst!.register_expires = register_expires;
       }
     },
-    'registrar_server': (PitelSipSettings src, PitelSipSettings? dst) {
-      dynamic registrarServer = src.registrarServer;
-      if (registrarServer == null) return;
-      if (!registrarServer.contains(RegExp(r'^sip:', caseSensitive: false))) {
-        registrarServer = '${dart_sip_c.SIP}:$registrarServer';
+    'registrar_server': (Settings src, Settings? dst) {
+      dynamic registrar_server = src.registrar_server;
+      if (registrar_server == null) return;
+      if (!registrar_server.contains(RegExp(r'^sip:', caseSensitive: false))) {
+        registrar_server = '${DartSIP_C.SIP}:$registrar_server';
       }
-      dynamic parsed = URI.parse(registrarServer);
+      dynamic parsed = URI.parse(registrar_server);
       if (parsed == null || parsed.user != null) {
         return;
       } else {
-        dst!.registrarServer = parsed;
+        dst!.registrar_server = parsed;
       }
     },
-    'register_extra_contact_uri_params':
-        (PitelSipSettings src, PitelSipSettings? dst) {
-      Map<String, dynamic>? registerExtraContactUriParams =
-          src.registerExtraContactUriParams;
-      if (registerExtraContactUriParams == null) return;
-      dst!.registerExtraContactUriParams = registerExtraContactUriParams;
+    'register_extra_headers': (Settings src, Settings? dst) {
+      List<String>? register_extra_headers = src.register_extra_headers;
+      if (register_extra_headers == null) return;
+      dst?.register_extra_headers = register_extra_headers;
     },
-    'use_preloaded_route': (PitelSipSettings src, PitelSipSettings? dst) {
-      bool usePreloadedRoute = src.usePreloadedRoute;
-      dst!.usePreloadedRoute = usePreloadedRoute;
+    'register_extra_contact_uri_params': (Settings src, Settings? dst) {
+      Map<String, dynamic>? register_extra_contact_uri_params =
+          src.register_extra_contact_uri_params;
+      if (register_extra_contact_uri_params == null) return;
+      dst!.register_extra_contact_uri_params =
+          register_extra_contact_uri_params;
     },
-    'dtmf_mode': (PitelSipSettings src, PitelSipSettings? dst) {
-      DtmfMode dtmfMode = src.dtmfMode;
-      dst!.dtmfMode = dtmfMode;
+    'use_preloaded_route': (Settings src, Settings? dst) {
+      bool use_preloaded_route = src.use_preloaded_route;
+      if (use_preloaded_route == null) return;
+      dst!.use_preloaded_route = use_preloaded_route;
     },
+    'dtmf_mode': (Settings src, Settings? dst) {
+      DtmfMode dtmf_mode = src.dtmf_mode;
+      if (dtmf_mode == null) return;
+      dst!.dtmf_mode = dtmf_mode;
+    },
+    'ice_gathering_timeout': (Settings src, Settings? dst) {
+      dst!.ice_gathering_timeout = src.ice_gathering_timeout;
+    },
+    'log_call_statistics': (Settings src, Settings? dst) {
+      dst!.log_call_statistics = src.log_call_statistics;
+    }
   };
 }
 
 final Checks checks = Checks();
 
-void load(PitelSipSettings src, PitelSipSettings? dst) {
+void load(Settings src, Settings? dst) {
   try {
     // Check Mandatory parameters.
-    checks.mandatory.forEach((String parameter,
-        Null Function(PitelSipSettings, PitelSipSettings?) fun) {
-      logger.info('Check mandatory parameter => $parameter.');
+    checks.mandatory
+        .forEach((String parameter, Null Function(Settings, Settings?) fun) {
+      logger.i('Check mandatory parameter => $parameter.');
       fun(src, dst);
     });
 
     // Check Optional parameters.
-    checks.optional.forEach((String parameter,
-        Null Function(PitelSipSettings, PitelSipSettings?) fun) {
-      logger.debug('Check optional parameter => $parameter.');
+    checks.optional
+        .forEach((String parameter, Null Function(Settings, Settings?) fun) {
+      logger.d('Check optional parameter => $parameter.');
       fun(src, dst);
     });
   } catch (e) {
-    logger.error('Failed to load config: ${e.toString()}');
+    logger.e('Failed to load config: ${e.toString()}');
     rethrow;
   }
 }

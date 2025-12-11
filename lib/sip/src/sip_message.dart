@@ -2,27 +2,29 @@ import 'dart:convert' show utf8;
 
 import 'package:sdp_transform/sdp_transform.dart' as sdp_transform;
 
-import 'constants.dart';
 import 'constants.dart' as DartSIP_C;
+import 'constants.dart';
 import 'data.dart';
 import 'exceptions.dart' as Exceptions;
 import 'grammar.dart';
 import 'logger.dart';
 import 'name_addr_header.dart';
+import 'socket_transport.dart';
 import 'transactions/transaction_base.dart';
-import 'transport.dart';
 import 'ua.dart';
 import 'uri.dart';
 import 'utils.dart' as utils;
 
-/// -param {String} method request method
-/// -param {String} ruri request uri
-/// -param {UA} ua
-/// -param {Object} params parameters that will have priority over ua.configuration parameters:
-/// <br>
-///  - cseq, call_id, from_tag, from_uri, from_display_name, to_uri, to_tag, route_set
-/// -param {Object} [headers] extra headers
-/// -param {String} [body]
+/**
+ * -param {String} method request method
+ * -param {String} ruri request uri
+ * -param {UA} ua
+ * -param {Object} params parameters that will have priority over ua.configuration parameters:
+ * <br>
+ *  - cseq, call_id, from_tag, from_uri, from_display_name, to_uri, to_tag, route_set
+ * -param {Object} [headers] extra headers
+ * -param {String} [body]
+ */
 class OutgoingRequest {
   OutgoingRequest(this.method, this.ruri, this.ua,
       [Map<String, dynamic>? params,
@@ -44,11 +46,10 @@ class OutgoingRequest {
     // Route.
     if (params['route_set'] != null) {
       setHeader('route', params['route_set']);
-    } else if (ua!.configuration!.usePreloadedRoute) {
-      //! sip_domain
-      // setHeader('route', '<${ua!.transport!.sip_uri};sipml5-outbound;lr>');
-      setHeader(
-          'route', '<sip:${ua!.configuration!.sipDomain};lr;transport=udp>');
+    } else if (ua.configuration.use_preloaded_route) {
+      if (ua.socketTransport != null) {
+        setHeader('route', '<${ua.socketTransport!.sip_uri};lr>');
+      }
     }
 
     // Via.
@@ -69,7 +70,7 @@ class OutgoingRequest {
     setHeader('to', to.toString());
 
     // From.
-    dynamic from_uri = params['from_uri'] ?? ua!.configuration!.uri;
+    dynamic from_uri = params['from_uri'] ?? ua.configuration.uri;
     Map<String, dynamic> from_params = <String, dynamic>{
       'tag': params['from_tag'] ?? utils.newTag()
     };
@@ -77,8 +78,8 @@ class OutgoingRequest {
 
     if (params['from_display_name'] != null) {
       display_name = params['from_display_name'];
-    } else if (ua!.configuration!.displayName != null) {
-      display_name = ua!.configuration!.displayName;
+    } else if (ua.configuration.display_name != null) {
+      display_name = ua.configuration.display_name;
     } else {
       display_name = null;
     }
@@ -88,22 +89,21 @@ class OutgoingRequest {
 
     // Call-ID.
     String call_id = params['call_id'] ??
-        (ua!.configuration!.jssip_id! + utils.createRandomToken(15));
+        (ua.configuration.jssip_id! + utils.createRandomToken(15));
 
     this.call_id = call_id;
     setHeader('call-id', call_id);
 
     // CSeq.
-    num cseq =
-        params['cseq'] ?? utils.Math.floor(utils.Math.randomDouble() * 10000);
+    num cseq = params['cseq'] ?? (utils.Math.randomDouble() * 10000).floor();
 
     this.cseq = cseq as int?;
     setHeader('cseq', '$cseq ${SipMethodHelper.getName(method)}');
   }
 
-  PitelUA? ua;
+  UA ua;
   Map<String?, dynamic> headers = <String?, dynamic>{};
-  SipMethod? method;
+  SipMethod method;
   URI? ruri;
   String? body;
   List<dynamic> extraHeaders = <dynamic>[];
@@ -244,17 +244,17 @@ class OutgoingRequest {
         supported.add('gruu');
         break;
       case SipMethod.INVITE:
-        if (ua!.configuration!.sessionTimers) {
+        if (ua.configuration.session_timers) {
           supported.add('timer');
         }
-        if (ua!.contact!.pub_gruu != null || ua!.contact!.temp_gruu != null) {
+        if (ua.contact!.pub_gruu != null || ua.contact!.temp_gruu != null) {
           supported.add('gruu');
         }
         supported.add('ice');
         supported.add('replaces');
         break;
       case SipMethod.UPDATE:
-        if (ua!.configuration!.sessionTimers) {
+        if (ua.configuration.session_timers) {
           supported.add('timer');
         }
         supported.add('ice');
@@ -265,7 +265,7 @@ class OutgoingRequest {
 
     supported.add('outbound');
 
-    String userAgent = ua!.configuration!.userAgent;
+    String userAgent = ua.configuration.user_agent;
 
     // Allow.
     msg += 'Allow: ${DartSIP_C.ALLOWED_METHODS}\r\n';
@@ -273,10 +273,8 @@ class OutgoingRequest {
     msg += 'User-Agent: $userAgent\r\n';
 
     if (body != null) {
-      logger.debug('Outgoing Message: ' + body!);
-      //Here we should calculate the real content length for UTF8
-      List<int> encoded = utf8.encode(body!);
-      int length = encoded.length;
+      logger.d('Outgoing Message: $method body: $body');
+      int length = utf8.encode(body!).length;
       msg += 'Content-Length: $length\r\n\r\n';
       msg += body!;
     } else {
@@ -305,13 +303,13 @@ class OutgoingRequest {
 }
 
 class InitialOutgoingInviteRequest extends OutgoingRequest {
-  InitialOutgoingInviteRequest(URI? ruri, PitelUA? ua,
+  InitialOutgoingInviteRequest(URI? ruri, UA ua,
       [Map<String, dynamic>? params, List<dynamic>? extraHeaders, String? body])
       : super(SipMethod.INVITE, ruri, ua, params, extraHeaders, body) {
     transaction = null;
   }
 
-  void cancel(String reason) {
+  void cancel(String? reason) {
     transaction.cancel(reason);
   }
 
@@ -440,10 +438,10 @@ class IncomingMessage {
     name = utils.headerize(name);
 
     if (headers![name] == null) {
-      logger.debug('header "$name" not present');
+      logger.d('header "$name" not present');
       return null;
     } else if (idx >= headers![name].length) {
-      logger.debug('not so many "$name" headers present');
+      logger.d('not so many "$name" headers present');
       return null;
     }
 
@@ -458,7 +456,7 @@ class IncomingMessage {
     dynamic parsed = Grammar.parse(value, name.replaceAll('-', '_'));
     if (parsed == -1) {
       headers![name].splice(idx, 1); // delete from headers
-      logger.debug('error parsing "$name" header field with value "$value"');
+      logger.d('error parsing "$name" header field with value "$value"');
       return null;
     } else {
       header['parsed'] = parsed;
@@ -521,9 +519,9 @@ class IncomingRequest extends IncomingMessage {
     transport = null;
     server_transaction = null;
   }
-  PitelUA? ua;
+  UA? ua;
   URI? ruri;
-  Transport? transport;
+  SocketTransport? transport;
   TransactionBase? server_transaction;
   /**
   * Stateful reply.
@@ -590,7 +588,7 @@ class IncomingRequest extends IncomingMessage {
     // Supported.
     switch (method) {
       case SipMethod.INVITE:
-        if (ua!.configuration!.sessionTimers) {
+        if (ua!.configuration.session_timers) {
           supported.add('timer');
         }
         if (ua!.contact!.pub_gruu != null || ua!.contact!.temp_gruu != null) {
@@ -600,7 +598,7 @@ class IncomingRequest extends IncomingMessage {
         supported.add('replaces');
         break;
       case SipMethod.UPDATE:
-        if (ua!.configuration!.sessionTimers) {
+        if (ua!.configuration.session_timers) {
           supported.add('timer');
         }
         if (body != null) {
@@ -628,6 +626,10 @@ class IncomingRequest extends IncomingMessage {
 
     if (body != null) {
       int length = body.length;
+      int utf8Length = utf8.encode(body).length;
+      if (length != utf8Length) {
+        logger.w('WARNING Non-ASCII character detected in message body');
+      }
 
       response += 'Content-Type: application/sdp\r\n';
       response += 'Content-Length: $length\r\n\r\n';
@@ -654,8 +656,6 @@ class IncomingRequest extends IncomingMessage {
     // Validate code and reason values.
     if (code == null || (code < 100 || code > 699)) {
       throw Exceptions.TypeError('Invalid status_code: $code');
-    } else if (reason != null) {
-      throw Exceptions.TypeError('Invalid reason_phrase: $reason');
     }
 
     reason = reason ?? DartSIP_C.REASON_PHRASE[code] ?? '';

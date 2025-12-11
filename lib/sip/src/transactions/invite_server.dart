@@ -3,14 +3,14 @@ import 'dart:async';
 import '../event_manager/internal_events.dart';
 import '../logger.dart';
 import '../sip_message.dart';
+import '../socket_transport.dart';
 import '../timers.dart';
-import '../transport.dart';
 import '../ua.dart';
 import 'transaction_base.dart';
 
 class InviteServerTransaction extends TransactionBase {
   InviteServerTransaction(
-      PitelUA ua, Transport? transport, IncomingRequest request) {
+      UA ua, SocketTransport? transport, IncomingRequest request) {
     id = request.via_branch;
     this.ua = ua;
     this.transport = transport;
@@ -36,28 +36,27 @@ class InviteServerTransaction extends TransactionBase {
   }
 
   void timer_H() {
-    logger.debug('Timer H expired for transaction $id');
+    logger.d('Timer H expired for transaction $id');
 
     if (state == TransactionState.COMPLETED) {
-      logger.debug('ACK not received, dialog will be terminated');
+      logger.d('ACK not received, dialog will be terminated');
     }
 
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
+    ua.destroyTransaction(this);
   }
 
   void timer_I() {
     stateChanged(TransactionState.TERMINATED);
-    ua!.destroyTransaction(this);
   }
 
   // RFC 6026 7.1.
   void timer_L() {
-    logger.debug('Timer L expired for transaction $id');
+    logger.d('Timer L expired for transaction $id');
 
     if (state == TransactionState.ACCEPTED) {
       stateChanged(TransactionState.TERMINATED);
-      ua!.destroyTransaction(this);
+      ua.destroyTransaction(this);
     }
   }
 
@@ -66,7 +65,7 @@ class InviteServerTransaction extends TransactionBase {
     if (transportError == null) {
       transportError = true;
 
-      logger.debug('transport error occurred, deleting transaction $id');
+      logger.d('transport error occurred, deleting transaction $id');
 
       if (_resendProvisionalTimer != null) {
         clearInterval(_resendProvisionalTimer);
@@ -78,7 +77,7 @@ class InviteServerTransaction extends TransactionBase {
       clearTimeout(I);
 
       stateChanged(TransactionState.TERMINATED);
-      ua!.destroyTransaction(this);
+      ua.destroyTransaction(this);
     }
   }
 

@@ -6,16 +6,20 @@ import 'constants.dart' as DartSIP_C;
 import 'constants.dart';
 import 'data.dart';
 import 'dialog.dart';
+import 'enums.dart';
 import 'event_manager/event_manager.dart';
 import 'event_manager/internal_events.dart';
 import 'exceptions.dart' as Exceptions;
 import 'logger.dart';
 import 'message.dart';
+import 'options.dart';
 import 'parser.dart' as Parser;
 import 'registrator.dart';
 import 'rtc_session.dart';
 import 'sanity_check.dart';
 import 'sip_message.dart';
+import 'socket_transport.dart';
+import 'subscriber.dart';
 import 'timers.dart';
 import 'transactions/invite_client.dart';
 import 'transactions/invite_server.dart';
@@ -23,23 +27,15 @@ import 'transactions/non_invite_client.dart';
 import 'transactions/non_invite_server.dart';
 import 'transactions/transaction_base.dart';
 import 'transactions/transactions.dart';
-import 'transport.dart';
-import 'transports/websocket_interface.dart';
+import 'transports/socket_interface.dart';
 import 'uri.dart';
 import 'utils.dart' as Utils;
 
-class C {
-  // UA status codes.
-  static const int STATUS_INIT = 0;
-  static const int STATUS_READY = 1;
-  static const int STATUS_USER_CLOSED = 2;
-  static const int STATUS_NOT_READY = 3;
+enum UAStatus { init, ready, userClosed, notReady }
 
-  // UA error codes.
-  static const int CONFIGURATION_ERROR = 1;
-  static const int NETWORK_ERROR = 2;
-}
+enum UAError { configuration, network }
 
+// TODO(Perondas): Figure out what this is
 final bool hasRTCPeerConnection = true;
 
 class DynamicSettings {
@@ -81,65 +77,60 @@ class Contact {
  * @throws {DartSIP.Exceptions.ConfigurationError} If a configuration parameter is invalid.
  * @throws {TypeError} If no configuration is given.
  */
-class PitelUA extends EventManager {
-  PitelUA(PitelSipSettings? configuration) {
-    logger.debug('new() [configuration:${configuration.toString()}]');
-
-    _configuration = PitelSipSettings();
-    _dynConfiguration = DynamicSettings();
-    _dialogs = <String, Dialog>{};
-
-    // User actions outside any session/dialog (MESSAGE).
-    _applicants = <Message>{};
-
-    _sessions = <String?, RTCSession>{};
-    _transport = null;
-    _contact = null;
-    _status = C.STATUS_INIT;
-    _transactions = TransactionBag();
-
-    // Custom UA empty object for high level use.
-
-    _closeTimer = null;
-
-    // Check configuration argument.
-    if (configuration == null) {
-      throw Exceptions.ConfigurationError('Not enough arguments');
-    }
-
+class UA extends EventManager {
+  UA(Settings configuration) {
+    logger.d('new() [configuration:${configuration.toString()}]');
     // Load configuration.
     try {
       _loadConfig(configuration);
     } catch (e) {
-      _status = C.STATUS_NOT_READY;
-      throw e;
+      _status = UAStatus.notReady;
+      _error = UAError.configuration;
+      rethrow;
     }
 
     // Initialize registrator.
     _registrator = Registrator(this);
   }
 
-  PitelSipSettings? _configuration;
-  DynamicSettings? _dynConfiguration;
-  late Map<String, Dialog> _dialogs;
-  late Set<Message> _applicants;
-  Map<String?, RTCSession> _sessions = <String?, RTCSession>{};
-  Transport? _transport;
+  final Map<String?, Subscriber> _subscribers = <String?, Subscriber>{};
+  final Map<String, dynamic> _cache = <String, dynamic>{
+    'credentials': <dynamic>{}
+  };
+
+  final Settings _configuration = Settings();
+  DynamicSettings? _dynConfiguration = DynamicSettings();
+
+  final Map<String, Dialog> _dialogs = <String, Dialog>{};
+
+  // User actions outside any session/dialog (MESSAGE/OPTIONS).
+  final Set<Applicant> _applicants = <Applicant>{};
+
+  final Map<String?, RTCSession> _sessions = <String?, RTCSession>{};
+  SocketTransport? _socketTransport;
   Contact? _contact;
-  int? _status;
-  TransactionBag _transactions = TransactionBag();
+  UAStatus _status = UAStatus.init;
+  UAError? _error;
+  late TransactionBag _transactions;
+
+// Custom UA empty object for high level use.
+  final Map<String, dynamic> _data = <String, dynamic>{};
+
   Timer? _closeTimer;
   late Registrator _registrator;
 
-  int? get status => _status;
+  UAStatus get status => _status;
 
   Contact? get contact => _contact;
 
-  PitelSipSettings? get configuration => _configuration;
+  Settings get configuration => _configuration;
 
-  Transport? get transport => _transport;
+  SocketTransport? get socketTransport => _socketTransport;
 
   TransactionBag get transactions => _transactions;
+
+  // Flag that indicates whether UA is currently stopping
+  bool _stopping = false;
 
   // ============
   //  High Level API
@@ -150,39 +141,41 @@ class PitelUA extends EventManager {
    * Resume UA after being closed.
    */
   void start() {
-    logger.debug('start()');
+    logger.d('start()');
 
-    if (_status == C.STATUS_INIT) {
-      _transport!.connect();
-    } else if (_status == C.STATUS_USER_CLOSED) {
-      logger.debug('restarting UA');
+    _transactions = TransactionBag();
+
+    if (_status == UAStatus.init) {
+      _socketTransport!.connect();
+    } else if (_status == UAStatus.userClosed) {
+      logger.d('restarting UA');
 
       // Disconnect.
       if (_closeTimer != null) {
         clearTimeout(_closeTimer);
         _closeTimer = null;
-        _transport!.disconnect();
+        _socketTransport!.disconnect();
       }
 
       // Reconnect.
-      _status = C.STATUS_INIT;
-      _transport!.connect();
-    } else if (_status == C.STATUS_READY) {
-      logger.debug('UA is in READY status, not restarted');
+      _status = UAStatus.init;
+      _socketTransport!.connect();
+    } else if (_status == UAStatus.ready) {
+      logger.d('UA is in READY status, not restarted');
     } else {
-      logger.debug(
+      logger.d(
           'ERROR: connection is down, Auto-Recovery system is trying to reconnect');
     }
 
     // Set dynamic configuration.
-    _dynConfiguration!.register = _configuration!.register;
+    _dynConfiguration!.register = _configuration.register;
   }
 
   /**
    * Register.
    */
   void register() {
-    logger.debug('register()');
+    logger.d('register()');
     _dynConfiguration!.register = true;
     _registrator.register();
   }
@@ -190,11 +183,30 @@ class PitelUA extends EventManager {
   /**
    * Unregister.
    */
-  void unregister({bool all = false}) {
-    logger.debug('unregister()');
+  Future<bool> unregister({bool all = false}) {
+    logger.d('unregister()');
 
     _dynConfiguration!.register = false;
-    _registrator.unregister(all);
+    return _registrator.unregister(all);
+  }
+
+  /**
+   * Create subscriber instance
+   */
+  Subscriber subscribe(
+    String target,
+    String eventName,
+    String accept, [
+    int expires = 900,
+    String? contentType,
+    String? allowEvents,
+    Map<String, dynamic> requestParams = const <String, dynamic>{},
+    List<String> extraHeaders = const <String>[],
+  ]) {
+    logger.d('subscribe()');
+
+    return Subscriber(this, target, eventName, accept, expires, contentType,
+        allowEvents, requestParams, extraHeaders);
   }
 
   /**
@@ -207,7 +219,7 @@ class PitelUA extends EventManager {
   /**
    * Registration state.
    */
-  bool? isRegistered() {
+  bool isRegistered() {
     return _registrator.registered;
   }
 
@@ -215,7 +227,7 @@ class PitelUA extends EventManager {
    * Connection state.
    */
   bool isConnected() {
-    return _transport!.isConnected();
+    return _socketTransport!.isConnected();
   }
 
   /**
@@ -228,7 +240,7 @@ class PitelUA extends EventManager {
    *
    */
   RTCSession call(String target, Map<String, dynamic> options) {
-    logger.debug('call()');
+    logger.d('call()');
     RTCSession session = RTCSession(this);
     session.connect(target, options);
     return session;
@@ -244,10 +256,28 @@ class PitelUA extends EventManager {
    * -throws {TypeError}
    *
    */
-  Message sendMessage(
-      String target, String body, Map<String, dynamic>? options) {
-    logger.debug('sendMessage()');
+  Message sendMessage(String target, String body, Map<String, dynamic>? options,
+      Map<String, dynamic>? params) {
+    logger.d('sendMessage()');
     Message message = Message(this);
+    message.send(target, body, options, params);
+    return message;
+  }
+
+  /**
+   * Send a Options.
+   *
+   * -param {String} target
+   * -param {String} body
+   * -param {Object} [options]
+   *
+   * -throws {TypeError}
+   *
+   */
+  Options sendOptions(
+      String target, String body, Map<String, dynamic>? options) {
+    logger.d('sendOptions()');
+    Options message = Options(this);
     message.send(target, body, options);
     return message;
   }
@@ -256,7 +286,7 @@ class PitelUA extends EventManager {
    * Terminate ongoing sessions.
    */
   void terminateSessions(Map<String, dynamic> options) {
-    logger.debug('terminateSessions()');
+    logger.d('terminateSessions()');
     _sessions.forEach((String? key, _) {
       if (!_sessions[key]!.isEnded()) {
         _sessions[key]!.terminate(options);
@@ -269,13 +299,14 @@ class PitelUA extends EventManager {
    *
    */
   void stop() {
-    logger.debug('stop()');
+    logger.d('stop()');
 
     // Remove dynamic settings.
     _dynConfiguration = null;
 
-    if (_status == C.STATUS_USER_CLOSED) {
-      logger.debug('UA already closed');
+    if (_status == UAStatus.userClosed) {
+      logger.d('UA already closed');
+
       return;
     }
 
@@ -286,37 +317,52 @@ class PitelUA extends EventManager {
     int num_sessions = _sessions.length;
 
     // Run  _terminate_ on every Session.
-    _sessions.forEach((String? key, _) {
+    _sessions.keys.toList().forEach((String? key) {
       if (_sessions.containsKey(key)) {
-        logger.debug('closing session $key');
+        logger.d('closing session $key');
         try {
           RTCSession rtcSession = _sessions[key]!;
           if (!rtcSession.isEnded()) {
             rtcSession.terminate();
           }
-        } catch (error, s) {
-          Log.e(error.toString(), null, s);
+        } catch (e, s) {
+          logger.e(e.toString(), error: e, stackTrace: s);
         }
       }
     });
 
+    // Run _terminate on ever subscription
+    _subscribers.forEach((String? key, _) {
+      if (_subscribers.containsKey(key)) {
+        logger.d('closing subscription $key');
+        try {
+          Subscriber subscriber = _subscribers[key]!;
+          subscriber.terminate(null);
+        } catch (e, s) {
+          logger.e(e.toString(), error: e, stackTrace: s);
+        }
+      }
+    });
+
+    _stopping = true;
+
     // Run  _close_ on every applicant.
-    for (Message message in _applicants) {
+    for (Applicant applicant in _applicants) {
       try {
-        message.close();
+        applicant.close();
       } catch (error) {}
     }
 
-    _status = C.STATUS_USER_CLOSED;
+    _status = UAStatus.userClosed;
 
     int num_transactions = _transactions.countTransactions();
     if (num_transactions == 0 && num_sessions == 0) {
-      _transport!.disconnect();
+      _socketTransport!.disconnect();
     } else {
       _closeTimer = setTimeout(() {
-        logger.info('Closing connection');
+        logger.i('Closing connection');
         _closeTimer = null;
-        _transport!.disconnect();
+        _socketTransport!.disconnect();
       }, 2000);
     }
   }
@@ -327,7 +373,7 @@ class PitelUA extends EventManager {
    * -returns {DartSIP.URI|null}
    */
   URI? normalizeTarget(String? target) {
-    return Utils.normalizeTarget(target, _configuration!.hostport_params);
+    return Utils.normalizeTarget(target, _configuration.hostport_params);
   }
 
   /**
@@ -336,13 +382,13 @@ class PitelUA extends EventManager {
   String? get(String parameter) {
     switch (parameter) {
       case 'realm':
-        return _configuration!.realm;
+        return _configuration.realm;
 
       case 'ha1':
-        return _configuration!.ha1;
+        return _configuration.ha1;
 
       default:
-        logger.error('get() | cannot get "$parameter" parameter in runtime');
+        logger.e('get() | cannot get "$parameter" parameter in runtime');
 
         return null;
     }
@@ -356,32 +402,38 @@ class PitelUA extends EventManager {
     switch (parameter) {
       case 'password':
         {
-          _configuration!.password = value.toString();
+          _configuration.password = value.toString();
           break;
         }
 
       case 'realm':
         {
-          _configuration!.realm = value.toString();
+          _configuration.realm = value.toString();
           break;
         }
 
       case 'ha1':
         {
-          _configuration!.ha1 = value.toString();
+          _configuration.ha1 = value.toString();
           // Delete the plain SIP password.
-          _configuration!.password = null;
+          _configuration.password = null;
           break;
         }
 
       case 'display_name':
         {
-          _configuration!.displayName = value;
+          _configuration.display_name = value;
+          break;
+        }
+
+      case 'uri':
+        {
+          _configuration.uri = value;
           break;
         }
 
       default:
-        logger.error('set() | cannot set "$parameter" parameter in runtime');
+        logger.e('set() | cannot set "$parameter" parameter in runtime');
 
         return false;
     }
@@ -410,6 +462,20 @@ class PitelUA extends EventManager {
   }
 
   /**
+   * Subscriber
+   */
+  void newSubscriber({required Subscriber sub}) {
+    _subscribers[sub.id] = sub;
+  }
+
+  /**
+   * Subscriber destroyed.
+   */
+  void destroySubscriber(Subscriber sub) {
+    _subscribers.remove(sub.id);
+  }
+
+  /**
    * Dialog
    */
   void newDialog(Dialog dialog) {
@@ -426,9 +492,25 @@ class PitelUA extends EventManager {
   /**
    *  Message
    */
-  void newMessage(Message message, String originator, dynamic request) {
+  void newMessage(Message message, Originator originator, dynamic request) {
+    if (_stopping) {
+      return;
+    }
     _applicants.add(message);
     emit(EventNewMessage(
+        message: message, originator: originator, request: request));
+  }
+
+  /**
+   *  Options
+   */
+  void newOptions(Options message, Originator originator, dynamic request) {
+    if (_stopping) {
+      return;
+    }
+    _applicants.add(message);
+
+    emit(EventNewOptions(
         message: message, originator: originator, request: request));
   }
 
@@ -436,6 +518,19 @@ class PitelUA extends EventManager {
    *  Message destroyed.
    */
   void destroyMessage(Message message) {
+    if (_stopping) {
+      return;
+    }
+    _applicants.remove(message);
+  }
+
+  /**
+   *  Options destroyed.
+   */
+  void destroyOptions(Options message) {
+    if (_stopping) {
+      return;
+    }
     _applicants.remove(message);
   }
 
@@ -443,7 +538,7 @@ class PitelUA extends EventManager {
    * RTCSession
    */
   void newRTCSession(
-      {required RTCSession session, String? originator, dynamic request}) {
+      {required RTCSession session, Originator? originator, dynamic request}) {
     _sessions[session.id] = session;
     emit(EventNewRTCSession(
         session: session, originator: originator, request: request));
@@ -500,9 +595,9 @@ class PitelUA extends EventManager {
     DartSIP_C.SipMethod? method = request.method;
 
     // Check that request URI points to us.
-    if (request.ruri!.user != _configuration!.uri.user &&
+    if (request.ruri!.user != _configuration.uri!.user &&
         request.ruri!.user != _contact!.uri!.user) {
-      logger.debug('Request-URI does not point to us');
+      logger.d('Request-URI does not point to us');
       if (request.method != SipMethod.ACK) {
         request.reply_sl(404);
       }
@@ -525,11 +620,11 @@ class PitelUA extends EventManager {
     // Create the server transaction.
     if (method == SipMethod.INVITE) {
       /* eslint-disable no-*/
-      InviteServerTransaction(this, _transport, request);
+      InviteServerTransaction(this, _socketTransport, request);
       /* eslint-enable no-*/
     } else if (method != SipMethod.ACK && method != SipMethod.CANCEL) {
       /* eslint-disable no-*/
-      NonInviteServerTransaction(this, _transport, request);
+      NonInviteServerTransaction(this, _socketTransport, request);
       /* eslint-enable no-*/
     }
 
@@ -539,7 +634,13 @@ class PitelUA extends EventManager {
      * They are processed as if they had been received outside the dialog.
      */
     if (method == SipMethod.OPTIONS) {
-      request.reply(200);
+      if (!hasListeners(EventNewOptions())) {
+        request.reply(200);
+        return;
+      }
+      Options message = Options(this);
+      message.init_incoming(request);
+      return;
     } else if (method == SipMethod.MESSAGE) {
       if (!hasListeners(EventNewMessage())) {
         request.reply(405);
@@ -551,6 +652,13 @@ class PitelUA extends EventManager {
     } else if (method == SipMethod.INVITE) {
       // Initial INVITE.
       if (request.to_tag != null && !hasListeners(EventNewRTCSession())) {
+        request.reply(405);
+
+        return;
+      }
+    } else if (method == SipMethod.SUBSCRIBE) {
+      // ignore: collection_methods_unrelated_type
+      if (listeners['newSubscribe'] == null) {
         request.reply(405);
 
         return;
@@ -571,7 +679,7 @@ class PitelUA extends EventManager {
               dialog = _findDialog(
                   replaces.call_id, replaces.from_tag!, replaces.to_tag!);
               if (dialog != null) {
-                session = dialog.owner;
+                session = dialog.owner as RTCSession?;
                 if (!session!.isEnded()) {
                   session.receiveRequest(request);
                 } else {
@@ -585,7 +693,7 @@ class PitelUA extends EventManager {
               session.init_incoming(request);
             }
           } else {
-            logger.error('INVITE received but WebRTC is not supported');
+            logger.e('INVITE received but WebRTC is not supported');
             request.reply(488);
           }
           break;
@@ -599,7 +707,7 @@ class PitelUA extends EventManager {
           if (session != null) {
             session.receiveRequest(request);
           } else {
-            logger.debug('received CANCEL request for a non existent session');
+            logger.d('received CANCEL request for a non existent session');
           }
           break;
         case SipMethod.ACK:
@@ -612,6 +720,9 @@ class PitelUA extends EventManager {
           // Receive sip event.
           emit(EventSipEvent(request: request));
           request.reply(200);
+          break;
+        case SipMethod.SUBSCRIBE:
+          emit(EventOnNewSubscribe(request: request));
           break;
         default:
           request.reply(405);
@@ -626,13 +737,12 @@ class PitelUA extends EventManager {
       if (dialog != null) {
         dialog.receiveRequest(request);
       } else if (method == SipMethod.NOTIFY) {
-        session =
-            _findSession(request.call_id!, request.from_tag, request.to_tag);
-        if (session != null) {
-          session.receiveRequest(request);
+        Subscriber? sub = _findSubscriber(
+            request.call_id!, request.from_tag!, request.to_tag!);
+        if (sub != null) {
+          sub.receiveRequest(request);
         } else {
-          logger
-              .debug('received NOTIFY request for a non existent subscription');
+          logger.d('received NOTIFY request for a non existent subscription');
           request.reply(481, 'Subscription does not exist');
         }
       }
@@ -651,6 +761,13 @@ class PitelUA extends EventManager {
   // ============
   // Utils.
   // ============
+
+  Subscriber? _findSubscriber(String call_id, String from_tag, String to_tag) {
+    String id = call_id;
+    Subscriber? sub = _subscribers[id];
+
+    return sub;
+  }
 
   /**
    * Get the session to which the request belongs to, if any.
@@ -690,126 +807,134 @@ class PitelUA extends EventManager {
     }
   }
 
-  void _loadConfig(PitelSipSettings configuration) {
+  void _loadConfig(Settings configuration) {
     // Check and load the given configuration.
     try {
       config.load(configuration, _configuration);
     } catch (e) {
-      throw e;
+      rethrow;
     }
 
     // Post Configuration Process.
 
     // Allow passing 0 number as display_name.
-    if (_configuration!.displayName is num &&
-        (_configuration!.displayName as num?) == 0) {
-      _configuration!.displayName = '0';
+    if (_configuration.display_name is num &&
+        (_configuration.display_name as num?) == 0) {
+      _configuration.display_name = '0';
     }
 
     // Instance-id for GRUU.
-    _configuration!.instanceId ??= Utils.newUUID();
+    _configuration.instance_id ??= Utils.newUUID();
 
     // Jssip_id instance parameter. Static random tag of length 5.
-    _configuration!.jssip_id = Utils.createRandomToken(5);
+    _configuration.jssip_id = Utils.createRandomToken(5);
 
     // String containing _configuration.uri without scheme and user.
-    URI hostport_params = _configuration!.uri.clone();
+    URI hostport_params = _configuration.uri!.clone();
+
+    _configuration.terminateOnAudioMediaPortZero =
+        configuration.terminateOnAudioMediaPortZero;
 
     hostport_params.user = null;
-    _configuration!.hostport_params = hostport_params
+    _configuration.hostport_params = hostport_params
         .toString()
         .replaceAll(RegExp(r'sip:', caseSensitive: false), '');
 
-    // Transport.
+    // Websockets Transport
+
     try {
-      _transport = Transport(_configuration!.sockets, <String, int>{
+      _socketTransport = SocketTransport(_configuration.sockets!, <String, int>{
         // Recovery options.
-        'max_interval': _configuration!.connection_recovery_max_interval,
-        'min_interval': _configuration!.connection_recovery_min_interval
+        'max_interval': _configuration.connection_recovery_max_interval,
+        'min_interval': _configuration.connection_recovery_min_interval
       });
 
       // Transport event callbacks.
-      _transport!.onconnecting = onTransportConnecting;
-      _transport!.onconnect = onTransportConnect;
-      _transport!.ondisconnect = onTransportDisconnect;
-      _transport!.ondata = onTransportData;
+      _socketTransport!.onconnecting = onTransportConnecting;
+      _socketTransport!.onconnect = onTransportConnect;
+      _socketTransport!.ondisconnect = onTransportDisconnect;
+      _socketTransport!.ondata = onTransportData;
     } catch (e) {
-      logger.error('Failed to _loadConfig: ${e.toString()}');
-      throw Exceptions.ConfigurationError('sockets', _configuration!.sockets);
-    }
-
-    String transport = 'ws';
-
-    if (_configuration!.sockets!.isNotEmpty) {
-      transport = _configuration!.sockets!.first.via_transport.toLowerCase();
+      logger.e('Failed to _loadConfig: ${e.toString()}');
+      throw Exceptions.ConfigurationError('sockets', _configuration.sockets);
     }
 
     // Remove sockets instance from configuration object.
     // TODO(cloudwebrtc):  need dispose??
-    _configuration!.sockets = null;
+    _configuration.sockets = null;
 
     // Check whether authorization_user is explicitly defined.
     // Take '_configuration.uri.user' value if not.
-    _configuration!.authorizationUser ??= _configuration!.uri.user;
+    _configuration.authorization_user ??= _configuration.uri!.user;
 
     // If no 'registrar_server' is set use the 'uri' value without user portion and
     // without URI params/headers.
-    if (_configuration!.registrarServer == null) {
-      URI registrar_server = _configuration!.uri.clone();
+    if (_configuration.registrar_server == null) {
+      URI registrar_server = _configuration.uri!.clone();
       registrar_server.user = null;
       registrar_server.clearParams();
       registrar_server.clearHeaders();
-      _configuration!.registrarServer = registrar_server;
+      _configuration.registrar_server = registrar_server;
     }
 
     // User no_answer_timeout.
-    _configuration!.noAnswerTimeout *= 1000;
+    _configuration.no_answer_timeout *= 1000;
 
+    //Default transport initialization
+    String transport = _configuration.transportType?.name ?? 'WS';
+
+    //Override transport from socket
+    if (transport == 'WS' && _socketTransport != null) {
+      transport = _socketTransport!.via_transport;
+    }
+
+    print(
+        '================contact_uri=========${_configuration.contact_uri}=======');
     // Via Host.
-    if (_configuration!.contactUri != null) {
-      _configuration!.via_host = _configuration!.contactUri.host;
+    if (_configuration.contact_uri != null) {
+      _configuration.via_host = _configuration.contact_uri!.host;
     }
     // Contact URI.
     else {
-      _configuration!.contactUri = URI(
+      _configuration.contact_uri = URI(
           'sip',
           Utils.createRandomToken(8),
-          _configuration!.via_host,
+          _configuration.via_host,
           null,
           <dynamic, dynamic>{'transport': transport});
     }
-    _contact = Contact(_configuration!.contactUri);
+    _contact = Contact(_configuration.contact_uri);
     return;
   }
 
-/**
- * Transport event handlers
- */
+  /**
+   * Transport event handlers
+   */
 
 // Transport connecting event.
-  void onTransportConnecting(WebSocketInterface? socket, int? attempts) {
-    logger.debug('Transport connecting');
+  void onTransportConnecting(SIPUASocketInterface? socket, int? attempts) {
+    logger.d('Transport connecting');
     emit(EventSocketConnecting(socket: socket));
   }
 
 // Transport connected event.
-  void onTransportConnect(Transport transport) async {
-    logger.debug('Transport connected');
-    if (_status == C.STATUS_USER_CLOSED) {
+  void onTransportConnect(SocketTransport transport) {
+    logger.d('Transport connected');
+    if (_status == UAStatus.userClosed) {
       return;
     }
-    _status = C.STATUS_READY;
+    _status = UAStatus.ready;
+    _error = null;
 
     emit(EventSocketConnected(socket: transport.socket));
 
     if (_dynConfiguration!.register!) {
-      await Future.delayed(Duration(milliseconds: 200));
       _registrator.register();
     }
   }
 
 // Transport disconnected event.
-  void onTransportDisconnect(WebSocketInterface? socket, ErrorCause cause) {
+  void onTransportDisconnect(SIPUASocketInterface? socket, ErrorCause cause) {
     // Run _onTransportError_ callback on every client transaction using _transport_.
     _transactions.removeAll().forEach((TransactionBase transaction) {
       transaction.onTransportError();
@@ -820,25 +945,28 @@ class PitelUA extends EventManager {
     // Call registrator _onTransportClosed_.
     _registrator.onTransportClosed();
 
-    if (_status != C.STATUS_USER_CLOSED) {
-      _status = C.STATUS_NOT_READY;
+    if (_status != UAStatus.userClosed) {
+      _status = UAStatus.notReady;
+      _error = UAError.network;
     }
   }
 
 // Transport data event.
-  void onTransportData(Transport transport, String messageData) {
+  void onTransportData(SocketTransport transport, String messageData) {
     IncomingMessage? message = Parser.parseMessage(messageData, this);
 
     if (message == null) {
       return;
     }
 
-    if (_status == C.STATUS_USER_CLOSED && message is IncomingRequest) {
+    if (_status == UAStatus.userClosed && message is IncomingRequest) {
       return;
     }
 
     // Do some sanity check.
     if (!sanityCheck(message, this, transport)) {
+      logger.w(
+          'Incoming message did not pass sanity test, dumping it: \n\n $message');
       return;
     }
 
@@ -872,4 +1000,8 @@ class PitelUA extends EventManager {
       }
     }
   }
+}
+
+mixin Applicant {
+  void close();
 }

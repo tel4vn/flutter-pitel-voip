@@ -24,22 +24,22 @@ class Id {
     return Id(map['call_id'], map['local_tag'], map['remote_tag']);
   }
 
-  String? call_id;
-  String? local_tag;
-  String? remote_tag;
+  String call_id;
+  String local_tag;
+  String remote_tag;
 
   @override
   String toString() {
-    return call_id! + local_tag! + remote_tag!;
+    return call_id + local_tag + remote_tag;
   }
 }
 
 // RFC 3261 12.1.
 class Dialog {
-  Dialog(RTCSession owner, dynamic message, String type, [int? state]) {
+  Dialog(this._owner, dynamic message, String type, [int? state]) {
     state = state ?? DialogStatus.STATUS_CONFIRMED;
-    _owner = owner;
-    _ua = owner.ua;
+
+    _ua = _owner.ua;
 
     if (!message.hasHeader('contact')) {
       throw Exceptions.TypeError(
@@ -86,13 +86,13 @@ class Dialog {
       _ack_seqnum = null;
     }
 
-    _ua!.newDialog(this);
-    logger.debug(
+    _ua.newDialog(this);
+    logger.d(
         '$type dialog created with status ${_state == DialogStatus.STATUS_EARLY ? 'EARLY' : 'CONFIRMED'}');
   }
 
-  RTCSession? _owner;
-  PitelUA? _ua;
+  final Owner _owner;
+  late UA _ua;
   bool uac_pending_reply = false;
   bool uas_pending_reply = false;
   int? _state;
@@ -105,15 +105,15 @@ class Dialog {
   Id? _id;
   num? local_seqnum;
 
-  PitelUA? get ua => _ua;
+  UA get ua => _ua;
   Id? get id => _id;
 
-  RTCSession? get owner => _owner;
+  Owner? get owner => _owner;
 
   void update(dynamic message, String type) {
     _state = DialogStatus.STATUS_CONFIRMED;
 
-    logger.debug('dialog ${_id.toString()}  changed to CONFIRMED state');
+    logger.d('dialog ${_id.toString()}  changed to CONFIRMED state');
 
     if (type == 'UAC') {
       // RFC 3261 13.2.2.4.
@@ -122,8 +122,8 @@ class Dialog {
   }
 
   void terminate() {
-    logger.debug('dialog ${_id.toString()} deleted');
-    _ua!.destroyDialog(this);
+    logger.d('dialog ${_id.toString()} deleted');
+    _ua.destroyDialog(this);
   }
 
   OutgoingRequest sendRequest(SipMethod method, Map<String, dynamic>? options) {
@@ -165,7 +165,7 @@ class Dialog {
       _ack_seqnum = request.cseq;
     }
 
-    _owner!.receiveRequest(request);
+    _owner.receiveRequest(request);
   }
 
   // RFC 3261 12.2.1.1.
@@ -173,7 +173,7 @@ class Dialog {
       SipMethod method, List<dynamic> extraHeaders, String? body) {
     extraHeaders = Utils.cloneArray(extraHeaders);
 
-    local_seqnum ??= Utils.Math.floor(Utils.Math.randomDouble() * 10000);
+    local_seqnum ??= (Utils.Math.randomDouble() * 10000).floor();
 
     num? cseq = (method == SipMethod.CANCEL || method == SipMethod.ACK)
         ? local_seqnum
@@ -262,4 +262,11 @@ class Dialog {
     }
     return true;
   }
+}
+
+abstract class Owner {
+  Function(IncomingRequest) get receiveRequest;
+  int get status;
+  int get TerminatedCode;
+  UA get ua;
 }
