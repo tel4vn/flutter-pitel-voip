@@ -21,6 +21,11 @@ import 'pitel_client.dart';
 
 final thr = Throttling(duration: const Duration(milliseconds: 2000));
 
+class SIPUAHelperSingleton {
+  static final SIPUAHelper _instance = SIPUAHelper();
+  static SIPUAHelper get instance => _instance;
+}
+
 /// Manages VoIP call operations including audio/video handling, call states,
 /// and media stream management.
 ///
@@ -35,7 +40,8 @@ class PitelCall implements SipUaHelperListener {
   final Map<String, PitelCallState> _states = {};
   // TODO: 3
   // final PitelUAHelper _sipuaHelper = PitelUAHelper();
-  final SIPUAHelper _sipuaHelper = SIPUAHelper();
+  // final SIPUAHelper _sipuaHelper = SIPUAHelper();
+  final SIPUAHelper _sipuaHelper = SIPUAHelperSingleton.instance;
   bool _audioMuted = false;
   bool _isHoldCall = false;
   bool _videoIsOff = false;

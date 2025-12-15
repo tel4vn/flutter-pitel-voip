@@ -251,8 +251,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
       fillColor: Colors.grey,
     );
 
-    var advanceActions =
-        direction == 'OUTGOING' ? _renderAdvanceAction() : <Widget>[];
+    var advanceActions = _renderAdvanceAction();
 
     switch (_state) {
       case PitelCallStateEnum.NONE:
@@ -262,16 +261,12 @@ class _MyCallPageWidget extends State<CallPageWidget>
         }
         break;
       case PitelCallStateEnum.STREAM:
-        advanceActions = _renderAdvanceAction();
-        basicActions = [hangupBtn];
-        break;
       case PitelCallStateEnum.CONNECTING:
       case PitelCallStateEnum.MUTED:
       case PitelCallStateEnum.UNMUTED:
       case PitelCallStateEnum.ACCEPTED:
       case PitelCallStateEnum.CONFIRMED:
       case PitelCallStateEnum.FAILED:
-        advanceActions = _renderAdvanceAction();
         basicActions = [hangupBtn];
         break;
       case PitelCallStateEnum.ENDED:
