@@ -8,12 +8,15 @@ import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 /// This class provides concrete implementations for Pitel VoIP service operations
 /// and listens to SIP helper events.
 class PitelServiceImpl implements PitelService, SipPitelHelperListener {
+  static final PitelServiceImpl _instance = PitelServiceImpl._internal();
+  factory PitelServiceImpl() => _instance;
+
   final pitelClient = PitelClient.getInstance();
 
   SipInfoData? sipInfoData;
 
   /// Creates an instance of [PitelServiceImpl] and registers as a listener.
-  PitelServiceImpl() {
+  PitelServiceImpl._internal() {
     pitelClient.pitelCall.addListener(this);
   }
 
@@ -92,5 +95,10 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     if (kDebugMode) {
       print('❌ ❌ ❌ transportStateChanged ${state.state.toString()}');
     }
+  }
+
+  @override
+  void dispose() {
+    pitelClient.pitelCall.removeListener(this);
   }
 }

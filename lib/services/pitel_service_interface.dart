@@ -12,4 +12,5 @@ abstract class PitelService {
   Future<PitelSettings> registerSipWithoutFCM(
     PnPushParams pnPushParams,
   );
+  void dispose();
 }
