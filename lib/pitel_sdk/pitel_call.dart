@@ -8,7 +8,6 @@ import 'package:flutter_pitel_voip/sip/src/enum_helper.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
 import 'package:flutter_pitel_voip/component/pitel_rtc_video_renderer.dart';
-import 'package:flutter_pitel_voip/component/pitel_ua_helper.dart';
 import 'package:flutter_pitel_voip/component/sip_pitel_helper_listener.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
 import 'package:flutter_pitel_voip/sip/sip_ua.dart';
@@ -38,9 +37,6 @@ class PitelCall implements SipUaHelperListener {
   MediaStream? _remoteStream;
   final List<SipPitelHelperListener> _sipPitelHelperListener = [];
   final Map<String, PitelCallState> _states = {};
-  // TODO: 3
-  // final PitelUAHelper _sipuaHelper = PitelUAHelper();
-  // final SIPUAHelper _sipuaHelper = SIPUAHelper();
   final SIPUAHelper _sipuaHelper = SIPUAHelperSingleton.instance;
   bool _audioMuted = false;
   bool _isHoldCall = false;
@@ -204,13 +200,11 @@ class PitelCall implements SipUaHelperListener {
     switch (pitelCallState.state) {
       case PitelCallStateEnum.CALL_INITIATION:
         switch (call.direction) {
-          // case 'OUTGOING':
           case Direction.outgoing:
             for (var element in _sipPitelHelperListener) {
               element.onCallInitiated(call.id!);
             }
             break;
-          // case 'INCOMING':
           case Direction.incoming:
             for (var element in _sipPitelHelperListener) {
               if (isBusy) {
@@ -221,7 +215,6 @@ class PitelCall implements SipUaHelperListener {
             }
             break;
           case null:
-            // TODO: Handle this case.
             break;
         }
         break;

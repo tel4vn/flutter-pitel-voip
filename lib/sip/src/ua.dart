@@ -888,8 +888,6 @@ class UA extends EventManager {
       transport = _socketTransport!.via_transport;
     }
 
-    print(
-        '================contact_uri=========${_configuration.contact_uri}=======');
     // Via Host.
     if (_configuration.contact_uri != null) {
       _configuration.via_host = _configuration.contact_uri!.host;

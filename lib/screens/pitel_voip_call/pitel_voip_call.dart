@@ -87,7 +87,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       pitelCall.setIsHoldCall(true);
-      if (pitelCall.direction == 'INCOMING' && Platform.isIOS) {
+      if (pitelCall.direction == 'Direction.incoming' && Platform.isIOS) {
         widget.goToCall();
       }
       if (Platform.isAndroid) {

@@ -106,7 +106,7 @@ class PitelClient {
     settings.webSocketSettings.allowBadCertificate = true;
     //settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
     settings.uri = 'sip:$_username@${_sipServer?.domain}:${_sipServer?.port}';
-    settings.contactUri =
+    settings.contact_uri =
         'sip:$_username@${_sipServer?.domain}:${_sipServer?.port};pn-prid=${pnPushParams.pnPrid};pn-provider=${pnPushParams.pnProvider};pn-param=${pnPushParams.pnParam};fcm-token=${pnPushParams.fcmToken};transport=wss';
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
     settings.authorizationUser = _username;
@@ -390,17 +390,16 @@ class PitelClient {
       fcmToken: fcmToken,
     );
 
-    // TODO: v3
-    // await deleteExtRegisterAor(
-    //   sipInfoData: sipInfoData,
-    //   pnPushParams: pnPushParams,
-    // );
+    await deleteExtRegisterAor(
+      sipInfoData: sipInfoData,
+      pnPushParams: pnPushParams,
+    );
 
-    // await removeDeviceToken(
-    //   deviceToken: deviceTokenRes,
-    //   domain: sipInfoData.registerServer,
-    //   extension: sipInfoData.accountName.toString(),
-    // );
+    await removeDeviceToken(
+      deviceToken: deviceTokenRes,
+      domain: sipInfoData.registerServer,
+      extension: sipInfoData.accountName.toString(),
+    );
     return 'UNREGISTER';
   }
 

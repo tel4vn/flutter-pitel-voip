@@ -69,9 +69,7 @@ class PushNotifAndroid {
     switch (message.data['callType']) {
       case "CANCEL_ALL":
       case "CANCEL_GROUP":
-        print(
-            '===============message.data==========${message.data['callType']}=======');
-        // FlutterCallkitIncoming.endAllCalls();
+        FlutterCallkitIncoming.endAllCalls();
         Eraser.clearAllAppNotifications();
         break;
       case "CALL":

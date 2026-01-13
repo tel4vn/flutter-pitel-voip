@@ -22,8 +22,6 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_START:
-            // TODO: started an outgoing call
-            // TODO: show screen calling in Flutter
             break;
           case Event.ACTION_CALL_ACCEPT:
             if (onCallAccept != null) {
@@ -46,19 +44,14 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_CALL_CALLBACK:
-            // TODO: only Android - click action `Call back` from missed call notification
             break;
           case Event.ACTION_CALL_TOGGLE_HOLD:
-            // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_MUTE:
-            // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_DMTF:
-            // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_GROUP:
-            // TODO: only iOS
             break;
           case Event.ACTION_CALL_TOGGLE_AUDIO_SESSION:
             if (swipeInLockscreen != null) {
@@ -66,7 +59,6 @@ class VoipNotifService {
             }
             break;
           case Event.ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP:
-            // TODO: only iOS
             break;
         }
         if (callback != null) {

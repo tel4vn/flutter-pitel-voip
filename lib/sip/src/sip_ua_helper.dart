@@ -194,8 +194,6 @@ class SIPUAHelper extends EventManager {
     _settings.terminateOnAudioMediaPortZero =
         uaSettings.terminateOnMediaPortZero;
     _settings.log_call_statistics = uaSettings.logCallStatistics;
-
-    // TODO: 3
     _settings.sipDomain = uaSettings.sipDomain;
 
     try {
@@ -908,9 +906,6 @@ class PitelSettings {
   String? instanceId;
   String? registrarServer;
   String? contact_uri;
-
-  // TODO: 3
-  String? contactUri;
   String? sipDomain;
 
   TransportType? transportType;
@@ -938,7 +933,8 @@ class PitelSettings {
   /// Sip Message Delay (in millisecond) (default 0).
   int sip_message_delay = 0;
   List<Map<String, String>> iceServers = <Map<String, String>>[
-    <String, String>{'urls': 'stun:stun.l.google.com:19302'},
+    <String, String>{'url': 'stun:stun.tel4vn.com:3478'},
+    <String, String>{'url': 'stun:stun.l.google.com:19302'},
 // turn server configuration example.
 //    {
 //      'url': 'turn:123.45.67.89:3478',
