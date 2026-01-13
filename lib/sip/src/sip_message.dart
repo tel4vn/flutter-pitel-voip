@@ -48,7 +48,9 @@ class OutgoingRequest {
       setHeader('route', params['route_set']);
     } else if (ua.configuration.use_preloaded_route) {
       if (ua.socketTransport != null) {
-        setHeader('route', '<${ua.socketTransport!.sip_uri};lr>');
+        // setHeader('route', '<${ua.socketTransport!.sip_uri};lr>');
+        setHeader(
+            'route', '<sip:${ua.configuration.sipDomain};lr;transport=udp>');
       }
     }
 

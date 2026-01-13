@@ -44,7 +44,8 @@ class _PitelVoipState extends State<PitelVoip> {
       },
       onCallDecline: (CallEvent event) {},
       onCallEnd: () {
-        pitelCall.hangup();
+        // TODO: v3
+        // pitelCall.hangup();
       },
     );
 

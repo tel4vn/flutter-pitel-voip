@@ -143,7 +143,7 @@ class SIPUAHelper extends EventManager {
     _uaSettings = uaSettings;
 
     // Reset settings
-    _settings = Settings();
+    // _settings = Settings();
 
     _settings.sockets = <SIPUASocketInterface>[];
 

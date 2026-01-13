@@ -390,16 +390,17 @@ class PitelClient {
       fcmToken: fcmToken,
     );
 
-    await deleteExtRegisterAor(
-      sipInfoData: sipInfoData,
-      pnPushParams: pnPushParams,
-    );
+    // TODO: v3
+    // await deleteExtRegisterAor(
+    //   sipInfoData: sipInfoData,
+    //   pnPushParams: pnPushParams,
+    // );
 
-    await removeDeviceToken(
-      deviceToken: deviceTokenRes,
-      domain: sipInfoData.registerServer,
-      extension: sipInfoData.accountName.toString(),
-    );
+    // await removeDeviceToken(
+    //   deviceToken: deviceTokenRes,
+    //   domain: sipInfoData.registerServer,
+    //   extension: sipInfoData.accountName.toString(),
+    // );
     return 'UNREGISTER';
   }
 

@@ -150,6 +150,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
           FlutterCallkitIncoming.startIncomingCall();
         }
         widget.onRegisterState("REGISTERED");
+        // TODO: v3
         _registerExtSuccess();
         await EasyLoading.dismiss();
         break;

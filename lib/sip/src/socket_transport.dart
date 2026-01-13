@@ -268,7 +268,8 @@ class SocketTransport {
       }
     }
 
-    _reconnect(error);
+    //! WARNING: do not re-connect when session expired time
+    // _reconnect(error);
   }
 
   void _onData(dynamic data) {
