@@ -16,7 +16,9 @@ class VoipNotifService {
   }) async {
     try {
       FlutterCallkitIncoming.onEvent.listen((event) async {
-        switch (event!.event) {
+        print(
+            '=================event========${event!.event.toString()}=======');
+        switch (event.event) {
           case Event.ACTION_CALL_INCOMING:
             if (onIncomingCall != null) {
               onIncomingCall(event);

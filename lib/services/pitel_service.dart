@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:plugin_pitel/component/pitel_call_state.dart';
 import 'package:plugin_pitel/component/sip_pitel_helper_listener.dart';
 import 'package:plugin_pitel/pitel_sdk/pitel_client.dart';
@@ -11,11 +12,14 @@ import 'pitel_service_interface.dart';
 import 'sip_info_data.dart';
 
 class PitelServiceImpl implements PitelService, SipPitelHelperListener {
+  static final PitelServiceImpl _instance = PitelServiceImpl._internal();
+  factory PitelServiceImpl() => _instance;
+
   final pitelClient = PitelClient.getInstance();
 
   SipInfoData? sipInfoData;
 
-  PitelServiceImpl() {
+  PitelServiceImpl._internal() {
     pitelClient.pitelCall.addListener(this);
   }
 
@@ -43,31 +47,43 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
 
   @override
   void callStateChanged(String callId, PitelCallState state) {
-    print('❌ ❌ ❌ callStateChanged ${callId} state ${state.state.toString()}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ callStateChanged ${callId} state ${state.state.toString()}');
+    }
   }
 
   @override
   void onCallInitiated(String callId) {
-    print('❌ ❌ ❌ onCallInitiated ${callId}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ onCallInitiated ${callId}');
+    }
   }
 
   @override
   void onCallReceived(String callId) {
-    print('❌ ❌ ❌ onCallReceived ${callId}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ onCallReceived ${callId}');
+    }
   }
 
   @override
   void onNewMessage(PitelSIPMessageRequest msg) {
-    print('❌ ❌ ❌ transportStateChanged ${msg.message}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ transportStateChanged ${msg.message}');
+    }
   }
 
   @override
   void registrationStateChanged(PitelRegistrationState state) {
-    print('❌ ❌ ❌ registrationStateChanged ${state.state.toString()}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ registrationStateChanged ${state.state.toString()}');
+    }
   }
 
   @override
   void transportStateChanged(PitelTransportState state) {
-    print('❌ ❌ ❌ transportStateChanged ${state.state.toString()}');
+    if (kDebugMode) {
+      print('❌ ❌ ❌ transportStateChanged ${state.state.toString()}');
+    }
   }
 }
