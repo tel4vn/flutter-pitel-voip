@@ -19,7 +19,7 @@ class PushNotifAndroid {
     FirebaseOptions? options,
     Function(RemoteMessage message)? onMessage,
     Function(RemoteMessage message)? onMessageOpenedApp,
-    Duration timeLimit = const Duration(seconds: 3),
+    Duration timeLimit = const Duration(seconds: 10),
   }) async {
     try {
       await Firebase.initializeApp(
