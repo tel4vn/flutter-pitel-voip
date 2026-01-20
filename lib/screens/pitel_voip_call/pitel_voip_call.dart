@@ -8,6 +8,8 @@ import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter/services.dart';
+
 class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final VoidCallback goBack;
@@ -64,9 +66,26 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onNewMessage(PitelSIPMessageRequest msg) {}
 
+  static const _audioPlatform =
+      MethodChannel('com.pitel.flutter_pitel_voip/audio');
+
+  Future<void> _enableManualAudio() async {
+    if (Platform.isIOS) {
+      try {
+        await _audioPlatform.invokeMethod('enableAudio');
+      } catch (_) {}
+    }
+  }
+
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
+    print('================state=========${state.state}=======');
+    // if (state.state == PitelCallStateEnum.CONNECTING) {
+    //   if (Platform.isIOS) {
+    //     widget.goToCall();
+    //   }
+    // }
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
@@ -88,6 +107,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       pitelCall.setIsHoldCall(true);
+      if (Platform.isIOS) {
+        // await _enableManualAudio();
+      }
       if (pitelCall.direction == 'INCOMING' && Platform.isIOS) {
         widget.goToCall();
       }
@@ -104,6 +126,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     if (Platform.isIOS) {
+      // await _enableManualAudio();
       pitelCall.answer();
     }
     if (Platform.isAndroid) {
@@ -112,8 +135,14 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   }
 
   @override
-  void onCallInitiated(String callId) {
+  void onCallInitiated(String callId) async {
     pitelCall.setCallCurrent(callId);
+    // if (Platform.isIOS) {
+    //   await _enableManualAudio();
+    // }
+    // if (Platform.isAndroid) {
+    //   widget.goToCall();
+    // }
     if (mounted) {
       widget.goToCall();
     }
