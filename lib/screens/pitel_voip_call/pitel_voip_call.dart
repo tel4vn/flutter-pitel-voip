@@ -80,12 +80,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
-    print('================state=========${state.state}=======');
-    // if (state.state == PitelCallStateEnum.CONNECTING) {
-    //   if (Platform.isIOS) {
-    //     widget.goToCall();
-    //   }
-    // }
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
@@ -107,9 +101,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       pitelCall.setIsHoldCall(true);
-      if (Platform.isIOS) {
-        // await _enableManualAudio();
-      }
       if (pitelCall.direction == 'INCOMING' && Platform.isIOS) {
         widget.goToCall();
       }
@@ -126,7 +117,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     if (Platform.isIOS) {
-      // await _enableManualAudio();
+      await _enableManualAudio();
       pitelCall.answer();
     }
     if (Platform.isAndroid) {
@@ -137,14 +128,17 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onCallInitiated(String callId) async {
     pitelCall.setCallCurrent(callId);
-    // if (Platform.isIOS) {
-    //   await _enableManualAudio();
-    // }
-    // if (Platform.isAndroid) {
-    //   widget.goToCall();
-    // }
-    if (mounted) {
+
+    if (Platform.isIOS) {
+      await _enableManualAudio();
+    }
+
+    if (!mounted) return;
+
+    if (Platform.isAndroid) {
       widget.goToCall();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), widget.goToCall);
     }
   }
 
