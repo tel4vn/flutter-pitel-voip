@@ -8,6 +8,8 @@ import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter/services.dart';
+
 class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final VoidCallback goBack;
@@ -64,6 +66,17 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onNewMessage(PitelSIPMessageRequest msg) {}
 
+  static const _audioPlatform =
+      MethodChannel('com.pitel.flutter_pitel_voip/audio');
+
+  Future<void> _enableManualAudio() async {
+    if (Platform.isIOS) {
+      try {
+        await _audioPlatform.invokeMethod('enableAudio');
+      } catch (_) {}
+    }
+  }
+
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
@@ -104,6 +117,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     if (Platform.isIOS) {
+      await _enableManualAudio();
       pitelCall.answer();
     }
     if (Platform.isAndroid) {
@@ -112,10 +126,19 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   }
 
   @override
-  void onCallInitiated(String callId) {
+  void onCallInitiated(String callId) async {
     pitelCall.setCallCurrent(callId);
-    if (mounted) {
+
+    if (Platform.isIOS) {
+      await _enableManualAudio();
+    }
+
+    if (!mounted) return;
+
+    if (Platform.isAndroid) {
       widget.goToCall();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), widget.goToCall);
     }
   }
 
