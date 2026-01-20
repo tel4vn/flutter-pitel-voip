@@ -1,5 +1,13 @@
 # Changelog
 
+
+## 1.0.11
+
+- Manual audio for iOS.
+- Improve performance.
+- Set timeout for firebase init.
+
+
 ## 1.0.10+7
 
 - Improve content-length handling in SIP message parsing.
