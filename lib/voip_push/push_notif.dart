@@ -19,35 +19,40 @@ class PushNotifAndroid {
     FirebaseOptions? options,
     Function(RemoteMessage message)? onMessage,
     Function(RemoteMessage message)? onMessageOpenedApp,
+    Duration timeLimit = const Duration(seconds: 3),
   }) async {
-    await Firebase.initializeApp(
-      options: options,
-    );
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    try {
+      await Firebase.initializeApp(
+        options: options,
+      ).timeout(timeLimit);
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+      await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
 
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      handleNotification(message);
-      if (onMessage != null) {
-        onMessage(message);
-      }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      if (onMessageOpenedApp != null) {
-        onMessageOpenedApp(message);
-      }
-    });
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        handleNotification(message);
+        if (onMessage != null) {
+          onMessage(message);
+        }
+      });
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        if (onMessageOpenedApp != null) {
+          onMessageOpenedApp(message);
+        }
+      });
+    } catch (error) {
+      print("❌ ❌ ❌ initFirebase error $error");
+    }
   }
 
   static Future<String> getDeviceToken() async {
@@ -127,14 +132,24 @@ class VoipPushIOS {
 
 class PushVoipNotif {
   static Future<String> getDeviceToken() async {
-    final deviceToken = Platform.isAndroid
-        ? await PushNotifAndroid.getDeviceToken()
-        : await VoipPushIOS.getVoipDeviceToken();
-    return deviceToken;
+    try {
+      final deviceToken = Platform.isAndroid
+          ? await PushNotifAndroid.getDeviceToken()
+          : await VoipPushIOS.getVoipDeviceToken();
+      return deviceToken;
+    } catch (error) {
+      print("❌ ❌ ❌ getDeviceToken error $error");
+      return "";
+    }
   }
 
   static Future<String> getFCMToken() async {
-    final fcmToken = await PushNotifAndroid.getDeviceToken();
-    return fcmToken;
+    try {
+      final fcmToken = await PushNotifAndroid.getDeviceToken();
+      return fcmToken;
+    } catch (error) {
+      print("❌ ❌ ❌ getFCMToken error $error");
+      return "";
+    }
   }
 }
