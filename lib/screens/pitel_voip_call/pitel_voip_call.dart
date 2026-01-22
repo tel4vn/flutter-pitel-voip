@@ -2,8 +2,9 @@ import 'dart:io';
 import 'package:eraser/eraser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_pitel_voip/component/loading/pitel_loading.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 
@@ -63,6 +64,16 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void onNewMessage(PitelSIPMessageRequest msg) {}
 
+  static const _audioPlatform =
+      MethodChannel('com.pitel.flutter_pitel_voip/audio');
+  Future<void> _enableManualAudio() async {
+    if (Platform.isIOS) {
+      try {
+        await _audioPlatform.invokeMethod('enableAudio');
+      } catch (_) {}
+    }
+  }
+
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
@@ -103,18 +114,28 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     if (Platform.isIOS) {
+      await _enableManualAudio();
       pitelCall.answer();
+    }
+    if (Platform.isAndroid) {
+      widget.goToCall();
     }
   }
 
   @override
-  void onCallInitiated(String callId) {
+  void onCallInitiated(String callId) async {
     pitelCall.setCallCurrent(callId);
-    if (mounted) {
-      widget.goToCall();
+
+    if (Platform.isIOS) {
+      await _enableManualAudio();
     }
+
+    if (!mounted) return;
+
     if (Platform.isAndroid) {
       widget.goToCall();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), widget.goToCall);
     }
   }
 
@@ -129,6 +150,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     switch (state.state) {
       case PitelRegistrationStateEnum.registrationFailed:
         pitelCall.resetOutPhone();
+        PitelLoading.instance.hide();
         break;
       case PitelRegistrationStateEnum.none:
       case PitelRegistrationStateEnum.unregistered:
@@ -139,10 +161,9 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         if (pitelCall.outPhone.isNotEmpty) {
           pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
-                  EasyLoading.showToast(
-                    err.toString(),
-                    toastPosition: EasyLoadingToastPosition.center,
-                  );
+                  PitelToast.instance.show(
+                      message: err.toString(),
+                      position: PitelToastPosition.center);
                 }),
               );
         }
@@ -152,7 +173,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
         widget.onRegisterState("REGISTERED");
         // TODO: v3
         _registerExtSuccess();
-        await EasyLoading.dismiss();
+        PitelLoading.instance.hide();
         break;
     }
   }

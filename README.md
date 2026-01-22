@@ -42,7 +42,7 @@ flutter pub add flutter_pitel_voip
 - Or add pubspec.yaml:
 
 ```pubspec.yaml
-flutter_pitel_voip: any
+flutter_pitel_voip: ^latest
 ```
 
 2. Get package
@@ -59,15 +59,23 @@ import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 
 4. Configure Project
 
-- In file app.dart config easyloading
+- In file app.dart config pitel loading
 
 ```dart
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
+import 'package:flutter_pitel_voip/services/pitel_navigation_service.dart';
   // ....
+  return MaterialApp(
+    navigatorKey: NavigationService.navigatorKey,
+  )
+
+  // or use with go_router
+  final router = GoRouter(
+    navigatorKey: NavigationService.navigatorKey, 
+    routes: [ ... ],
+  );
+
   return MaterialApp.router(
-    // ...
-    builder: EasyLoading.init(),
+    routerConfig: router,
   )
 ```
 
