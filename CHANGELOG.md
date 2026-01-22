@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.11+2
+- Replace Easyloading with PitelLoading.
+- Optimize some code.
 
 ## 1.0.11+1
 
