@@ -378,7 +378,7 @@ class PitelClient {
     required PushNotifParams pushNotifParams,
   }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("HAS_DEVICE_TOKEN");
+    await prefs.remove("HAS_DEVICE_TOKEN");
     // pitelCall.unregister();
 
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();

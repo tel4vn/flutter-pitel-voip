@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_pitel_voip/component/loading/pitel_loading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
 import 'package:flutter_pitel_voip/component/pitel_rtc_video_renderer.dart';
@@ -607,14 +609,9 @@ class PitelCall implements SipUaHelperListener {
     required String phoneNumber,
     required VoidCallback handleRegisterCall,
     String nameCaller = '',
-    String domainUrl = 'google.com',
-    bool enableLoading = true,
   }) {
     thr.throttle(() async {
       _dismissLoading();
-      if (enableLoading) {
-        EasyLoading.show(status: "Connecting...");
-      }
       if (!checkIsNumber.hasMatch(phoneNumber)) {
         EasyLoading.showToast(
           'Invalid phone number',
@@ -648,8 +645,9 @@ class PitelCall implements SipUaHelperListener {
         );
         return;
       }
-      if (connectivityResult != _checkConnectivity) {
+      if (!listEquals(connectivityResult, _checkConnectivity)) {
         _checkConnectivity = connectivityResult;
+        PitelLoading.instance.show();
         handleRegisterCall();
         return;
       }
@@ -659,10 +657,12 @@ class PitelCall implements SipUaHelperListener {
           final wifiIP = await NetworkInfo().getWifiIP();
           if (wifiIP != _wifiIP) {
             _wifiIP = wifiIP;
+            PitelLoading.instance.show();
             handleRegisterCall();
             return;
           }
         } catch (error) {
+          PitelLoading.instance.show();
           handleRegisterCall();
           return;
         }
@@ -670,10 +670,8 @@ class PitelCall implements SipUaHelperListener {
 
       final isRegistered = pitelCall.getRegisterState();
       if (isRegistered == 'Registered') {
-        EasyLoading.dismiss();
-        if (Platform.isIOS) {
-          await Future.delayed(const Duration(milliseconds: 500));
-        }
+        PitelLoading.instance.hide();
+
         pitelClient
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
@@ -691,6 +689,6 @@ class PitelCall implements SipUaHelperListener {
 
   void _dismissLoading() async {
     await Future.delayed(const Duration(seconds: 10));
-    EasyLoading.dismiss();
+    PitelLoading.instance.hide();
   }
 }
