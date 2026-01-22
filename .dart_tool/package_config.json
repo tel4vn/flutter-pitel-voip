@@ -164,6 +164,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "fixnum",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/fixnum-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///Users/anhquangdev/development/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -537,9 +543,9 @@
     },
     {
       "name": "uuid",
-      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/uuid-3.0.7",
+      "rootUri": "file:///Users/anhquangdev/.pub-cache/hosted/pub.dev/uuid-4.5.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "vector_math",
