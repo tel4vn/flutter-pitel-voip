@@ -1,3 +1,4 @@
+import 'package:flutter_pitel_voip/services/pitel_callstate_service.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,8 +17,6 @@ class CallPageWidget extends StatefulWidget {
   CallPageWidget({
     Key? key,
     this.receivedBackground = false,
-    required this.callState,
-    required this.onCallState,
     required this.txtMute,
     required this.txtUnMute,
     required this.txtSpeaker,
@@ -36,8 +35,6 @@ class CallPageWidget extends StatefulWidget {
 
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
   final bool receivedBackground;
-  final PitelCallStateEnum callState;
-  final Function(PitelCallStateEnum) onCallState;
   final String txtMute;
   final String txtUnMute;
   final String txtSpeaker;
@@ -81,7 +78,10 @@ class _MyCallPageWidget extends State<CallPageWidget>
   initState() {
     super.initState();
     pitelCall.addListener(this);
-    _state = widget.callState;
+    _state = PitelCallStateService().state;
+    if (_state == PitelCallStateEnum.CONFIRMED) {
+      isStartTimer = true;
+    }
     handleCall();
     if (voiceonly) {
       _initRenderers();
@@ -379,6 +379,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
               isStartTimer: isStartTimer,
               txtTimer: widget.txtTimer,
               txtWaiting: widget.txtWaiting,
+              startTime: PitelCallStateService().callStartTime,
             )
           : VoiceHeader(
               voiceonly: voiceonly,
@@ -417,7 +418,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     setState(() {
       _state = callState.state;
     });
-    widget.onCallState(callState.state);
+    PitelCallStateService().updateState(callState.state);
     switch (callState.state) {
       case PitelCallStateEnum.HOLD:
       case PitelCallStateEnum.UNHOLD:
@@ -426,7 +427,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
       case PitelCallStateEnum.UNMUTED:
         break;
       case PitelCallStateEnum.STREAM:
-        // _handelStreams(callState);
         break;
       case PitelCallStateEnum.ENDED:
         break;

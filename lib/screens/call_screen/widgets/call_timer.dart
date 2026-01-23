@@ -14,7 +14,10 @@ class CallTimer extends StatefulWidget {
     required this.isStartTimer,
     required this.txtTimer,
     required this.txtWaiting,
+    this.startTime,
   }) : super(key: key);
+
+  final DateTime? startTime;
 
   @override
   State<CallTimer> createState() => _CallTimerState();
@@ -43,12 +46,26 @@ class _CallTimerState extends State<CallTimer> {
       _cancelTimer();
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      final duration = Duration(seconds: timer.tick);
+      Duration duration;
+      if (widget.startTime != null) {
+        duration = DateTime.now().difference(widget.startTime!);
+      } else {
+        duration = Duration(seconds: timer.tick);
+      }
+
       if (mounted) {
         setState(() {
-          _timeLabel = [duration.inMinutes, duration.inSeconds]
+          _timeLabel = [
+            duration.inHours,
+            duration.inMinutes,
+            duration.inSeconds
+          ]
               .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
               .join(':');
+          // If hour is 00, remove it for cleaner look like 00:00
+          if (_timeLabel.startsWith("00:")) {
+            _timeLabel = _timeLabel.substring(3);
+          }
         });
       } else {
         _timer?.cancel();

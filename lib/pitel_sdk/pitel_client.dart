@@ -403,6 +403,45 @@ class PitelClient {
     return 'UNREGISTER';
   }
 
+  Future<String> registerExtension({
+    required SipInfoData sipInfoData,
+    required PushNotifParams pushNotifParams,
+    required String appMode,
+    bool shouldRegisterDeviceToken = false,
+  }) async {
+    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+    final fcmToken = await PushVoipNotif.getFCMToken();
+
+    final pnPushParams = PnPushParams(
+      pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
+      pnParam: Platform.isAndroid
+          ? pushNotifParams.bundleId
+          : '${pushNotifParams.teamId}.${pushNotifParams.bundleId}.voip',
+      pnPrid: deviceTokenRes,
+      fcmToken: fcmToken,
+    );
+
+    if (shouldRegisterDeviceToken) {
+      // Register device token
+      await registerDeviceToken(
+        deviceToken: deviceTokenRes,
+        platform: Platform.isIOS ? 'ios' : 'android',
+        bundleId: pushNotifParams.bundleId,
+        domain: sipInfoData.registerServer,
+        extension: sipInfoData.accountName.toString(),
+        appMode: appMode,
+        fcmToken: fcmToken,
+      );
+    }
+
+    // SIP login
+    final pitelClient = PitelServiceImpl();
+    final pitelSetting =
+        await pitelClient.setExtensionInfo(sipInfoData, pushNotifParams);
+
+    return 'REGISTER';
+  }
+
   // turn config
   Future<TurnConfigRes?> turnConfig() async {
     try {
