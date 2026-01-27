@@ -174,13 +174,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
   var basicActions = <Widget>[];
 
   List<Widget> _renderAdvanceAction() {
-    final width = MediaQuery.of(context).size.width / 3 - 32;
-    final height = MediaQuery.of(context).size.width / 3 - 60;
-
     return <Widget>[
       IconTextButton(
-        width: width,
-        height: height,
         textDisplay: pitelCall.audioMuted ? widget.txtUnMute : widget.txtMute,
         textStyle: widget.textStyle,
         icon: pitelCall.audioMuted ? Icons.mic_off : Icons.mic,
@@ -192,8 +187,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
         },
       ),
       IconTextButton(
-        width: width,
-        height: height,
         textDisplay: Platform.isAndroid && _isMicroValid == true
             ? AudioHelper.audioOutputText(_audioValue)
             : 'Speaker',
@@ -222,8 +215,6 @@ class _MyCallPageWidget extends State<CallPageWidget>
       ),
       if (widget.showHoldCall)
         IconTextButton(
-          width: width,
-          height: height,
           color: pitelCall.isHoldCall ? Color(0xFF000000) : Color(0xFF7C7B7B),
           textDisplay:
               pitelCall.holdCall ? widget.txtUnHoldCall : widget.txtHoldCall,
@@ -287,15 +278,16 @@ class _MyCallPageWidget extends State<CallPageWidget>
         ),
         margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: advanceActions.length > 2
-            ? Wrap(
-                runSpacing: 16,
-                children: advanceActions,
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: advanceActions,
-              ),
+        child: GridView.count(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: advanceActions.length,
+          childAspectRatio: advanceActions.length == 2 ? 1.9 : 1.1,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 8,
+          children: advanceActions,
+        ),
       ));
     }
     final height = MediaQuery.of(context).size.height;
