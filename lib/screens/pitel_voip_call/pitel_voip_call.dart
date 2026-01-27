@@ -110,7 +110,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   void onCallReceived(String callId) async {
     pitelCall.setCallCurrent(callId);
     if (Platform.isIOS) {
-      await _enableManualAudio();
+      // WARNING: terminate case -> need disable audio manual
+      // await _enableManualAudio();
       pitelCall.answer();
     }
     if (Platform.isAndroid) {
