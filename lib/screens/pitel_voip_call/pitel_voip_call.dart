@@ -94,7 +94,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     }
     if (state.state == PitelCallStateEnum.ACCEPTED) {
       pitelCall.setIsHoldCall(true);
-      if (pitelCall.direction == 'Direction.incoming' && Platform.isIOS) {
+      if (pitelCall.direction == Direction.incoming && Platform.isIOS) {
         widget.goToCall();
       }
       if (Platform.isAndroid) {
@@ -151,7 +151,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       case PitelRegistrationStateEnum.none:
       case PitelRegistrationStateEnum.unregistered:
         widget.onRegisterState("UNREGISTERED");
-        // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
         if (pitelCall.outPhone.isNotEmpty) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pitel_voip/sip/src/enums.dart';
 import 'call_timer.dart';
 
 class VoiceHeader extends StatelessWidget {
@@ -24,7 +25,7 @@ class VoiceHeader extends StatelessWidget {
   final bool isStartTimer;
   final double height;
   final String? remoteIdentity;
-  final String? direction;
+  final Direction? direction;
   final String? txtDirection;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
@@ -34,7 +35,7 @@ class VoiceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var directionDisplay = '${txtDirection ?? direction}...';
+    var directionDisplay = '${txtDirection ?? direction.toString()}...';
 
     return Positioned(
       top: voiceonly ? 60 : 6,

@@ -69,7 +69,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
   String? get remoteIdentity => pitelCall.remoteIdentity;
   String? get remoteDisplayName => pitelCall.remoteDisplayName;
 
-  String? get direction => pitelCall.direction;
+  Direction? get direction => pitelCall.direction;
   String _callId = '';
   String _audioValue = "earpiece";
   bool? _isMicroValid = true;
@@ -107,7 +107,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
   void handleCall() {
     if (Platform.isAndroid) {
       WakelockPlus.enable();
-      if (direction != 'OUTGOING') {
+      if (direction == Direction.incoming) {
         pitelCall.answer();
       }
     }
@@ -141,7 +141,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
 
   void _backToDialPad() {
     if (mounted && !_isBacked) {
-      if (direction != 'OUTGOING') {
+      if (direction == Direction.incoming) {
         FlutterCallkitIncoming.endAllCalls();
       }
       _isBacked = true;
@@ -256,7 +256,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     switch (_state) {
       case PitelCallStateEnum.NONE:
       case PitelCallStateEnum.PROGRESS:
-        if (direction == 'OUTGOING') {
+        if (direction == Direction.outgoing) {
           basicActions = [hangupBtn];
         }
         break;
@@ -331,7 +331,7 @@ class _MyCallPageWidget extends State<CallPageWidget>
     String nameCaller = '';
     if (pitelCall.nameCaller.isNotEmpty) {
       nameCaller = pitelCall.nameCaller;
-    } else if (direction == 'OUTGOING') {
+    } else if (direction == Direction.outgoing) {
       nameCaller = remoteIdentity ?? '';
     } else {
       String remoteNameRaw = remoteDisplayName ?? '';
@@ -369,8 +369,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
               voiceonly: voiceonly,
               height: height,
               remoteIdentity: nameCaller,
-              direction: direction ?? 'Please go back',
-              txtDirection: direction == 'OUTGOING'
+              direction: direction ?? Direction.outgoing,
+              txtDirection: direction == Direction.outgoing
                   ? widget.txtOutgoing
                   : widget.txtIncoming,
               titleTextStyle: widget.titleTextStyle,
@@ -385,8 +385,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
               voiceonly: voiceonly,
               height: height,
               remoteIdentity: "Waiting",
-              direction: 'Incoming',
-              txtDirection: direction == 'OUTGOING'
+              direction: Direction.incoming,
+              txtDirection: direction == Direction.outgoing
                   ? widget.txtOutgoing
                   : widget.txtIncoming,
               titleTextStyle: widget.titleTextStyle,
