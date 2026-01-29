@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_callkit_incoming_timer/entities/entities.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/component/loading/pitel_loading.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_pitel_voip/component/pitel_call_state.dart';
@@ -607,16 +605,15 @@ class PitelCall implements SipUaHelperListener {
 
   void outGoingCall({
     required String phoneNumber,
-    required VoidCallback handleRegisterCall,
+    required VoidCallback handleRegister,
     String nameCaller = '',
   }) {
     thr.throttle(() async {
       _dismissLoading();
       if (!checkIsNumber.hasMatch(phoneNumber)) {
-        EasyLoading.showToast(
-          'Invalid phone number',
-          toastPosition: EasyLoadingToastPosition.center,
-        );
+        PitelToast.instance.show(
+            message: 'Invalid phone number',
+            position: PitelToastPosition.center);
         return;
       }
       _outPhone = phoneNumber;
@@ -639,16 +636,15 @@ class PitelCall implements SipUaHelperListener {
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult.first == ConnectivityResult.none) {
         _checkConnectivity = [ConnectivityResult.none];
-        EasyLoading.showToast(
-          'Please check your network',
-          toastPosition: EasyLoadingToastPosition.center,
-        );
+        PitelToast.instance.show(
+            message: 'Please check your network',
+            position: PitelToastPosition.center);
         return;
       }
       if (!listEquals(connectivityResult, _checkConnectivity)) {
         _checkConnectivity = connectivityResult;
         PitelLoading.instance.show();
-        handleRegisterCall();
+        handleRegister();
         return;
       }
 
@@ -658,12 +654,12 @@ class PitelCall implements SipUaHelperListener {
           if (wifiIP != _wifiIP) {
             _wifiIP = wifiIP;
             PitelLoading.instance.show();
-            handleRegisterCall();
+            handleRegister();
             return;
           }
         } catch (error) {
           PitelLoading.instance.show();
-          handleRegisterCall();
+          handleRegister();
           return;
         }
       }
@@ -676,13 +672,13 @@ class PitelCall implements SipUaHelperListener {
             .call(phoneNumber, true)
             .then((value) => value.fold((succ) => "OK", (err) {
                   FlutterCallkitIncoming.endAllCalls();
-                  EasyLoading.showToast(
-                    err.toString(),
-                    toastPosition: EasyLoadingToastPosition.center,
-                  );
+                  PitelToast.instance.show(
+                      message: err.toString(),
+                      position: PitelToastPosition.center);
                 }));
       } else {
-        handleRegisterCall();
+        PitelLoading.instance.show();
+        handleRegister();
       }
     });
   }
