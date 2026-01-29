@@ -15,7 +15,10 @@ class VoiceHeader extends StatelessWidget {
     this.directionTextStyle,
     required this.txtTimer,
     required this.txtWaiting,
+    this.startTime,
   }) : super(key: key);
+
+  final DateTime? startTime;
 
   final bool voiceonly;
   final bool isStartTimer;
@@ -67,6 +70,7 @@ class VoiceHeader extends StatelessWidget {
             isStartTimer: isStartTimer,
             txtTimer: txtTimer,
             txtWaiting: txtWaiting,
+            startTime: startTime,
           ),
         ],
       )),

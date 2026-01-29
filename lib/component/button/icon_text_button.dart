@@ -5,8 +5,8 @@ class IconTextButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String textDisplay;
   final TextStyle? textStyle;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final Color? color;
 
   const IconTextButton({
@@ -14,8 +14,8 @@ class IconTextButton extends StatelessWidget {
     required this.icon,
     required this.onPressed,
     required this.textDisplay,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.textStyle,
     this.color = const Color(0xFF000000),
   }) : super(key: key);
@@ -37,6 +37,7 @@ class IconTextButton extends StatelessWidget {
           Text(
             textDisplay,
             style: textStyle,
+            textAlign: TextAlign.center,
           )
         ],
       ),

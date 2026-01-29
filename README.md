@@ -24,6 +24,11 @@ When user make call from Pitel Connect app, Pitel Server pushes a notification f
 - Turn on/off micro
 - Turn on/of speaker
 
+## Summary
+
+- [Config Pushkit](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PUSH_NOTIF.md).
+- [Portal Guide](https://github.com/tel4vn/flutter-pitel-voip/blob/main/PORTAL_GUIDE.md).
+
 ## Installation
 
 1. Install Packages
@@ -107,12 +112,15 @@ This permission allows the app to launch a full-screen intent for incoming calls
 - In file `android/app/proguard-rules.pro`. Proguard Rules: The following rule needs to be added in the proguard-rules.pro to avoid obfuscated keys:
 
 ```
-# KEEP plugin Android classes
+# KEEP plugin Android classes 
 -keep class com.hiennv.flutter_callkit_incoming.** { *; }
 
 # Keep Gson classes & TypeToken if plugin uses Gson
 -keep class com.google.gson.** { *; }
 -keepclassmembers class com.google.gson.reflect.TypeToken { *; }
+
+# Fix Conscrypt missing classes for OkHttp
+-dontwarn org.conscrypt.**
 ```
 
 #### IOS
@@ -141,24 +149,6 @@ platform :ios, '13.0'
    > **Note**
    > Please check [PUSH_NOTIF.md](https://github.com/tel4vn/flutter-pitel-voip/blob/main//PUSH_NOTIF.md). setup Pushkit (for IOS), push notification (for Android).
 
-## Troubleshooting
-
-[Android only]: If you give a error flutter_webrtc when run app in android. Please update code in file
-
-```
-$HOME/.pub-cache/hosted/pub.dartlang.org/flutter_webrtc-{version}/android/build.gradle
-```
-
-```xml
-dependencies {
-  // Remove
-  // implementation 'com.github.webrtc-sdk:android:104.5112.03'
-
-  // Replace
-  implementation 'io.github.webrtc-sdk:android:104.5112.09'
-}
-```
-
 ## Example
 
 Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-kit/tree/main)
@@ -168,13 +158,14 @@ Please checkout repo github to get [example](https://github.com/tel4vn/pitel-ui-
 - In file `app.dart`, Wrap MaterialApp with PitelVoip widget
   Please follow [example](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/app.dart)
 
-> Note: handleRegisterCall, handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/app.dart)
+> Note: 
+- handleRegister, registerFunc in [here](https://github.com/tel4vn/pitel-ui-kit/blob/main/lib/app.dart)
+- Wrap the `PitelVoip` and `PitelVoipCall` widgets around your application's root widget (e.g., `MaterialApp` or `CupertinoApp`).
 
 ```dart
 Widget build(BuildContext context) {
     return PitelVoip(                           // Wrap with PitelVoip
       handleRegister: handleRegister,           // Handle register
-      handleRegisterCall: handleRegisterCall,   // Handle register call
       child: MaterialApp.router(
         ...
       ),
@@ -189,22 +180,15 @@ Widget build(BuildContext context) {
 ```dart
 ...
 Widget build(BuildContext context) {
+    // Wrap with PitelVoipCall
     return PitelVoipCall(
-        // Wrap with PitelVoipCall
-        bundleId: '${bundle_id}',
-        appMode: 'dev', // dev or production
-        sipInfoData: sipInfoData,
         goBack: () {
             // go back function
         },
         goToCall: () {
             // go to call screen
         },
-        onCallState: (callState) {
-            // IMPORTANT: Set callState to your global state management. Example: bloc, getX, riverpod,..
-            // Example riverpod
-            // ref.read(callStateController.notifier).state = callState;
-        },
+        onCallState: (callState) {},
         onRegisterState: (String registerState) {
             // get Register Status in here
         },
@@ -217,9 +201,6 @@ Widget build(BuildContext context) {
 
 | Prop            | Description                     | Type                      | Default  |
 | --------------- | ------------------------------- | ------------------------- | -------- |
-| bundleId        | bundleId IOS, packageId android | String                    | Required |
-| appMode         | debug mode or release mode      | String                    | Required |
-| sipInfoData     | SIP information data            | () {}                     | Required |
 | goBack          | goback navigation               | () {}                     | Required |
 | goToCall        | navigation, go to call screen   | () {}                     | Required |
 | onCallState     | set call status                 | (callState) {}            | Required |
@@ -231,6 +212,8 @@ Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 b
 ```dart
       ElevatedButton(
         onPressed: () asyns {
+          PitelClient pitelClient = PitelClient.getInstance();
+
           final PushNotifParams pushNotifParams = PushNotifParams(
             teamId: '${APPLE_TEAM_ID}',
             bundleId: '${BUNDLE_ID}',
@@ -245,11 +228,11 @@ Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 b
             "wssUrl": "${WSS Mobile}"
           });
 
-          final pitelClient = PitelServiceImpl();
-          final pitelSetting = await pitelClient.setExtensionInfo(sipInfoData, pushNotifParams);
-          // IMPORTANT: Set pitelSetting to your global state management. Example: bloc, getX, riverpod,..
-          // Example riverpod
-          // ref.read(pitelSettingProvider.notifier).state = pitelSettingRes;
+          await pitelClient.registerExtension(
+              sipInfoData: sipInfoData,
+              pushNotifParams: pushNotifParams,
+              appMode: 'dev',                   // 'dev' for debug mode, 'production' for release mode
+              shouldRegisterDeviceToken: true); // Set shouldRegisterDeviceToken to true when the user presses the Register button.
         },
         child: const Text("Register"),
       ),
@@ -283,15 +266,7 @@ class CallPage extends StatelessWidget {
   const CallPage({super.key});
   @override
   Widget build(BuildContext context) {
-    // IMPORTANT: Get callState from your global state management. Example: bloc, getX, riverpod,..
-    // Example riverpod
-    // final callState = ref.watch(callStateController);
-
     return CallScreen(
-      callState: callState, // callState from state management you set before
-      goBack: () {
-        // Call your go back function in here
-      },
       bgColor: Colors.cyan,
     );
   }
@@ -320,7 +295,14 @@ class CallPage extends StatelessWidget {
 ```dart
 pitelCall.outGoingCall(
   phoneNumber: "",
-  handleRegisterCall: (){},
+  handleRegister: () {
+    // handle register function
+    await pitelClient.registerExtension(
+        sipInfoData: sipInfoData,
+        pushNotifParams: pushNotifParams,
+        appMode: 'dev',                    // 'dev' for debug mode, 'production' for release mode
+        shouldRegisterDeviceToken: false); // Set shouldRegisterDeviceToken to false during an outgoing call.
+  }, 
 );
 ```
 
@@ -331,17 +313,3 @@ pitelCall.outGoingCall(
 | phoneNumber        | phone number for call out | String | Required |
 | handleRegisterCall | re-register when call out | () {}  | Required |
 | nameCaller         | set name caller           | String | Optional |
-
-## How to test
-
-Using tryit to test voip call connection & conversation
-Link: https://tryit.jssip.net/
-Setting:
-
-1. Access to link https://tryit.jssip.net/
-2. Enter extension: example 102
-3. Click Setting icon
-4. Enter information to input field
-   ![tryit](assets/images/pitel_img_3.png)
-5. Save
-6. Click icon -> to connect

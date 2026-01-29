@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter_callkit_incoming_timer/entities/call_event.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/component/loading/pitel_loading.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_call.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_client.dart';
@@ -10,14 +9,12 @@ import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
 
 class PitelVoip extends StatefulWidget {
   final VoidCallback handleRegister;
-  final VoidCallback handleRegisterCall;
   final Widget child;
 
   const PitelVoip({
     Key? key,
     required this.handleRegister,
     required this.child,
-    required this.handleRegisterCall,
   }) : super(key: key);
 
   @override
@@ -40,8 +37,8 @@ class _PitelVoipState extends State<PitelVoip> {
         if (firstShowLock && Platform.isAndroid) {
           await FlutterShowWhenLocked().show();
         }
-        PitelLoading.instance.show(message: "Connecting...");
-        widget.handleRegisterCall();
+        PitelLoading.instance.show();
+        widget.handleRegister();
       },
       onCallDecline: (CallEvent event) {},
       onCallEnd: () {
@@ -56,7 +53,6 @@ class _PitelVoipState extends State<PitelVoip> {
   }
 
   void initRegister() async {
-    final stopwatch = Stopwatch()..start();
     if (Platform.isAndroid) {
       await FlutterShowWhenLocked().show();
       if (mounted) {
@@ -66,7 +62,6 @@ class _PitelVoipState extends State<PitelVoip> {
       }
       widget.handleRegister();
     }
-    stopwatch.stop();
   }
 
   @override

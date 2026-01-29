@@ -1,15 +1,12 @@
 import 'dart:io';
 import 'package:eraser/eraser.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_callkit_incoming_timer/flutter_callkit_incoming.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_pitel_voip/component/loading/pitel_loading.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/services/pitel_callstate_service.dart';
 import 'package:flutter_show_when_locked/flutter_show_when_locked.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:flutter/services.dart';
 
 class PitelVoipCall extends StatefulWidget {
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -18,9 +15,6 @@ class PitelVoipCall extends StatefulWidget {
   final Function(String) onRegisterState;
   final Function(PitelCallStateEnum) onCallState;
   final Widget child;
-  final String bundleId;
-  final SipInfoData? sipInfoData;
-  final String appMode;
 
   PitelVoipCall({
     Key? key,
@@ -29,9 +23,6 @@ class PitelVoipCall extends StatefulWidget {
     required this.child,
     required this.onRegisterState,
     required this.onCallState,
-    required this.bundleId,
-    required this.sipInfoData,
-    this.appMode = '',
   }) : super(key: key);
 
   @override
@@ -69,7 +60,6 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
 
   static const _audioPlatform =
       MethodChannel('com.pitel.flutter_pitel_voip/audio');
-
   Future<void> _enableManualAudio() async {
     if (Platform.isIOS) {
       try {
@@ -81,6 +71,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
   @override
   void callStateChanged(String callId, PitelCallState state) async {
     widget.onCallState(state.state);
+    PitelCallStateService().updateState(state.state);
     if (state.state == PitelCallStateEnum.ENDED) {
       pitelCall.resetOutPhone();
       pitelCall.resetNameCaller();
@@ -139,7 +130,7 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
     if (Platform.isAndroid) {
       widget.goToCall();
     } else {
-      Future.delayed(const Duration(milliseconds: 100), widget.goToCall);
+      Future.delayed(const Duration(milliseconds: 200), widget.goToCall);
     }
   }
 
@@ -159,16 +150,14 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
       case PitelRegistrationStateEnum.none:
       case PitelRegistrationStateEnum.unregistered:
         widget.onRegisterState("UNREGISTERED");
-        // _registerExtFailed();
         break;
       case PitelRegistrationStateEnum.registered:
         if (pitelCall.outPhone.isNotEmpty) {
           pitelClient.call(pitelCall.outPhone, true).then(
                 (value) => value.fold((succ) => "OK", (err) {
-                  EasyLoading.showToast(
-                    err.toString(),
-                    toastPosition: EasyLoadingToastPosition.center,
-                  );
+                  PitelToast.instance.show(
+                      message: err.toString(),
+                      position: PitelToastPosition.center);
                 }),
               );
         }
@@ -176,35 +165,8 @@ class _MyPitelVoipCall extends State<PitelVoipCall>
           FlutterCallkitIncoming.startIncomingCall();
         }
         widget.onRegisterState("REGISTERED");
-        _registerExtSuccess();
         PitelLoading.instance.hide();
         break;
-    }
-  }
-
-  void _registerExtSuccess() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final hasDeviceToken = prefs.getBool("HAS_DEVICE_TOKEN");
-    if (hasDeviceToken == true) return;
-    prefs.setBool("HAS_DEVICE_TOKEN", true);
-
-    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
-    final fcmToken = await PushVoipNotif.getFCMToken();
-    final appModeStatus = widget.appMode.isNotEmpty
-        ? widget.appMode
-        : kReleaseMode
-            ? 'production'
-            : 'dev';
-    if (widget.sipInfoData != null) {
-      pitelClient.registerDeviceToken(
-        deviceToken: deviceTokenRes,
-        platform: Platform.isIOS ? 'ios' : 'android',
-        bundleId: widget.bundleId,
-        domain: widget.sipInfoData!.registerServer,
-        extension: widget.sipInfoData!.accountName.toString(),
-        appMode: appModeStatus,
-        fcmToken: fcmToken,
-      );
     }
   }
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.12
+- Refactor PitelVoIP, PitelCallStateService, PitelVoIPCall, CallScreen.
+- Remove some package dependency.
+- Performance improvement.
+- Update documentation.
+
 ## 1.0.11+2
 - Replace Easyloading with PitelLoading.
 - Optimize some code.
