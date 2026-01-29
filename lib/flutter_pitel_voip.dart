@@ -14,6 +14,7 @@ export './services/sip_info_data.dart';
 export './services/pitel_service_interface.dart';
 export './services/models/pn_push_params.dart';
 export './services/models/push_notif_params.dart';
+export './services/pitel_navigation_service.dart';
 
 // Component
 export './component/app_life_cycle/app_life_cycle.dart';

@@ -12,7 +12,7 @@ import 'package:flutter_pitel_voip/model/pitel_error.dart';
 import 'package:flutter_pitel_voip/model/sip_server.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_api.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_log.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_pitel_voip/version.dart';
 
 import 'pitel_profile.dart';
 
@@ -134,7 +134,7 @@ class PitelClient {
     final String userAgentInit = extensionResponse.sipServer.userAgent ?? '';
     final String userAgentConvert = userAgentInit.isNotEmpty
         ? userAgentInit
-        : 'Flutter SDK: Pitel Connect v1.0.6';
+        : 'Flutter Pitel VoIP v${kPackageVersion}';
 
     _sipServer = extensionResponse.sipServer;
     _username = extensionResponse.username;
@@ -377,10 +377,6 @@ class PitelClient {
     required SipInfoData sipInfoData,
     required PushNotifParams pushNotifParams,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove("HAS_DEVICE_TOKEN");
-    // pitelCall.unregister();
-
     final deviceTokenRes = await PushVoipNotif.getDeviceToken();
     final fcmToken = await PushVoipNotif.getFCMToken();
 
@@ -404,6 +400,45 @@ class PitelClient {
       extension: sipInfoData.accountName.toString(),
     );
     return 'UNREGISTER';
+  }
+
+  Future<String> registerExtension({
+    required SipInfoData sipInfoData,
+    required PushNotifParams pushNotifParams,
+    required String appMode,
+    bool shouldRegisterDeviceToken = false,
+  }) async {
+    final deviceTokenRes = await PushVoipNotif.getDeviceToken();
+    final fcmToken = await PushVoipNotif.getFCMToken();
+
+    final pnPushParams = PnPushParams(
+      pnProvider: Platform.isAndroid ? 'fcm' : 'apns',
+      pnParam: Platform.isAndroid
+          ? pushNotifParams.bundleId
+          : '${pushNotifParams.teamId}.${pushNotifParams.bundleId}.voip',
+      pnPrid: deviceTokenRes,
+      fcmToken: fcmToken,
+    );
+
+    if (shouldRegisterDeviceToken) {
+      // Register device token
+      await registerDeviceToken(
+        deviceToken: deviceTokenRes,
+        platform: Platform.isIOS ? 'ios' : 'android',
+        bundleId: pushNotifParams.bundleId,
+        domain: sipInfoData.registerServer,
+        extension: sipInfoData.accountName.toString(),
+        appMode: appMode,
+        fcmToken: fcmToken,
+      );
+    }
+
+    // SIP login
+    final pitelClient = PitelServiceImpl();
+    final pitelSetting =
+        await pitelClient.setExtensionInfo(sipInfoData, pushNotifParams);
+
+    return 'REGISTER';
   }
 
   // turn config
