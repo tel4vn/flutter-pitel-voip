@@ -201,6 +201,9 @@ class PitelCall implements SipUaHelperListener {
       case PitelCallStateEnum.UNHOLD:
         _holdCall = pitelCallState.state == PitelCallStateEnum.HOLD;
         _holdOriginator = pitelCallState.originator;
+        for (var element in _sipPitelHelperListener) {
+          element.callStateChanged(call.id!, pitelCallState);
+        }
         break;
       case PitelCallStateEnum.STREAM:
         _handleStreams(pitelCallState);
