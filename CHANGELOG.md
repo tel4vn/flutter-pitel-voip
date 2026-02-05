@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.12+1
+- Update callstate hold call.
+
 ## 1.0.12
 - Refactor PitelVoIP, PitelCallStateService, PitelVoIPCall, CallScreen.
 - Remove some package dependency.
