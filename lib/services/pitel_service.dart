@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
 
 /// Implementation of [PitelService] interface.
 ///
@@ -102,5 +103,18 @@ class PitelServiceImpl implements PitelService, SipPitelHelperListener {
     if (kDebugMode) {
       print('❌ ❌ ❌ transportStateChanged ${state.state.toString()}');
     }
+  }
+
+  @override
+  Future<LogoutPbxRes?> logoutPbx({
+    required String extension,
+    required String authorization,
+    required String apiUrl,
+  }) {
+    return pitelClient.logoutPbx(
+      extension: extension,
+      authorization: authorization,
+      apiUrl: apiUrl,
+    );
   }
 }

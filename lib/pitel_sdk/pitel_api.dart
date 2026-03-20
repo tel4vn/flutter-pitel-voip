@@ -8,7 +8,9 @@ import 'package:flutter_pitel_voip/model/http/get_sip_info.dart';
 import 'package:flutter_pitel_voip/model/http/login.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_profile.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
 import 'package:flutter_pitel_voip/web_service/api_web_service.dart';
+import 'package:flutter_pitel_voip/web_service/mobile_api_service.dart';
 import 'package:flutter_pitel_voip/web_service/portal_service.dart';
 import 'package:flutter_pitel_voip/web_service/push_notif_service.dart';
 import 'package:flutter_pitel_voip/web_service/sdk_service.dart';
@@ -17,6 +19,7 @@ class _PitelAPIImplement implements PitelApi {
   final ApiWebService _sdkService = SDKService.getInstance();
   final ApiWebService _portalService = PortalService.getInstance();
   final ApiWebService _pushNotifService = PushNotifService.getInstance();
+  final ApiWebService _mobileApiService = MobileApiService.getInstance();
 
   @override
   Future<String> login(
@@ -181,6 +184,25 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  @override
+  Future<LogoutPbxRes> logoutPbx({
+    required String extension,
+    required String authorization,
+    required String apiUrl,
+  }) async {
+    final api = '/extension/$extension/logout';
+    final headers = {
+      'authorization': authorization,
+    };
+    MobileApiService.getInstance().dynamicDomain = apiUrl;
+    try {
+      final response = await _mobileApiService.post(api, headers, {});
+      return LogoutPbxRes.fromJson(response);
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -239,5 +261,11 @@ abstract class PitelApi {
     required String contact,
     required String aor,
     required String tenantName,
+  });
+
+  Future<LogoutPbxRes> logoutPbx({
+    required String extension,
+    required String authorization,
+    required String apiUrl,
   });
 }

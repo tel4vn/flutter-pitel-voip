@@ -7,6 +7,7 @@ import 'package:flutter_pitel_voip/config/pitel_config.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/model/pitel_error.dart';
 import 'package:flutter_pitel_voip/model/sip_server.dart';
@@ -399,6 +400,17 @@ class PitelClient {
       domain: sipInfoData.registerServer,
       extension: sipInfoData.accountName.toString(),
     );
+
+    final String authString =
+        base64Encode(utf8.encode('${sipInfoData.userName}:${sipInfoData.authPass}'));
+    final String authorization = 'Basic $authString';
+
+    await logoutPbx(
+      extension: sipInfoData.accountName.toString(),
+      authorization: authorization,
+      apiUrl: sipInfoData.apiUrl,
+    );
+
     return 'UNREGISTER';
   }
 
@@ -439,6 +451,23 @@ class PitelClient {
         await pitelClient.setExtensionInfo(sipInfoData, pushNotifParams);
 
     return 'REGISTER';
+  }
+
+  Future<LogoutPbxRes?> logoutPbx({
+    required String extension,
+    required String authorization,
+    required String apiUrl,
+  }) async {
+    try {
+      final response = await _pitelApi.logoutPbx(
+        extension: extension,
+        authorization: authorization,
+        apiUrl: apiUrl,
+      );
+      return response;
+    } catch (err) {
+      return null;
+    }
   }
 
   // turn config

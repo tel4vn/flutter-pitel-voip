@@ -14,9 +14,10 @@ class SipInfoData {
   final String? randomPort;
   final String? voicemail;
   final String wssUrl;
-  final String? userName;
+  final String userName;
   final String? apiDomain;
   final String? userAgent;
+  final String apiUrl;
 
   SipInfoData({
     required this.authPass,
@@ -31,9 +32,10 @@ class SipInfoData {
     this.randomPort,
     this.voicemail,
     required this.wssUrl,
-    this.userName,
+    required this.userName,
     this.apiDomain,
     this.userAgent,
+    required this.apiUrl,
   });
 
   SipInfoData.defaultSipInfo()
@@ -49,6 +51,7 @@ class SipInfoData {
           userName: "",
           apiDomain: "",
           userAgent: "",
+          apiUrl: "",
         );
 
   factory SipInfoData.fromJson(Map<String, dynamic> data) {
@@ -68,6 +71,7 @@ class SipInfoData {
       userName: data['userName'],
       apiDomain: data['apiDomain'],
       userAgent: data['userAgent'],
+      apiUrl: data['apiUrl'],
     );
   }
 
@@ -87,7 +91,8 @@ class SipInfoData {
       'wssUrl': wssUrl,
       'userName': userName,
       'apiDomain': apiDomain,
-      'userAgent': userAgent
+      'userAgent': userAgent,
+      'apiUrl': apiUrl,
     };
   }
 
