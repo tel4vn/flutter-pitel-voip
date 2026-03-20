@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pitel_voip/config/pitel_config.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
+import 'package:flutter_pitel_voip/model/http/check_device_online_res.dart';
 import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
@@ -405,11 +406,25 @@ class PitelClient {
         base64Encode(utf8.encode('${sipInfoData.userName}:${sipInfoData.authPass}'));
     final String authorization = 'Basic $authString';
 
-    await logoutPbx(
+    // Check how many devices are currently online for this extension.
+    // Only call logoutPbx if this is the last remaining device (total_device_online == 1),
+    // to avoid logging out other active sessions on different devices.
+    final checkRes = await checkDeviceOnline(
+      domain: sipInfoData.registerServer,
       extension: sipInfoData.accountName.toString(),
-      authorization: authorization,
-      apiUrl: sipInfoData.apiUrl,
     );
+    final totalDeviceOnline = checkRes?.data.totalDeviceOnline ?? 1;
+    if (totalDeviceOnline <= 1) {
+      await logoutPbx(
+        extension: sipInfoData.accountName.toString(),
+        authorization: authorization,
+        apiUrl: sipInfoData.apiUrl,
+      );
+    } else {
+      _logger.info(
+        'Skip logoutPbx: extension ${sipInfoData.accountName} still has $totalDeviceOnline devices online.',
+      );
+    }
 
     return 'UNREGISTER';
   }
@@ -463,6 +478,21 @@ class PitelClient {
         extension: extension,
         authorization: authorization,
         apiUrl: apiUrl,
+      );
+      return response;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  Future<CheckDeviceOnlineRes?> checkDeviceOnline({
+    required String domain,
+    required String extension,
+  }) async {
+    try {
+      final response = await _pitelApi.checkDeviceOnline(
+        domain: domain,
+        extension: extension,
       );
       return response;
     } catch (err) {

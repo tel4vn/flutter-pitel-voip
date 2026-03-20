@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_pitel_voip/model/http/check_device_online_res.dart';
 import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/get_profile.dart';
@@ -203,6 +204,27 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  @override
+  Future<CheckDeviceOnlineRes> checkDeviceOnline({
+    required String domain,
+    required String extension,
+  }) async {
+    const api = '/pn/device/check/online';
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer ${PushNotifService().token}',
+    };
+    final body = CheckDeviceOnlineReq(
+      domain: domain,
+      extension: extension,
+    ).toMap();
+    try {
+      final response = await _pushNotifService.post(api, headers, body);
+      return CheckDeviceOnlineRes.fromJson(response);
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -267,5 +289,10 @@ abstract class PitelApi {
     required String extension,
     required String authorization,
     required String apiUrl,
+  });
+
+  Future<CheckDeviceOnlineRes> checkDeviceOnline({
+    required String domain,
+    required String extension,
   });
 }
