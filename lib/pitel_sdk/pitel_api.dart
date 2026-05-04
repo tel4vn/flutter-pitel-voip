@@ -7,6 +7,7 @@ import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/get_profile.dart';
 import 'package:flutter_pitel_voip/model/http/get_sip_info.dart';
 import 'package:flutter_pitel_voip/model/http/login.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_req.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_profile.dart';
 import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
@@ -196,12 +197,14 @@ class _PitelAPIImplement implements PitelApi {
     final headers = {
       'authorization': authorization,
     };
+    final request = LogoutPbxReq(
+      unregister: unregisterPbx,
+      userAgent: 'Pitel Connect App',
+    );
     MobileApiService.getInstance().dynamicDomain = apiUrl;
     try {
-      final response = await _mobileApiService.post(api, headers, {
-        "unregister": unregisterPbx,
-        "user_agent": "Pitel Connect App",
-      });
+      final response =
+          await _mobileApiService.post(api, headers, request.toJson());
       return LogoutPbxRes.fromJson(response);
     } catch (err) {
       rethrow;
