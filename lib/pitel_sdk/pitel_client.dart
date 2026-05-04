@@ -402,8 +402,8 @@ class PitelClient {
       extension: sipInfoData.accountName.toString(),
     );
 
-    final String authString =
-        base64Encode(utf8.encode('${sipInfoData.userName}:${sipInfoData.authPass}'));
+    final String authString = base64Encode(
+        utf8.encode('${sipInfoData.userName}:${sipInfoData.authPass}'));
     final String authorization = 'Basic $authString';
 
     // Check how many devices are currently online for this extension.
@@ -419,6 +419,7 @@ class PitelClient {
         extension: sipInfoData.accountName.toString(),
         authorization: authorization,
         apiUrl: sipInfoData.apiUrl,
+        unregisterPbx: true,
       );
     } else {
       _logger.info(
@@ -472,13 +473,14 @@ class PitelClient {
     required String extension,
     required String authorization,
     required String apiUrl,
+    bool? unregisterPbx = false,
   }) async {
     try {
       final response = await _pitelApi.logoutPbx(
-        extension: extension,
-        authorization: authorization,
-        apiUrl: apiUrl,
-      );
+          extension: extension,
+          authorization: authorization,
+          apiUrl: apiUrl,
+          unregisterPbx: unregisterPbx);
       return response;
     } catch (err) {
       return null;

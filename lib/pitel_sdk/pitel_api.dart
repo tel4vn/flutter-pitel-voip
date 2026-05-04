@@ -187,18 +187,21 @@ class _PitelAPIImplement implements PitelApi {
   }
 
   @override
-  Future<LogoutPbxRes> logoutPbx({
-    required String extension,
-    required String authorization,
-    required String apiUrl,
-  }) async {
-    final api = '/extension/$extension/logout';
+  Future<LogoutPbxRes> logoutPbx(
+      {required String extension,
+      required String authorization,
+      required String apiUrl,
+      bool? unregisterPbx = false}) async {
+    final api = '/v3/extension/$extension/logout';
     final headers = {
       'authorization': authorization,
     };
     MobileApiService.getInstance().dynamicDomain = apiUrl;
     try {
-      final response = await _mobileApiService.post(api, headers, {});
+      final response = await _mobileApiService.post(api, headers, {
+        "unregister": unregisterPbx,
+        "user_agent": "Pitel Connect App",
+      });
       return LogoutPbxRes.fromJson(response);
     } catch (err) {
       rethrow;
@@ -289,6 +292,7 @@ abstract class PitelApi {
     required String extension,
     required String authorization,
     required String apiUrl,
+    bool? unregisterPbx = false,
   });
 
   Future<CheckDeviceOnlineRes> checkDeviceOnline({
