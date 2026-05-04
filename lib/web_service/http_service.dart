@@ -18,13 +18,9 @@ abstract class HttpService implements ApiWebService {
     try {
       final request = await _httpClient.postUrl(_makeUri(api, null));
       _addHeader(request, headers);
-      request.add(
-        utf8.encode(
-          jsonEncode(
-            body,
-          ),
-        ),
-      );
+      final bodyBytes = utf8.encode(jsonEncode(body));
+      request.contentLength = bodyBytes.length;
+      request.add(bodyBytes);
       final response = await request.close();
       if (response.statusCode == 200) {
         final responseBody = await response.transform(utf8.decoder).join();
@@ -60,13 +56,9 @@ abstract class HttpService implements ApiWebService {
     try {
       final request = await _httpClient.deleteUrl(_makeUri(api, null));
       _addHeader(request, headers);
-      request.add(
-        utf8.encode(
-          jsonEncode(
-            body,
-          ),
-        ),
-      );
+      final bodyBytes = utf8.encode(jsonEncode(body));
+      request.contentLength = bodyBytes.length;
+      request.add(bodyBytes);
       final response = await request.close();
       if (response.statusCode == 200) {
         final responseBody = await response.transform(utf8.decoder).join();

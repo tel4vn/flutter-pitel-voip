@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_pitel_voip/model/http/check_device_online_res.dart';
 import 'package:flutter_pitel_voip/model/http/delete_aor_ext.dart';
 import 'package:flutter_pitel_voip/model/http/get_extension_info.dart';
 import 'package:flutter_pitel_voip/model/http/get_profile.dart';
 import 'package:flutter_pitel_voip/model/http/get_sip_info.dart';
 import 'package:flutter_pitel_voip/model/http/login.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_req.dart';
 import 'package:flutter_pitel_voip/model/http/push_notif_model.dart';
 import 'package:flutter_pitel_voip/pitel_sdk/pitel_profile.dart';
+import 'package:flutter_pitel_voip/model/http/logout_pbx_res.dart';
 import 'package:flutter_pitel_voip/web_service/api_web_service.dart';
+import 'package:flutter_pitel_voip/web_service/mobile_api_service.dart';
 import 'package:flutter_pitel_voip/web_service/portal_service.dart';
 import 'package:flutter_pitel_voip/web_service/push_notif_service.dart';
 import 'package:flutter_pitel_voip/web_service/sdk_service.dart';
@@ -17,6 +21,7 @@ class _PitelAPIImplement implements PitelApi {
   final ApiWebService _sdkService = SDKService.getInstance();
   final ApiWebService _portalService = PortalService.getInstance();
   final ApiWebService _pushNotifService = PushNotifService.getInstance();
+  final ApiWebService _mobileApiService = MobileApiService.getInstance();
 
   @override
   Future<String> login(
@@ -181,6 +186,51 @@ class _PitelAPIImplement implements PitelApi {
       rethrow;
     }
   }
+
+  @override
+  Future<LogoutPbxRes> logoutPbx(
+      {required String extension,
+      required String authorization,
+      required String apiUrl,
+      bool? unregisterPbx = false}) async {
+    final api = '/v3/extension/$extension/logout';
+    final headers = {
+      'authorization': authorization,
+    };
+    final request = LogoutPbxReq(
+      unregister: unregisterPbx,
+      userAgent: 'Flutter Pitel VoIP',
+    );
+    MobileApiService.getInstance().dynamicDomain = apiUrl;
+    try {
+      final response =
+          await _mobileApiService.post(api, headers, request.toJson());
+      return LogoutPbxRes.fromJson(response);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<CheckDeviceOnlineRes> checkDeviceOnline({
+    required String domain,
+    required String extension,
+  }) async {
+    const api = '/pn/device/check/online';
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer ${PushNotifService().token}',
+    };
+    final body = CheckDeviceOnlineReq(
+      domain: domain,
+      extension: extension,
+    ).toMap();
+    try {
+      final response = await _pushNotifService.post(api, headers, body);
+      return CheckDeviceOnlineRes.fromJson(response);
+    } catch (err) {
+      rethrow;
+    }
+  }
 }
 
 abstract class PitelApi {
@@ -239,5 +289,17 @@ abstract class PitelApi {
     required String contact,
     required String aor,
     required String tenantName,
+  });
+
+  Future<LogoutPbxRes> logoutPbx({
+    required String extension,
+    required String authorization,
+    required String apiUrl,
+    bool? unregisterPbx = false,
+  });
+
+  Future<CheckDeviceOnlineRes> checkDeviceOnline({
+    required String domain,
+    required String extension,
   });
 }

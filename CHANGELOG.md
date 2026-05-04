@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.12+2
+- Update Authorization Basic format (add @domain) to match Mobile API requirements.
+- Explicitly set `contentLength` in `HttpService` to resolve missing body issues caused by chunked encoding.
+- Refactor: Implement `LogoutPbxReq` model for logout functionality.
+- Update: Documentation and `SipInfoData` configuration examples.
+
 ## 1.0.12+1
 - Update callstate hold call.
 

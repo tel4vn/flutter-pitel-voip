@@ -221,11 +221,13 @@ Register extension from data of Tel4vn provide. Example: 101, 102,… Create 1 b
           final sipInfoData = SipInfoData.fromJson({
             "accountName": "${Extension}",      // Example 101
             "authPass": "${Password}",
+            "userName": "${UserName}",          // Example agent01
             "registerServer": "${Domain}",
             "outboundServer": "${Domain}",
             "port": PORT,                       // Default 50061
             "displayName": "${Display Name}",   // John, Kate
-            "wssUrl": "${WSS Mobile}"
+            "wssUrl": "${WSS Mobile}",
+            "apiUrl": "${ApiUrl}",              // Example: https://api.pitel.vn
           });
 
           await pitelClient.registerExtension(
