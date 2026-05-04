@@ -199,7 +199,7 @@ class _PitelAPIImplement implements PitelApi {
     };
     final request = LogoutPbxReq(
       unregister: unregisterPbx,
-      userAgent: 'Pitel Connect App',
+      userAgent: 'Flutter Pitel VoIP',
     );
     MobileApiService.getInstance().dynamicDomain = apiUrl;
     try {

@@ -402,8 +402,8 @@ class PitelClient {
       extension: sipInfoData.accountName.toString(),
     );
 
-    final String authString = base64Encode(
-        utf8.encode('${sipInfoData.userName}:${sipInfoData.authPass}'));
+    final String authString = base64Encode(utf8.encode(
+        '${sipInfoData.userName}@${sipInfoData.registerServer}:${sipInfoData.authPass}'));
     final String authorization = 'Basic $authString';
 
     // Check how many devices are currently online for this extension.
