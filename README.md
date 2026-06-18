@@ -270,6 +270,8 @@ class CallPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CallScreen(
       bgColor: Colors.cyan,
+      showTransfer: true,
+      showKeypad: true,
     );
   }
 }
@@ -279,7 +281,6 @@ class CallPage extends StatelessWidget {
 
 | Prop               | Description                          | Type      | Default  |
 | ------------------ | ------------------------------------ | --------- | -------- |
-| goBack             | go back navigation                   | () {}     | Required |
 | bgColor            | background color                     | Color     | Required |
 | txtMute            | Text display of micro mute           | String    | Optional |
 | txtUnMute          | Text display of micro unmute         | String    | Optional |
@@ -291,6 +292,8 @@ class CallPage extends StatelessWidget {
 | timerTextStyle     | Style for timer text                 | TextStyle | Optional |
 | directionTextStyle | Style for direction text             | TextStyle | Optional |
 | showHoldCall       | Show action button hold call         | bool      | Optional |
+| showTransfer       | Show action button transfer call     | bool      | Optional |
+| showKeypad         | Show action button keypad            | bool      | Optional |
 
 - Outgoing call
 
