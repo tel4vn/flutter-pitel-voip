@@ -9,9 +9,13 @@ import 'package:flutter_pitel_voip/component/button/icon_text_button.dart';
 import 'package:flutter_pitel_voip/flutter_pitel_voip.dart';
 import 'package:flutter_pitel_voip/utils/audio_helper.dart';
 
+import 'widgets/dialpad_overlay.dart';
 import 'widgets/select_audio_modal.dart';
 import 'widgets/voice_header.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+/// Describes which panel (if any) is currently open on top of the call UI.
+enum _DialpadMode { none, dtmf, transfer }
 
 class CallPageWidget extends StatefulWidget {
   CallPageWidget({
@@ -26,11 +30,15 @@ class CallPageWidget extends StatefulWidget {
     required this.txtUnHoldCall,
     required this.txtTimer,
     required this.txtWaiting,
+    required this.txtTransfer,
+    required this.txtKeypad,
     this.textStyle,
     this.titleTextStyle,
     this.timerTextStyle,
     this.directionTextStyle,
     this.showHoldCall = false,
+    this.showTransfer = false,
+    this.showKeypad = false,
   }) : super(key: key);
 
   final PitelCall _pitelCall = PitelClient.getInstance().pitelCall;
@@ -44,11 +52,15 @@ class CallPageWidget extends StatefulWidget {
   final String txtUnHoldCall;
   final String txtTimer;
   final String txtWaiting;
+  final String txtTransfer;
+  final String txtKeypad;
   final TextStyle? textStyle;
   final TextStyle? titleTextStyle;
   final TextStyle? timerTextStyle;
   final TextStyle? directionTextStyle;
   final bool showHoldCall;
+  final bool showTransfer;
+  final bool showKeypad;
 
   @override
   State<CallPageWidget> createState() => _MyCallPageWidget();
@@ -63,6 +75,10 @@ class _MyCallPageWidget extends State<CallPageWidget>
   bool _isBacked = false;
   PitelCallStateEnum _state = PitelCallStateEnum.NONE;
   bool isStartTimer = false;
+
+  // ── Dialpad state ───────────────────────────────────────────────────────────
+  _DialpadMode _dialpadMode = _DialpadMode.none;
+  String _dialpadInput = '';
 
   bool get voiceonly => pitelCall.isVoiceOnly();
 
@@ -171,6 +187,65 @@ class _MyCallPageWidget extends State<CallPageWidget>
     pitelCall.toggleHold();
   }
 
+  // ── Dialpad helpers ─────────────────────────────────────────────────────────
+
+  void _openDtmfKeypad() {
+    setState(() {
+      _dialpadMode = _DialpadMode.dtmf;
+      _dialpadInput = '';
+    });
+  }
+
+  void _openTransferKeypad() {
+    setState(() {
+      _dialpadMode = _DialpadMode.transfer;
+      _dialpadInput = '';
+    });
+  }
+
+  void _closeDialpad() {
+    setState(() {
+      _dialpadMode = _DialpadMode.none;
+      _dialpadInput = '';
+    });
+  }
+
+  /// Called when the user taps a key on the dialpad.
+  /// In DTMF mode, sends the tone immediately.
+  /// In Transfer mode, appends the digit to the input field only.
+  void _onDialpadKeyPress(String digit) {
+    setState(() {
+      _dialpadInput += digit;
+    });
+    if (_dialpadMode == _DialpadMode.dtmf) {
+      pitelCall.sendDTMF(digit, callId: _callId);
+    }
+  }
+
+  void _onDialpadDelete() {
+    if (_dialpadInput.isNotEmpty) {
+      setState(() {
+        _dialpadInput = _dialpadInput.substring(0, _dialpadInput.length - 1);
+      });
+    }
+  }
+
+  /// Action button handler in Transfer mode: execute blind transfer and close.
+  void _onTransferCall() {
+    if (_dialpadInput.isEmpty) return;
+    pitelCall.refer(_dialpadInput, callId: _callId);
+    _closeDialpad();
+  }
+
+  /// Action button handler in DTMF mode: hang up and close.
+  void _onDtmfHangup() {
+    _handleHangup();
+    _backToDialPad();
+    _closeDialpad();
+  }
+
+  // ── UI builders ─────────────────────────────────────────────────────────────
+
   var basicActions = <Widget>[];
 
   List<Widget> _renderAdvanceAction() {
@@ -222,6 +297,20 @@ class _MyCallPageWidget extends State<CallPageWidget>
           icon: pitelCall.holdCall ? Icons.phone : Icons.pause,
           onPressed: _toggleHoldCall,
         ),
+      if (widget.showTransfer)
+        IconTextButton(
+          textDisplay: widget.txtTransfer,
+          textStyle: widget.textStyle,
+          icon: Icons.phone_forwarded_outlined,
+          onPressed: _openTransferKeypad,
+        ),
+      if (widget.showKeypad)
+        IconTextButton(
+          textDisplay: widget.txtKeypad,
+          textStyle: widget.textStyle,
+          icon: Icons.dialpad,
+          onPressed: _openDtmfKeypad,
+        ),
     ];
   }
 
@@ -270,11 +359,14 @@ class _MyCallPageWidget extends State<CallPageWidget>
     var actionWidgets = <Widget>[];
 
     if (advanceActions.isNotEmpty) {
+      // Always use 3 columns to prevent layout overflow when all 5 buttons
+      // (Mute, Speaker, Hold, Transfer, Keypad) are shown simultaneously.
+      const int crossCount = 3;
       actionWidgets.add(Container(
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(0.6),
+          color: Colors.white.withValues(alpha: 0.6),
         ),
         margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -282,8 +374,8 @@ class _MyCallPageWidget extends State<CallPageWidget>
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: advanceActions.length,
-          childAspectRatio: advanceActions.length == 2 ? 1.9 : 1.1,
+          crossAxisCount: crossCount,
+          childAspectRatio: 1.1,
           mainAxisSpacing: 0,
           crossAxisSpacing: 8,
           children: advanceActions,
@@ -396,6 +488,20 @@ class _MyCallPageWidget extends State<CallPageWidget>
         pitelCall.isConnected && pitelCall.isHaveCall
             ? _buildActionButtons()
             : Container(),
+        // ── Dialpad overlay (rendered on top of everything) ─────────────────
+        if (_dialpadMode != _DialpadMode.none)
+          DialpadOverlay(
+            dialpadInput: _dialpadInput,
+            mode: _dialpadMode == _DialpadMode.dtmf
+                ? DialpadMode.dtmf
+                : DialpadMode.transfer,
+            onKeyPress: _onDialpadKeyPress,
+            onDelete: _onDialpadDelete,
+            onClose: _closeDialpad,
+            onActionBtn: _dialpadMode == _DialpadMode.dtmf
+                ? _onDtmfHangup
+                : _onTransferCall,
+          ),
       ],
     );
   }

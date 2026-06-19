@@ -42,7 +42,9 @@ class Call {
 
   void refer(String target) {
     assert(_session != null, 'ERROR(refer): rtc session is invalid!');
-    ReferSubscriber refer = _session.refer(target)!;
+    ReferSubscriber refer = _session.refer(target, <String, dynamic>{
+      'extraHeaders': <dynamic>[],
+    })!;
     refer.on(EventReferTrying(), (EventReferTrying data) {});
     refer.on(EventReferProgress(), (EventReferProgress data) {});
     refer.on(EventReferAccepted(), (EventReferAccepted data) {
