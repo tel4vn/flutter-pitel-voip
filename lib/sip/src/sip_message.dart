@@ -548,7 +548,7 @@ class IncomingRequest extends IncomingMessage {
     // Validate code and reason values.
     if (code < 100 || code > 699) {
       throw Exceptions.TypeError('Invalid status_code: $code');
-    } else if (reason != null) {
+    } else if (reason != null && (reason.contains('\r') || reason.contains('\n'))) {
       throw Exceptions.TypeError('Invalid reason_phrase: $reason');
     }
 
@@ -654,7 +654,7 @@ class IncomingRequest extends IncomingMessage {
     // Validate code and reason values.
     if (code == null || (code < 100 || code > 699)) {
       throw Exceptions.TypeError('Invalid status_code: $code');
-    } else if (reason != null) {
+    } else if (reason != null && (reason.contains('\r') || reason.contains('\n'))) {
       throw Exceptions.TypeError('Invalid reason_phrase: $reason');
     }
 

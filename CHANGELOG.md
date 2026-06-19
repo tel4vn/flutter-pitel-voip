@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.13
+- Feature: Implement blind call transfer (SIP REFER) and send DTMF (via keypad overlay) in `CallScreen`.
+- Fix: Resolve `Invalid reason_phrase` crash in `IncomingRequest.reply` and `reply_sl` when reason phrase is not null.
+- Update: Document `showTransfer` and `showKeypad` properties for `CallScreen` in README.md.
+- Clean up: Remove outdated `goBack` property description from `CallScreen` properties table in README.md.
+
+
 ## 1.0.12+2
 - Update Authorization Basic format (add @domain) to match Mobile API requirements.
 - Explicitly set `contentLength` in `HttpService` to resolve missing body issues caused by chunked encoding.
